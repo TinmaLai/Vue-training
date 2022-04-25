@@ -48,7 +48,7 @@
                 <div class="col-4">
                     <label for="">Nguyên giá <span style="color: red">*</span></label>
                     <div class="m-content-right-field mt-input">
-                        <input class="m-field-input" v-model="assetForm.price" type="number" @change="calcWearPerYear">
+                        <input class="m-field-input" v-model="assetForm.price" type="number">
                     </div>
                 </div>
                 <div class="col-4">
@@ -67,7 +67,7 @@
                 </div>
                 <div class="col-4">
                     <label for="">Giá trị hao mòn năm <span style="color: red">*</span></label>
-                    <div class="m-content-right-field mt-input"><input :value="calcWearPerYear" @change="(value) => this.assetForm.wearPerYear = value" class="m-field-input" type="text"></div>
+                    <div class="m-content-right-field mt-input"><input :value="calcWearPerYear" class="m-field-input" type="text"></div>
                 </div>
                 <div class="col-4">
                     <label for="">Năm theo dõi <span style="color: red">*</span></label>
@@ -124,8 +124,10 @@ export default {
         * Created date: 13:39 22/04/2022
         */
         saveAsset(){
+            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi
+            this.assetForm.wearPerYear = this.calcWearPerYear;
             this.assetForm.accumulate = this.assetForm.wearPerYear * this.assetForm.yearsUse;
-            this.priceExtra = this.assetForm.price - this.assetForm.accumulate;
+            this.assetForm.priceExtra = this.assetForm.price - this.assetForm.accumulate;
             var me = this;
             try{
                 axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
@@ -181,7 +183,6 @@ export default {
                 this.assetFormCode = parseInt(this.newAssetCode)+1;
             }
         },
-        // Watch để tính giá trị hao mòn năm khi có sự thay đổi
     },
     data() {
         return {
