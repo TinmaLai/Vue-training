@@ -41,36 +41,38 @@
                     <label for="">Số lượng <span style="color: red">*</span></label>
                     <div class="m-content-right-icon-field mt-input">
                         <input class="m-field-input" v-model="assetForm.quantity"  type="number">
-                        <div class="field-incre-btn"></div>
-                        <div class="field-decre-btn"></div>
+                        <div @click="this.assetForm.quantity++" class="field-incre-btn"></div>
+                        <div @click="this.assetForm.quantity > 0 ? this.assetForm.quantity-- :this.assetForm.quantity" class="field-decre-btn"></div>
                     </div>
                 </div>
                 <div class="col-4">
                     <label for="">Nguyên giá <span style="color: red">*</span></label>
-                    <div class="m-content-right-field mt-input"><input class="m-field-input" v-model="assetForm.price" type="text"></div>
+                    <div class="m-content-right-field mt-input">
+                        <input class="m-field-input" v-model="assetForm.price" type="number" @change="calcWearPerYear">
+                    </div>
                 </div>
                 <div class="col-4">
                     <label for="">Số năm sử dụng <span style="color: red">*</span></label>
-                    <div class="m-content-right-field mt-input"><input value="0" class="m-field-input" type="text"></div>  
+                    <div class="m-content-right-field mt-input"><input v-model="this.assetForm.yearsUse" class="m-field-input" type="text"></div>  
                 </div>
             </div>
             <div class="row">
                 <div class="col-4">
                     <label for="">Tỷ lệ hao mòn (%) <span style="color: red">*</span></label>
                     <div class="m-content-right-icon-field mt-input">
-                        <input value="0" type="number" class="m-field-input">
-                        <div class="field-incre-btn"></div>
-                        <div class="field-decre-btn"></div>
+                        <input v-model="this.assetForm.wearRate" type="number" class="m-field-input">
+                        <div @click="this.assetForm.wearRate++" class="field-incre-btn"></div>
+                        <div @click="this.assetForm.wearRate > 0 ? this.assetForm.wearRate-- :this.assetForm.wearRate" class="field-decre-btn"></div>
                     </div>
                 </div>
                 <div class="col-4">
                     <label for="">Giá trị hao mòn năm <span style="color: red">*</span></label>
-                    <div class="m-content-right-field mt-input"><input value="0" class="m-field-input" type="text"></div>
+                    <div class="m-content-right-field mt-input"><input :value="calcWearPerYear" @change="(value) => this.assetForm.wearPerYear = value" class="m-field-input" type="text"></div>
                 </div>
                 <div class="col-4">
                     <label for="">Năm theo dõi <span style="color: red">*</span></label>
                     <div class="m-content-right-field mt-input">
-                        <input value="2021" readonly class="m-field-input readonly" type="text">
+                        <input :value="getThisYear" readonly class="m-field-input readonly" type="text">
                     </div>
                 </div>
             </div>
@@ -122,6 +124,8 @@ export default {
         * Created date: 13:39 22/04/2022
         */
         saveAsset(){
+            this.assetForm.accumulate = this.assetForm.wearPerYear * this.assetForm.yearsUse;
+            this.priceExtra = this.assetForm.price - this.assetForm.accumulate;
             var me = this;
             try{
                 axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
@@ -140,10 +144,28 @@ export default {
         * Created date: 08:34 25/04/2022
         */
         getDepartment(value){
-            this.assetForm.partsUse = value;
+            this.assetForm.partsUse = value.name;
         },
+        // Lấy mã tài sản, đồng thời binding tỷ lệ hao mòn, số năm sử dụng
         getTypeAsset(value){
-            this.assetForm.type = value;
+            this.assetForm.type = value.name;
+            this.assetForm.wearRate = value.wearRate;
+            this.assetForm.yearsUse = value.yearsUse;
+        },
+       
+       
+    },
+    computed: {
+        // Tính giá trị hao mòn năm mỗi khi có thay đổi 
+        calcWearPerYear(){
+            var valuewear = null;
+            valuewear = (this.assetForm.wearRate * this.assetForm.price)/100;
+            return valuewear;
+        },
+        getThisYear(){
+            const d = new Date();
+            let year = d.getFullYear();
+            return year;
         }
     },
     watch: {
@@ -159,7 +181,7 @@ export default {
                 this.assetFormCode = parseInt(this.newAssetCode)+1;
             }
         },
-        
+        // Watch để tính giá trị hao mòn năm khi có sự thay đổi
     },
     data() {
         return {
@@ -168,6 +190,11 @@ export default {
             assetForm :{
                 quantity: 1,
                 price: 0,
+                wearRate: null,
+                yearsUse: null,
+                wearPerYear: null,
+                accumulate: null,
+                priceExtra: null
             },
             assetFormCode: null,
            
