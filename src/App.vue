@@ -1,26 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <TheNavbar :isMinimize="isMinimize" @toggleMinimize="toggleMinimize"/>
+    <div class="content" :class="{'content-minimize' : isMinimize}">
+        <TheHeader/>
+        <TheManageTable/>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TheHeader from "./components/layout/TheHeader.vue";
+import TheNavbar from "./components/layout/TheNavbar.vue";
+import TheManageTable from "./components/layout/TheManageTable.vue";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    TheHeader,
+    TheNavbar,
+    TheManageTable,
+  },
+  methods:{
+    toggleMinimize(minimizeBool){
+      console.log(minimizeBool);
+      this.isMinimize = minimizeBool;
+    }
+  },
+  data() {
+    return {
+      isMinimize: false,
+    }
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import url(../src/css/mainDemo.css);
 </style>

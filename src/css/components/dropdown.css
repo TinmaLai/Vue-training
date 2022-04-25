@@ -1,0 +1,84 @@
+.m-dropdown{
+    border: 1px solid #afafaf;
+    height: 40px;
+    position: relative;
+    display: flex;
+    border-radius: 2.5px;
+    box-sizing: border-box;
+    background-color: #fff;
+    padding: 0;
+    text-align: left;
+    width: 219px;
+
+    align-items: center;
+}
+
+.m-dropdown .m-dropdown-suggest{
+    font-family: MISA Font Regular; 
+    font-size: 13px;
+    color: #000000;
+    align-self: center;
+    width: 85%;
+    margin-left: 16px;
+}
+
+.m-dropdown .arrow-down{
+    flex-shrink: 0;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -72px -338px;
+	width: 8px;
+	height: 5px;
+    border: none;
+    background-color: #fff;
+    z-index: 1;
+    margin-right: 12px;
+}
+
+.m-dropdown .m-dropdown-data{
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    box-shadow: 1px 3px 5px #000;
+    background-color: #fff;
+}
+
+.m-dropdown .m-dropdown-data .m-dropdown-item{
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    height: 40px;
+    padding-left: 36px;
+    flex-shrink: 0;
+}
+.m-dropdown .m-dropdown-data .m-dropdown-item:hover{
+    background-color: #E9EBEE;
+}
+.m-dropdown .m-dropdown-data .m-dropdown-item.m-dropdown-selected:active{
+    background-color: #019160;
+    background-image: url(../../asset/icon/btn-next-page.svg);
+    background-position: 10px center;
+    background-repeat: no-repeat;
+}
+
+.m-dropdown-suggest-icon{
+    margin-left: 10px;
+    width: 70%;
+    font-size: 13px;
+
+}
+.m-dropdown-icon{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -243px -65px;
+	width: 24px;
+	height: 24px;
+    margin-left: 10px;
+}
+
+.date-picker{
+    flex-shrink: 0;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -287px -67px;
+	width: 18px;
+	height: 18px;
+    border: none;
+    background-color: #fff;
+    z-index: 1;
+    margin-right: 12px; 
+}

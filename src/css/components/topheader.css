@@ -1,0 +1,144 @@
+.m-top-header{
+    display: flex;
+    justify-content: space-between;
+    height: 44px;
+    align-items: center;
+}
+
+.m-top-header .brand-name-text{
+    font-size: 15px;
+    font-family: MISA Font Bold;
+}
+
+.m-top-header .brand-name{
+    padding-left: 16px; 
+    display: flex;
+    align-items: center;
+}
+
+.m-top-header .brand-name-button{
+    background-image: url(../../asset/icon/btn-next-page.svg);
+    background-repeat: no-repeat;
+    background-size: 24px 24px;
+    background-position: center;
+    background-color: #fff;
+    border: none;
+    height: 24px;
+    width: 24px;
+    transform: rotate(90deg);
+    margin-left: 10px;
+
+}
+.m-top-header .user-action{
+    width: 428px;
+    height: 100%;
+    border: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 20px;
+    gap: 25px;
+}
+.m-top-header .user-action a .user-action-item{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.m-top-header .user-action .user-action-item img{
+    width: 24px;
+    height: 24px;
+}
+
+.m-top-header .user-action a .user-action-item.notification{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -332px -109px;
+	width: 16px;
+	height: 20px;
+}
+
+.m-top-header .user-action a .user-action-item.extension{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -199px -23px;
+	width: 18px;
+	height: 18px;
+}
+
+.m-top-header .user-action a .user-action-item.question{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -67px -67px;
+	width: 18px;
+	height: 17.5px;
+}
+
+.m-top-header .user-action a .user-action-item.avatar{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -23px -23px;
+	width: 18px;
+	height: 18px;
+}
+.m-top-header .user-action a .arrow-down{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -72px -338px;
+	width: 8px;
+	height: 5px;
+}
+
+.avatar-block{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.m-top-header .user-action button{
+    background-image: url(../../asset/icon/option.png);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: center;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.year-filter{
+    background-color: rgba(26, 164, 200, .2);
+    border-radius: 3px;
+    width: 112px;
+    height: 30px;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.year-filter span{
+    font-size: 13px;
+}
+
+.change-year-group-btn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 13px;
+}
+
+
+.change-year-group-btn .incre-year{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -28px -338px;
+	width: 8px;
+	height: 5px;
+}
+
+.change-year-group-btn .decre-year{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -72px -338px;
+	width: 8px;
+	height: 5px;
+}
+
+.user-action .location{
+    height: 16px;
+    font-size: 13px;
+    font-family: MISA Font Bold;
+}
+
+.user-action .location span{
+    font-weight: 500;
+    color: #001031;
+}
+

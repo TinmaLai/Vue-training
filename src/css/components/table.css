@@ -1,0 +1,109 @@
+.m-table{
+    background-color: #ffffff;
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: center;
+    word-wrap: break-word;
+    background-color: #ffffff;
+    
+}
+.contain-table{
+    max-height: calc(100% - 73px);
+    width: 100%;
+    overflow-y: auto;
+    border-radius: 3.5px;
+    border: 1px solid #afafaf;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+}
+.m-table tr{
+    
+    border-bottom: 1px solid #bbbbbb;
+    padding: 0;
+}
+.m-table tbody tr:hover{
+    background-color:  rgba(26, 164, 200, .2);
+}
+.m-table tbody tr > :first-child{
+    padding: 0 0 0 16px;
+}
+
+.m-table thead tr > :first-child{
+    padding: 0 0 0 16px;
+}
+.m-table td{
+    padding: 0;
+}
+.m-table td input {
+}
+
+.m-table thead{
+    font-family: MISA Font Bold;
+    border-bottom: 1px solid #ddd;
+    background-color: #f5f5f5;
+    height: 38px;
+}
+.m-table tbody tr{
+    height: 40px;
+}
+.m-table .table-action{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    gap: 15px;
+    opacity: 0;
+}
+
+.m-table .table-action .edit{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -156px -68px;
+	width: 16px;
+	height: 16px;
+    cursor: pointer;
+}
+.m-table .table-action .detail{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -244px -112px;
+	width: 16px;
+	height: 16px;
+    cursor: pointer;
+}
+
+.first-child{
+    opacity: 1;
+}
+
+.m-table td:nth-child(1){
+    width: 29px;
+}
+.m-table td:nth-child(2){
+    width: 80px;
+}
+.m-table td:nth-child(3){
+    width: 170px;
+}
+.m-table td:nth-child(4){
+    width: 150px;
+}
+.m-table td:nth-child(5){
+    width: 150px;
+}
+.m-table td:nth-child(6){
+    width: 150px;
+}
+.m-table td:nth-child(7){
+    width: 80px;
+}
+.m-table td:nth-child(8){
+    width: 110px;
+}
+.m-table td:nth-child(9){
+    width: 123px;
+}
+.m-table td:nth-child(10){
+    width: 112px;
+}
+.m-table td:nth-child(11){
+    width: 90px;
+}

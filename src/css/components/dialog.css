@@ -1,0 +1,67 @@
+.col-6{
+    width: 50%;
+}
+.row{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.col-4{
+    width: 32%;
+}
+.col-8{
+    width: 66%;
+}
+.m-dialog{
+    width: 60vw;
+    height: 83vh;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    border-radius: 4px;
+    background-color: #fff;
+    z-index: 4;
+    font-family: MISA Font Regular;
+    display: none;
+}
+
+.m-dialog > *{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.m-dialog .form-action{
+    margin: 0;
+}
+
+.m-dialog .form-action{
+    height: 50px;
+    background-color: #E9EBEE;
+    width: 100%;
+}
+.m-dialog .form-action{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    border-radius: 4px;
+}
+.m-dialog .form-action button{
+    margin-right: 20px;
+}
+.m-dialog .ignore-btn{
+    background-color: #fff;
+    border: none;
+    height: 70%;
+    width: 100px;
+}
+ .mt-input{
+    margin-top: 10px;
+ }

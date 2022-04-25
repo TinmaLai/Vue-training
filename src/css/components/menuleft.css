@@ -1,0 +1,211 @@
+.menu-left{
+    display: flex;
+    flex-direction: column;
+    background-color: #1c3048;
+    width: 230px;
+    border-right: 1px solid #bbbbbb;
+    position: relative;
+    height: 100vh;
+
+}
+
+a{
+    text-decoration: none;
+}
+.menu-left-item{
+    height: 40px;
+    font-size: 13px;    
+    margin-left: 11px;
+    display: flex;
+    align-items: center;
+    color: #c6c6c6;
+    margin-right: 11px;
+    border-radius: 6px;
+}
+.menu-left-item.brand{
+    padding:0;
+}
+.menu-left-item #toggle-button{
+    padding: 0;
+    background-color: #1c3048;
+    border: none;
+    height: 44px;
+    width: 44px;
+    flex-shrink: 0;
+    margin-right: 6px;
+}
+.menu-left-item #toggle-button .toggle-img{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -15px -680px;
+	width: 44px;
+	height: 36px;
+}
+.menu-left-item a{
+    height: auto;
+    box-sizing: border-box;
+}
+
+#toggle-button img {
+    height: 36px;
+    width: 36px;
+}
+.menu-left-item.brand{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.menu-left-item.brand a span{
+    height: 100%;
+    width: 100%;
+    color: #fff;
+}
+
+.logo-home img{
+    height: 70%;
+    align-self: center;
+}
+.menu-left-item .item-btn{
+    height: 40px;
+    width: 44px;
+    border-radius: 6px;
+    /* opacity: .2; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.menu-left-item .item-btn img{
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 24px;
+    height: 24px;
+}
+
+.menu-left-item .item-icon{
+    height: 20px;
+    width: 20px;
+}
+
+.menu-left-item .item-text{
+    
+    font-family: MISA Font;
+    font-size: 13px;
+}
+
+.menu-left-item.m-item-selected{
+    background-color: #019160;
+    color: #ffffff;
+    font-family: MISA Font Medium;
+
+}
+.menu-left-item:hover:not(:first-child){
+    background-color: #1aa4c8;
+    color: #fff;
+    font-family: MISA Font Regular;
+}
+.menu-left .minimize{
+    height: 30px;
+    width: 30px;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -285px -417px;
+	width: 22px;
+	height: 22px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    position: absolute;
+    bottom: 10px;
+    right: 16px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.menu-left .menu-left-item.collapse{
+    position: relative;
+}
+
+.collapse-icon{
+    position: absolute;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -158px -293px;
+	width: 11px;
+	height: 7px;
+    right: 10px;
+    top: 40%;
+}
+
+.menu-left .menu-left-item .general{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -19px -153px;
+	width: 24px;
+	height: 24px;
+}
+
+.menu-left .menu-left-item .asset{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -64px -153px;
+	width: 24px;
+	height: 24px;
+}
+
+.menu-left .menu-left-item .assetHT{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -110px -153px;
+	width: 24px;
+	height: 24px;
+}
+
+.menu-left .menu-left-item .tools{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -153px -153px;
+	width: 24px;
+	height: 24px;
+}
+
+.menu-left .menu-left-item .category{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -197px -155px;
+	width: 24px;
+	height: 24px;
+}
+.menu-left .menu-left-item .search{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -241px -153px;
+	width: 24px;
+	height: 24px;
+}
+
+.menu-left .menu-left-item .report{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -329px -153px;
+    width: 24px;
+    height: 24px;
+}
+.menu-left .menu-left-item .item-btn.actived{
+    background-color: #1aa4c8;
+    
+}
+.menu-left .menu-footer{
+    border-top: 1px solid rgb(194, 183, 183);
+    width: 100%;
+    height: 44px;
+    position: absolute;
+    bottom: 0;
+}
+
+.menu-left-minimize{
+    width: 66px;
+}
+
+.menu-left-minimize span{
+    display: none;
+}
+ 
+.menu-left-minimize .collapse-icon{
+    display: none;
+}
+
+.menu-left-minimize .minimize{
+    height: 30px;
+    width: 30px;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -329px -417px;
+	width: 22px;
+	height: 22px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    position: absolute;
+    bottom: 10px;
+    right: 16px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}

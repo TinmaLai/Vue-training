@@ -1,0 +1,58 @@
+.m-button{
+    height: 36px;
+    background-color: #1aa4c8;
+    border-radius: 3px;
+    font-size: 13px;
+    border: none;
+    color: #ffffff;
+    text-align: center;
+    min-width: 100px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+}
+.m-button:hover{
+    /* background-color: #2FBE8E; */
+}
+
+.m-button:active{
+    /* background-color: #01B075; */
+}
+
+.m-button-icon{
+    background-size: 16px 16px;
+    background-image: url(../../asset/icon/add.png);
+    background-repeat: no-repeat;
+    background-position: 16px center;
+    padding-left: 40px;
+    padding-right: 16px;
+    cursor: pointer;
+}
+.m-jicon-button{
+    background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    width: 36px;
+    height: 36px;
+    border: none;
+    cursor: pointer;
+}
+
+.field-incre-btn{
+    position: absolute;
+    right: 16px;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -204px -332px;
+	width: 8px;
+	height: 5px;
+    bottom: 55%;
+    cursor: pointer;
+}
+
+.field-decre-btn{
+    position: absolute;
+    right: 16px;
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -204px -343px;
+	width: 8px;
+	height: 5px;
+    bottom: 35%;
+    cursor: pointer;
+}
