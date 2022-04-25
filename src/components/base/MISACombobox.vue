@@ -1,6 +1,7 @@
 <template>
-    <div class="m-combobox">
-        <input @keypress="showDrop" v-model="optionSelected" type="text" :placeholder="placeholder">
+    <div  class="m-combobox">
+       
+        <input v-model="this.optionSelected" @mousedown="this.isShowDrop = false" type="text" :placeholder="placeholder">
         <div @click="showDrop" class="button">
             <div class="arrow-icon" ></div>
         </div>
@@ -9,7 +10,6 @@
             v-for="cate in filterCategories" 
             :key="cate.id" class="m-combobox-item"
             @click="setValueSelected(cate.code,cate.name)"
-            
             >{{cate.code}}</div>
         </div>
     </div>
@@ -29,6 +29,7 @@ export default {
             this.isShowDrop = !this.isShowDrop;
             // this.optionSelected = "";
         }
+        
     },
     computed: {
         filterCategories(){
