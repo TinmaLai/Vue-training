@@ -34,7 +34,7 @@
             <div class="table-action">
                 <button id="add-staff-btn" class="m-button" @click="toggleStaffDialog(true,1)"  >+Thêm tài sản</button>
                 <button class="m-jicon-button"><div class="table-action-excel"></div></button>
-                <button class="m-jicon-button"><div class="table-action-del"></div></button>
+                <button class="m-jicon-button" @click="deleteList" ><div class="table-action-del"></div></button>
             </div>
         </div>
         <EmployeeList 
@@ -42,6 +42,7 @@
         @getNewCode="getNewCode" 
         @toggleStaffDialog="toggleStaffDialog" 
         @getAssetSelected="getAssetSelected"
+        @getDelList="getDelList"
         />
         <AddStaffForm 
         :isShow="isShowDialog" 
@@ -58,7 +59,7 @@
 <script>
 import EmployeeList from "../../views/EmployeeList.vue";
 import AddStaffForm from "../../views/AddStaffForm.vue";
-
+import axios from "axios";
 
 
 export default {
@@ -69,6 +70,7 @@ export default {
 
     },
     methods: {
+        // Đóng mở form thêm tài sản
         toggleStaffDialog(show,formMode){
             this.formMode = formMode;
             this.isShowDialog = show;
@@ -76,20 +78,32 @@ export default {
                 this.formMode = -1;
             }
         },
-        getAssetAdd(AssetAdd){
-            console.log(AssetAdd);
-        },
+        // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
         getNewCodeIncre(newCode){
             this.newAssetCode = newCode;
         },  
-        getAddAsset(assetForm){
-            this.assetAdd = assetForm;
-        },
+        // getAddAsset(assetForm){
+        //     this.assetAdd = assetForm;
+        // },
         getNewCode(newCode){
             this.newAssetCode = newCode;
         },
+        // Lấy đổi tượng được double click ở bảng
         getAssetSelected(asset){
             this.assetSelected = asset;
+        },
+        // Xóa list item được check checkbox
+        getDelList(delList){
+            this.delList = delList;
+        },
+        deleteList(){
+            try{
+                axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+this.delList[0]).then(function(res){
+                    console.log(res);
+                })
+            } catch(error){
+                console.log(error);
+            }
         }
     },
     data() {
@@ -98,7 +112,8 @@ export default {
             assetAdd: {},
             newAssetCode: null,
             formMode: null,
-            assetSelected: {}
+            assetSelected: {},
+            delList: [],
         }
     },
 }

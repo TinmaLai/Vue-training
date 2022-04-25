@@ -1,7 +1,7 @@
 <template>
     <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false">
         <td>
-            <Checkbox/>
+            <Checkbox @click="delItemSelect(asset.id)"/>
         </td>
         <td class="text-center" ref="TableAction">{{asset.id}}</td>
         <td class="text-left">{{asset.id}}</td>
@@ -34,12 +34,16 @@ export default {
         // Hover hiện ra cột chức năng của hàng trong bảng
         hoverDisplay(){
             this.isHover = true;
+        },
+        delItemSelect(id){
+            this.$emit("getDelIdSelect",id);
         }
 
     },
     data() {
         return {
-            isHover: false
+            isHover: false,
+            
         }
     },
 }

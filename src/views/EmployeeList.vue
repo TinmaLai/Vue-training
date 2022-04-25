@@ -23,6 +23,7 @@
                 v-for="asset in assets" 
                 :asset="asset"
                 :key="asset.id"
+                @getDelIdSelect="delItemSelected"
                 @dblclick="ShowStaffDialog(asset)"
                 />
                 <tr id="pagination-table">
@@ -98,6 +99,11 @@ export default {
         ShowStaffDialog(asset){
             this.$emit("getAssetSelected",asset);
             this.$emit("toggleStaffDialog",true,0);
+        },
+        // Lấy tất cả id được chọn để xóa
+        delItemSelected(id){
+            this.delList.push(id);
+            this.$emit("getDelList",this.delList);
         }
     },
     // Thêm dữ liệu từ form vào bảng, nhưng chưa được
@@ -109,6 +115,7 @@ export default {
     data() {
         return {
             assets:{},
+            delList: [],
         }
     },
 }
