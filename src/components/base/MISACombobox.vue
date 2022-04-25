@@ -9,7 +9,7 @@
             <div 
             v-for="cate in filterCategories" 
             :key="cate.id" class="m-combobox-item"
-            @click="setValueSelected(cate.code,cate.name)"
+            @click="setValueSelected(cate)"
             >{{cate.code}}</div>
         </div>
     </div>
@@ -19,15 +19,15 @@
 export default {
     props:["tag","placeholder" ],
     methods:{
-        setValueSelected(optionCode, optionName){
-            this.optionSelected = optionCode;
+        setValueSelected(option){
+            this.optionSelected = option.code;
             this.isShowDrop = true;
-            this.$emit("getComboSelected",optionName);
+            this.$emit("getComboSelected",option);
         },
         // show dropdown
         showDrop(){
             this.isShowDrop = !this.isShowDrop;
-            // this.optionSelected = "";
+            this.optionSelected = "";
         }
         
     },
@@ -58,6 +58,7 @@ export default {
                     id: 1,
                     code: "HCKT",
                     name: "Hành chính kế toán",
+                    
                 },
                 {
                     id: 2,
@@ -75,11 +76,15 @@ export default {
                     id: 1,
                     code: "MTXT",
                     name: "Máy tính xách tay",
+                    wearRate: 2.5,
+                    yearsUse: 5,
                 },
                 {
                     id: 2,
                     code: "PC",
                     name: "Máy tính để bàn",
+                    wearRate: 1.7,
+                    yearsUse: 10,
                 }
             ]
         }
