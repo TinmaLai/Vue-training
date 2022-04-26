@@ -1,7 +1,7 @@
 <template>
-    <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false">
+    <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false" @click="delItemSelect(asset.id)" >
         <td>
-            <Checkbox @click="delItemSelect(asset.id)"/>
+            <Checkbox :isCheckBox="isCheckBox" />
         </td>
         <td class="text-center" ref="TableAction">{{asset.id}}</td>
         <td class="text-left">{{asset.id}}</td>
@@ -26,9 +26,15 @@
 <script>
 import Checkbox from "../components/base/MISACheckbox.vue";
 export default {
-    props:["asset"],
+    props:["asset","checkbox"],
     components:{
         Checkbox
+    },
+    watch:{
+        checkbox: function(newValue){
+            this.isCheckBox = newValue;
+            console.log(newValue);
+        }
     },
     methods:{
         // Hover hiện ra cột chức năng của hàng trong bảng

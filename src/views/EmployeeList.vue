@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <td>
-                        <Checkbox/>
+                        <Checkbox @click="checkAll" name="checkAll" />
                     </td>
                     <td class="">STT</td>
                     <td class="text-left">Mã tài sản</td>
@@ -20,11 +20,12 @@
             </thead>    
             <tbody>
                 <TableItem 
-                v-for="asset in assets" 
+                v-for="asset in fixedAssets" 
                 :asset="asset"
                 :key="asset.id"
                 @getDelIdSelect="delItemSelected"
                 @dblclick="ShowStaffDialog(asset)"
+                :checkbox="delList.includes(asset.id)"
                 />
                 <tr id="pagination-table">
                     <td colspan="6">
@@ -63,37 +64,14 @@
 </template>
 
 <script>
-import axios from "axios";
 import Checkbox from "../components/base/MISACheckbox.vue";
 import TableItem from "../views/TableItem.vue";
 
 export default {
-    props:["assetAdd"],
+    props:["assetAdd","fixedAssets"],
     components:{
         Checkbox,
         TableItem
-    },
-    beforeMount(){
-        /**
-        * Mô tả : Call API đưa dữ liệu lên bản
-        * Created by: nbtin
-        * Created date: 13:44 22/04/2022
-        */
-        try{
-            var me = this;
-            axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
-                .then(function(res){
-                    me.assets = res.data;
-                    var newCode = res.data[res.data.length - 1].id;
-                    me.$emit("getNewCode",newCode);
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                })
-        } catch(error){
-            console.log(error);
-        }
     },
     methods:{
         ShowStaffDialog(asset){
@@ -110,6 +88,13 @@ export default {
                 }
             }
             this.$emit("getDelList",this.delList);
+        },
+        // Check tất cả 
+        checkAll(){
+            for(let i = 0 ; i < this.fixedAssets.length; i++){
+                this.delList.push(this.fixedAssets[i].id);
+            }
+            this.$emit("getDelList",this.delList);
         }
     },
     // Thêm dữ liệu từ form vào bảng, nhưng chưa được
@@ -122,6 +107,7 @@ export default {
         return {
             assets:{},
             delList: [],
+            checkbox: false,
         }
     },
 }

@@ -32,14 +32,14 @@
                 </button>
             </div>
             <div class="table-action">
-                <button id="add-staff-btn" class="m-button" @click="toggleStaffDialog(true,1)"  >+Thêm tài sản</button>
+                <button id="add-staff-btn" class="m-button" @click="toggleStaffDialog(true,1)">+Thêm tài sản</button>
                 <button class="m-jicon-button"><div class="table-action-excel"></div></button>
                 <button class="m-jicon-button" @click="popUpDelAlert" ><div class="table-action-del"></div></button>
             </div>
         </div>
         <EmployeeList 
         :assetAdd="assetAdd" 
-        @getNewCode="getNewCode" 
+        :fixedAssets="fixedAssets"
         @toggleStaffDialog="toggleStaffDialog" 
         @getAssetSelected="getAssetSelected"
         @getDelList="getDelList"
@@ -77,6 +77,29 @@ export default {
         DeleteAlert
 
     },
+    beforeMount(){
+        /**
+        * Mô tả : Call API đưa dữ liệu lên bản
+        * Created by: nbtin
+        * Created date: 13:44 22/04/2022
+        */
+        try{
+            var me = this;
+            axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
+                .then(function(res){
+                    me.fixedAssets = res.data;
+                    // Lấy mã tự tăng
+                    var newCode = res.data[res.data.length - 1].id;
+                    me.newAssetCode = newCode;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+        } catch(error){
+            console.log(error);
+        }
+    },
     methods: {
         // Đóng mở form thêm tài sản
         toggleStaffDialog(show,formMode){
@@ -90,12 +113,6 @@ export default {
         getNewCodeIncre(newCode){
             this.newAssetCode = newCode;
         },  
-        // getAddAsset(assetForm){
-        //     this.assetAdd = assetForm;
-        // },
-        getNewCode(newCode){
-            this.newAssetCode = newCode;
-        },
         // Lấy đổi tượng được double click ở bảng
         getAssetSelected(asset){
             this.assetSelected = asset;
@@ -103,30 +120,39 @@ export default {
         // Xóa list item được check checkbox
         getDelList(delList){
             this.delList = delList;
+    
         },
         // Hiện thông báo xóa hay không
         popUpDelAlert(){
             this.isShowAlert = true;
         },
         // Xử lý kết quả chọn xóa/không
-        async handleDelOption(isDel){
+         handleDelOption(isDel){
             if(isDel == false){
                 this.isShowAlert = false; 
             } else{
                 var me = this;
                 for(let i = 0; i < me.delList.length; i++){
-                    await axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[i]).then(function(res){
+                     axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[i])
+                     .then(function(res){
                         console.log(res);
                         me.isShowAlert = false;
+                        // Xóa các phần tử bị xóa ở mảng fixedAssets đổ lên bảng
+                        me.fixedAssets = me.fixedAssets.filter(function(el){
+                            return !me.delList.includes(el.id);
+                        })
+                       
                     }).catch(function(err){
                         console.log(err);
                     })
-                }
-            }
+                   
+                }   
+            }       
         }
     },
     data() {
         return {
+            fixedAssets: [],
             isShowDialog: false, 
             assetAdd: {},
             newAssetCode: null,

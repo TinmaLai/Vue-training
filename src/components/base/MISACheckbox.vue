@@ -3,18 +3,26 @@
   <div
     class="m-checkbox"
     :class="{
-      'm-checkbox-selected': isChecked,
+      'm-checkbox-selected': isCheckBox,
     }"
-    @click="isChecked = !isChecked"
+    @click="check"
   ></div>
 </template>
 <script>
 export default {
   name: "the-checkbox",
-
+  props:["isCheckBox","tag"],
+  methods:{
+    check(){
+      // if(tag == "checkAll"){
+        
+      // }
+    }
+  },
   data() {
     return {
       isChecked: false,
+      checkAll:false,
     };
   },
 };

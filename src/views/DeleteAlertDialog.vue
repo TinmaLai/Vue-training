@@ -14,9 +14,15 @@
 <script>
 export default {
     props:["isShowAlert","delList"],
+    watch: {
+        // delList: function(newValue){
+            
+        // }
+    },
     methods:{
         // emits không/xóa, không: false, xóa: true
         selectOption(isDel){
+            console.log(this.delList);
             this.$emit("getDelOption",isDel);
         }
     }
