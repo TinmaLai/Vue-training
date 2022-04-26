@@ -10,6 +10,7 @@
 @import url('./components/table.css');
 @import url('./components/pagination.css');
 @import url('./components/topheader.css');
+@import url('./components/deldialog.css');
 body,html{
     height: 100%;
     width: 100%;

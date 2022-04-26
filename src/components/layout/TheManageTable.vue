@@ -34,7 +34,7 @@
             <div class="table-action">
                 <button id="add-staff-btn" class="m-button" @click="toggleStaffDialog(true,1)"  >+Thêm tài sản</button>
                 <button class="m-jicon-button"><div class="table-action-excel"></div></button>
-                <button class="m-jicon-button" @click="deleteList" ><div class="table-action-del"></div></button>
+                <button class="m-jicon-button" @click="popUpDelAlert" ><div class="table-action-del"></div></button>
             </div>
         </div>
         <EmployeeList 
@@ -53,12 +53,19 @@
         :assetSelected="assetSelected"
         @getAssetAdd="getAssetAdd"
         /> 
+        <DeleteAlert 
+        :isShowAlert="isShowAlert"
+        @getDelOption="handleDelOption"
+        :delList="delList"
+        />
     </div>
 </template>
 
 <script>
 import EmployeeList from "../../views/EmployeeList.vue";
 import AddStaffForm from "../../views/AddStaffForm.vue";
+import DeleteAlert from "../../views/DeleteAlertDialog.vue";
+
 import axios from "axios";
 
 
@@ -67,6 +74,7 @@ export default {
     components:{
         EmployeeList,
         AddStaffForm,
+        DeleteAlert
 
     },
     methods: {
@@ -96,13 +104,24 @@ export default {
         getDelList(delList){
             this.delList = delList;
         },
-        deleteList(){
-            try{
-                axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+this.delList[0]).then(function(res){
-                    console.log(res);
-                })
-            } catch(error){
-                console.log(error);
+        // Hiện thông báo xóa hay không
+        popUpDelAlert(){
+            this.isShowAlert = true;
+        },
+        // Xử lý kết quả chọn xóa/không
+        async handleDelOption(isDel){
+            if(isDel == false){
+                this.isShowAlert = false; 
+            } else{
+                var me = this;
+                for(let i = 0; i < me.delList.length; i++){
+                    await axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[i]).then(function(res){
+                        console.log(res);
+                        me.isShowAlert = false;
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                }
             }
         }
     },
@@ -114,6 +133,7 @@ export default {
             formMode: null,
             assetSelected: {},
             delList: [],
+            isShowAlert: false
         }
     },
 }

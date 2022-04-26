@@ -100,9 +100,15 @@ export default {
             this.$emit("getAssetSelected",asset);
             this.$emit("toggleStaffDialog",true,0);
         },
-        // Lấy tất cả id được chọn để xóa
-        delItemSelected(id){
-            this.delList.push(id);
+        // Lấy tất cả id được chọn để xóa, hoặc lấy ra
+        delItemSelected(isDel, id){
+            if(isDel == true){
+                this.delList.push(id);
+            } else if(isDel == false) {
+                for(let i = 0; i < this.delList.length; i++){
+                    if(id == this.delList[i]) this.delList.splice(i,1);
+                }
+            }
             this.$emit("getDelList",this.delList);
         }
     },

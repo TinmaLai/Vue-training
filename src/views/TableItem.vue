@@ -35,15 +35,26 @@ export default {
         hoverDisplay(){
             this.isHover = true;
         },
+        /**
+        * Mô tả : Nếu ấn check khi isCheck: false(ko check) thì sẽ gửi id xóa vào list, nếu đang true thì lấy id xóa ra ko xóa nữa
+        * Created by: nbtin
+        * Created date: 10:08 26/04/2022
+        */
         delItemSelect(id){
-            this.$emit("getDelIdSelect",id);
+            if(this.isCheckBox == false){
+                this.$emit("getDelIdSelect",true,id);
+                this.isCheckBox = true;
+            } else {
+                this.$emit("getDelIdSelect",false,id);
+                this.isCheckBox = false;
+            }
         }
 
     },
     data() {
         return {
             isHover: false,
-            
+            isCheckBox: false,
         }
     },
 }

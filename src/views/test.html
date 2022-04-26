@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test dialog</title>
+    <title>Test delete dialog</title>
     <link rel="stylesheet" href="../css/mainDemo.css">
 </head>
 <body>
-    <div class="m-combobox">
-        <input type="text">
-        <button></button>
-        <div class="m-combobox-data">
-            <div class="m-combobox-item">1</div>
-            <div class="m-combobox-item">2</div>
-            <div class="m-combobox-item">3</div>
+    <div class="m-del-popup">
+        <div class="row content">
+            <div class="alert-icon"></div>
+            <div class="alert-content">Bạn có muốn xóa tài sản?</div>
+        </div>
+        <div class="row popup-action">
+            <div class="m-second-button">Không</div>
+            <div class="m-button">Xóa</div>
         </div>
     </div>
+    <script>
+        var arr = [3,5,7,9];
+        arr.splice(0,1);
+        console.log(arr);
+    </script>
 </body>
 </html>

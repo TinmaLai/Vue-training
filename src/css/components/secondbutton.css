@@ -9,4 +9,8 @@
     padding: 0 24px 0 24px;
     text-align: center;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
 }
