@@ -2,7 +2,7 @@
      <div class="m-del-popup" :class="{'d-flex' : isShowAlert}">
         <div class="row content">
             <div class="alert-icon"></div>
-            <div class="alert-content">Bạn có muốn xóa {{this.delList.length}} tài sản?</div>
+            <div class="alert-content">{{this.message}}</div>
         </div>
         <div class="row popup-action">
             <div class="m-second-button" @click="selectOption(false)">Không</div>
@@ -12,12 +12,23 @@
 </template>
 
 <script>
+import axios from "axios"
 export default {
     props:["isShowAlert","delList"],
-    watch: {
-        // delList: function(newValue){
+    updated() {
+        if(this.delList.length == 1){
+            var me = this;
+            axios.get(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[0])
+            .then(function(res){
+                me.message = "Bạn có muốn xóa tài sản " + res.data.assetId + " - " + res.data.name + "?";
+            }).catch(function(err){
+                console.log(err);
+            })
             
-        // }
+        } else {
+            var pre = this.delList.length < 10 ? "0" : "";
+            this.message = pre + this.delList.length + " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?";
+        }
     },
     methods:{
         // emits không/xóa, không: false, xóa: true
@@ -25,7 +36,12 @@ export default {
             console.log(this.delList);
             this.$emit("getDelOption",isDel);
         }
-    }
+    },
+    data() {
+        return {
+            message: ""
+        }
+    },
 }
 </script>
 

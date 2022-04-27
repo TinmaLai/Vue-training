@@ -1,6 +1,5 @@
 <template>
     <div  class="m-combobox">
-       
         <input v-model="this.optionSelected" @mousedown="this.isShowDrop = false" type="text" :placeholder="placeholder">
         <div @click="showDrop" class="button">
             <div class="arrow-icon" ></div>

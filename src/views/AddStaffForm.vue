@@ -95,7 +95,7 @@
             </div>
         </div>
         <div class="form-action">
-            <button class="m-second-button ignore-btn">Hủy</button>
+            <button class="m-second-button ignore-btn" @click="closeAddStaffForm">Hủy</button>
             <button id="form-save-button" class="m-button" @click="saveAsset">Lưu</button>
         </div>
     </div>
@@ -109,6 +109,9 @@ export default {
     components:{
         Combobox
     },
+    mounted() {
+        this.cloneAssetReset = {...this.assetForm}; 
+    },
     methods:{
         /**
         * Mô tả : Bắt sự kiện đóng form
@@ -116,7 +119,9 @@ export default {
         * Created date: 13:39 22/04/2022
         */
         closeAddStaffForm(){
+            this.assetForm = this.cloneAssetReset;
             this.$emit("closeStaffDialog",false);
+            
         },  
         /**
         * Mô tả : Cất giữ liệu vào database
@@ -124,7 +129,8 @@ export default {
         * Created date: 13:39 22/04/2022
         */
         saveAsset(){
-            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi
+            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
+            this.assetForm.assetId = this.assetFormCode
             this.assetForm.wearPerYear = this.calcWearPerYear;
             this.assetForm.accumulate = this.assetForm.wearPerYear * this.assetForm.yearsUse;
             this.assetForm.priceExtra = this.assetForm.price - this.assetForm.accumulate;
@@ -137,8 +143,9 @@ export default {
                 console.log(error);
             }
             // Gán mã tự động tăng cho lần mở form tiếp theo
-            this.$emit("getNewCodeIncre",parseInt(this.assetFormCode));
+            this.$emit("getNewCodeIncre",this.assetFormCode);
             this.$emit("getAssetAdd",me.assetForm);
+            this.$emit("closeStaffDialog",false);
         },
         /**
         * Mô tả : Lấy dữ liệu mã bộ phận sử dụng, loại tài sản từ combobox
@@ -178,13 +185,32 @@ export default {
         // Lấy thông tin từ hàng được dblclick
         assetSelected: function(newValue){
             this.assetForm = newValue;
-            this.assetFormCode = this.assetForm.id;
+            this.assetFormCode = this.assetForm.assetId;
         },
         // Check trạng thái sửa hoặc thêm
-        formMode: function(){
-            // Lấy mã nếu form là thêm
-            if(this.formMode == 1){
-                this.assetFormCode = parseInt(this.newAssetCode)+1;
+        formMode: function(newValue){
+            // Lấy mã nếu form là thêm 
+            console.log(newValue);
+            if(newValue == 1){
+                var currentCode = this.newAssetCode; // gán cho dễ gọi
+                var numberIncre = "";
+                var pre = "";
+                for(let i = 0; i < currentCode.length; i++){
+                    if(currentCode[i] != "0" && (currentCode[i-1] == "0" || currentCode[i-1] == "S")){
+                        numberIncre = currentCode.substring(i);
+                        pre = currentCode.substring(0,i);
+                    }
+                }
+                // console.log()
+                if((parseInt(numberIncre) + 1).toString().length - numberIncre.length > 0){
+                    pre = pre.substring(0,pre.length - 1);
+                }
+                this.assetFormCode = pre + (parseInt(numberIncre) + 1);
+                // this.assetForm.assetId = this.assetFormCode;
+                // this.assetFormCode = parseInt(this.newAssetCode)+1;
+                // this.assetFormCode = 
+            } else if (newValue == 0){
+                this.assetFormCode = this.newAssetCode;
             }
         },
     },
@@ -199,8 +225,10 @@ export default {
                 yearsUse: null,
                 wearPerYear: null,
                 accumulate: null,
-                priceExtra: null
+                priceExtra: null,
+                assetId: null,
             },
+            cloneAssetReset: null,
             assetFormCode: null,
            
         }

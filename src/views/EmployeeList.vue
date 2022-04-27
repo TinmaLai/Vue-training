@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <td>
-                        <Checkbox @click="checkAll" name="checkAll" />
+                        <Checkbox @click="checkAll" :isCheckBox="isCheckAll" />
                     </td>
                     <td class="">STT</td>
                     <td class="text-left">Mã tài sản</td>
@@ -87,14 +87,25 @@ export default {
                     if(id == this.delList[i]) this.delList.splice(i,1);
                 }
             }
+            console.log(this.delList);
             this.$emit("getDelList",this.delList);
+            if(this.delList.length != this.fixedAssets.length) this.isCheckAll = false;
         },
         // Check tất cả 
         checkAll(){
-            for(let i = 0 ; i < this.fixedAssets.length; i++){
-                this.delList.push(this.fixedAssets[i].id);
+            if(this.isCheckAll == false){
+                for(let i = 0 ; i < this.fixedAssets.length; i++){
+                    if(this.delList.includes(this.fixedAssets[i].id) == false){
+                        this.delList.push(this.fixedAssets[i].id);
+                    }
+                }
+                
+            } else {
+                this.delList = [];
             }
             this.$emit("getDelList",this.delList);
+            this.isCheckAll = !this.isCheckAll;
+            
         }
     },
     // Thêm dữ liệu từ form vào bảng, nhưng chưa được
@@ -108,6 +119,7 @@ export default {
             assets:{},
             delList: [],
             checkbox: false,
+            isCheckAll: false,
         }
     },
 }

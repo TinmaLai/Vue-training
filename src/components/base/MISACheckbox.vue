@@ -5,7 +5,6 @@
     :class="{
       'm-checkbox-selected': isCheckBox,
     }"
-    @click="check"
   ></div>
 </template>
 <script>
@@ -13,11 +12,7 @@ export default {
   name: "the-checkbox",
   props:["isCheckBox","tag"],
   methods:{
-    check(){
-      // if(tag == "checkAll"){
-        
-      // }
-    }
+
   },
   data() {
     return {

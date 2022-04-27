@@ -89,7 +89,7 @@ export default {
                 .then(function(res){
                     me.fixedAssets = res.data;
                     // Lấy mã tự tăng
-                    var newCode = res.data[res.data.length - 1].id;
+                    var newCode = res.data[res.data.length - 1].assetId;
                     me.newAssetCode = newCode;
                 })
                 .catch(function (error) {
@@ -109,6 +109,12 @@ export default {
                 this.formMode = -1;
             }
         },
+        // Lấy asset thêm từ form để thêm vào mảng render bảng
+        getAssetAdd(assetForm){
+            // this.fixedAssets.push(assetForm);
+            console.log(assetForm);
+            console.log(this.fixedAssets + ' mangr goocs');
+        },
         // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
         getNewCodeIncre(newCode){
             this.newAssetCode = newCode;
@@ -127,26 +133,29 @@ export default {
             this.isShowAlert = true;
         },
         // Xử lý kết quả chọn xóa/không
-         handleDelOption(isDel){
+        async handleDelOption(isDel){
             if(isDel == false){
                 this.isShowAlert = false; 
             } else{
                 var me = this;
+                me.isShowAlert = false;
                 for(let i = 0; i < me.delList.length; i++){
-                     axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[i])
+                    await axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[i])
                      .then(function(res){
                         console.log(res);
-                        me.isShowAlert = false;
                         // Xóa các phần tử bị xóa ở mảng fixedAssets đổ lên bảng
                         me.fixedAssets = me.fixedAssets.filter(function(el){
                             return !me.delList.includes(el.id);
                         })
-                       
+                        me.delList.splice(i,1); 
+                        i--;
+                        // console.log(me.delList);
+                        
                     }).catch(function(err){
                         console.log(err);
                     })
                    
-                }   
+                }
             }       
         }
     },

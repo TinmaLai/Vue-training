@@ -4,7 +4,7 @@
             <Checkbox :isCheckBox="isCheckBox" />
         </td>
         <td class="text-center" ref="TableAction">{{asset.id}}</td>
-        <td class="text-left">{{asset.id}}</td>
+        <td class="text-left">{{asset.assetId}}</td>
         <td class="text-left" >{{asset.name}}</td>
         <td class="text-left">{{asset.type}}</td>
         <td class="text-left">{{asset.partsUse}}</td>
