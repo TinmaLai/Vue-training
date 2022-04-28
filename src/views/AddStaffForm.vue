@@ -48,7 +48,7 @@
                 <div class="col-4">
                     <label for="">Nguyên giá <span style="color: red">*</span></label>
                     <div class="m-content-right-field mt-input">
-                        <input class="m-field-input" v-model="assetForm.price" type="number">
+                        <input class="m-field-input" v-model="assetForm.price" type="text">
                     </div>
                 </div>
                 <div class="col-4">
@@ -118,7 +118,6 @@
 import axios from 'axios';
 import Combobox from '../components/base/MISACombobox.vue';
 import CancelAlert from '../views/CancelAlertDialog.vue';
-
 import Datepicker from '@vuepic/vue-datepicker';
 
 export default {
@@ -239,8 +238,8 @@ export default {
         },
         // format tien 
         formatPrice(value) {
-            let val = (value/1).toFixed(2).replace('.', ',')
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            // let val = (value/1).toFixed(2).replace('.', ',');
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
        
     },
@@ -288,6 +287,10 @@ export default {
                 this.assetFormCode = this.newAssetCode;
             }
         },
+        'assetForm.price': function(newValue){
+        
+            this.assetForm.price = this.formatPrice(newValue);
+        }
     },
     data() {
         return {
@@ -309,6 +312,7 @@ export default {
             assetFormCode: null,
             showCancelAlert: false,
             cancelMessage: null,
+            priceFormat: 0,
         }
     },
 }

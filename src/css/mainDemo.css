@@ -251,10 +251,3 @@ body{
 .text-right{
     text-align: right;
 }
-
-.d-opacity{
-    opacity: 1 !important;
-}
-.dp__icon .dp__input_icon{
-    right: 0 !important;
-}
