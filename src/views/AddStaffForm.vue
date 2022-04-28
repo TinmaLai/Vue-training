@@ -79,17 +79,25 @@
             <div class="row">
                 <div class="col-4">
                     <label for="">Ngày mua <span style="color: red">*</span></label>
-                    <button class="m-dropdown m-date-picker mt-input" style="width: 100%">
-                        <p class="m-dropdown-suggest">25/08/2021</p>
-                        <div class="date-picker"></div>
-                    </button>
+                    <div class="datepicker-container">
+                        <Datepicker 
+                        class="mt-input input-datepicker"
+                        v-model="assetForm.buyDate"
+                        format="dd/MM/yyyy"
+                        ></Datepicker>
+                        <div class="datepicker-icon"></div>
+                    </div>
                 </div>
                 <div class="col-4">
                     <label for="">Ngày bắt đầu sử dụng <span style="color: red">*</span></label>
-                    <button class="m-dropdown m-date-picker mt-input" style="width: 100%">
-                        <p class="m-dropdown-suggest">25/08/2021</p>
-                        <div class="date-picker"></div>
-                    </button>
+                    <div class="datepicker-container">
+                        <Datepicker 
+                        class="mt-input input-datepicker"
+                        v-model="assetForm.useDate"
+                        format="dd/MM/yyyy"
+                        ></Datepicker>
+                        <div class="datepicker-icon"></div>
+                    </div>
                 </div>
                 <div class="col-4"></div>
             </div>
@@ -111,11 +119,14 @@ import axios from 'axios';
 import Combobox from '../components/base/MISACombobox.vue';
 import CancelAlert from '../views/CancelAlertDialog.vue';
 
+import Datepicker from '@vuepic/vue-datepicker';
+
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
     components:{
         Combobox,
-        CancelAlert
+        CancelAlert,
+        Datepicker,
     },
     mounted() {
         this.cloneAssetReset = {...this.assetForm}; 
@@ -291,6 +302,8 @@ export default {
                 accumulate: null,
                 priceExtra: null,
                 assetId: null,
+                buyDate: new Date(),
+                useDate: new Date(),
             },
             cloneAssetReset: null,
             assetFormCode: null,
@@ -302,5 +315,5 @@ export default {
 </script>
 
 <style>
-
+    
 </style>

@@ -12,6 +12,8 @@
 @import url('./components/topheader.css');
 @import url('./components/deldialog.css');
 @import url('./components/toast.css');
+@import '@vuepic/vue-datepicker/dist/main.css';
+@import url('./components/datepicker.css');
 body,html{
     height: 100%;
     width: 100%;
@@ -252,4 +254,7 @@ body{
 
 .d-opacity{
     opacity: 1 !important;
+}
+.dp__icon .dp__input_icon{
+    right: 0 !important;
 }

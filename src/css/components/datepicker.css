@@ -1,0 +1,23 @@
+.dp__input_icon{
+    right: 0;
+}
+.dp__input_icons{
+    display: none;
+}
+
+.dp__input_icon_pad{
+    padding-left: 10px;
+}
+.datepicker-container{
+    height: 38px;
+    width: 100%;
+    position: relative;
+}
+.datepicker-container .datepicker-icon{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -287px -67px;
+	width: 18px;
+	height: 18px;
+    position: absolute;
+    right: 10px;
+    top: 25%;
+}
