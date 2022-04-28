@@ -98,19 +98,28 @@
             <button class="m-second-button ignore-btn" @click="closeAddStaffForm">Hủy</button>
             <button id="form-save-button" class="m-button" @click="saveAsset">Lưu</button>
         </div>
+        <CancelAlert 
+        :isShowAlert="this.showCancelAlert"
+        :formMode="this.formMode"
+        @getCancelOption="handleCancelOption"
+        />
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import Combobox from '../components/base/MISACombobox.vue';
+import CancelAlert from '../views/CancelAlertDialog.vue';
+
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
     components:{
-        Combobox
+        Combobox,
+        CancelAlert
     },
     mounted() {
         this.cloneAssetReset = {...this.assetForm}; 
+        
     },
     methods:{
         /**
@@ -119,33 +128,89 @@ export default {
         * Created date: 13:39 22/04/2022
         */
         closeAddStaffForm(){
-            this.assetForm = this.cloneAssetReset;
-            this.$emit("closeStaffDialog",false);
+            
+            this.handleCancelAlert();
             
         },  
+        //reset form
+        resetForm(control){
+            control.assetForm = control.cloneAssetReset;
+            control.$emit("closeStaffDialog",false);
+            control.showCancelAlert = false;
+        },
+        // Hiện popup và xử lý khi muốn đóng form 
+        handleCancelAlert(){
+            this.showCancelAlert = true;
+        },
+        // Xử lý khi người dùng chọn các button trong alert cancel
+        handleCancelOption(option){
+            switch(option){
+                case false: {
+                    this.showCancelAlert = false;
+                    break;
+                }
+                case true:{
+                    this.resetForm(this);
+                    break;
+                }
+                case 'nosave':{
+                    this.assetForm = this.assetSelected;
+                    this.resetForm(this);
+                    break;
+                }
+                case 'save':{
+                    this.saveAsset();
+                    break;
+                }
+                
+                
+            }
+        },
+        setStatus(status){
+            if(status == true){
+                this.$emit("getStatusSave",true);
+            } else {
+                this.$emit("getStatusSave",false);
+            }
+            this.resetForm(this);
+        },
         /**
         * Mô tả : Cất giữ liệu vào database
         * Created by: nbtin
         * Created date: 13:39 22/04/2022
         */
-        saveAsset(){
+        async saveAsset(){
             //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
+            var me = this;
             this.assetForm.assetId = this.assetFormCode
             this.assetForm.wearPerYear = this.calcWearPerYear;
             this.assetForm.accumulate = this.assetForm.wearPerYear * this.assetForm.yearsUse;
             this.assetForm.priceExtra = this.assetForm.price - this.assetForm.accumulate;
-            var me = this;
-            try{
-                axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
+            // Thêm 
+            if(this.formMode == 1){
+                try{
+                    await axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
+                        console.log(res);
+                        var cloneAddAssetForm = {...me.assetForm};
+                        me.$emit("getAssetAdd",cloneAddAssetForm);
+                    })
+                } catch(error){
+                    console.log(error);
+                    
+                }
+                // Gán mã tự động tăng cho lần mở form tiếp theo
+                this.$emit("getNewCodeIncre",this.assetFormCode);
+                this.setStatus(true);
+            } else if(this.formMode == 0){ // Sửa
+                await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+ me.assetForm.id, me.assetForm).then(function(res){
                     console.log(res);
-                })
-            } catch(error){
-                console.log(error);
+                    me.setStatus(true);
+                }).catch(function(err){
+                    console.log(err);
+                    me.setStatus(false);
+                });
+                
             }
-            // Gán mã tự động tăng cho lần mở form tiếp theo
-            this.$emit("getNewCodeIncre",this.assetFormCode);
-            this.$emit("getAssetAdd",me.assetForm);
-            this.$emit("closeStaffDialog",false);
         },
         /**
         * Mô tả : Lấy dữ liệu mã bộ phận sử dụng, loại tài sản từ combobox
@@ -182,7 +247,7 @@ export default {
         }
     },
     watch: {
-        // Lấy thông tin từ hàng được dblclick
+        // Lấy thông tin từ hàng được dblclick, nhưng có vẻ watch sẽ ko thay đổi nếu 1 hàng chọn liên tiếp 2 lần
         assetSelected: function(newValue){
             this.assetForm = newValue;
             this.assetFormCode = this.assetForm.assetId;
@@ -195,20 +260,19 @@ export default {
                 var currentCode = this.newAssetCode; // gán cho dễ gọi
                 var numberIncre = "";
                 var pre = "";
+                //Thực hiện cắt chuỗi TS00001 thành 2 phần, phần số và chữ đê tăng số lên + 1
                 for(let i = 0; i < currentCode.length; i++){
                     if(currentCode[i] != "0" && (currentCode[i-1] == "0" || currentCode[i-1] == "S")){
                         numberIncre = currentCode.substring(i);
                         pre = currentCode.substring(0,i);
                     }
                 }
-                // console.log()
                 if((parseInt(numberIncre) + 1).toString().length - numberIncre.length > 0){
                     pre = pre.substring(0,pre.length - 1);
                 }
+                // Gán mã sau khi tăng cho form
                 this.assetFormCode = pre + (parseInt(numberIncre) + 1);
-                // this.assetForm.assetId = this.assetFormCode;
-                // this.assetFormCode = parseInt(this.newAssetCode)+1;
-                // this.assetFormCode = 
+                // Với form là thêm, message khi cancel form là 
             } else if (newValue == 0){
                 this.assetFormCode = this.newAssetCode;
             }
@@ -230,7 +294,8 @@ export default {
             },
             cloneAssetReset: null,
             assetFormCode: null,
-           
+            showCancelAlert: false,
+            cancelMessage: null,
         }
     },
 }

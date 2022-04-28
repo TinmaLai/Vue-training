@@ -4,6 +4,7 @@
     <div class="content" :class="{'content-minimize' : isMinimize}">
         <TheHeader/>
         <TheManageTable/>
+        
     </div>
   </div>
 </template>
@@ -12,6 +13,7 @@
 import TheHeader from "./components/layout/TheHeader.vue";
 import TheNavbar from "./components/layout/TheNavbar.vue";
 import TheManageTable from "./components/layout/TheManageTable.vue";
+
 
 export default {
   name: 'App',

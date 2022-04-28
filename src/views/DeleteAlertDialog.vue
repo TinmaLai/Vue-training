@@ -1,10 +1,10 @@
 <template>
-     <div class="m-del-popup" :class="{'d-flex' : isShowAlert}">
+    <div class="m-del-popup" :class="{'d-flex' : isShowAlert}">
         <div class="row content">
             <div class="alert-icon"></div>
             <div class="alert-content">{{this.message}}</div>
         </div>
-        <div class="row popup-action">
+        <div class="row popup-action" :class="{'d-flex': true} " >
             <div class="m-second-button" @click="selectOption(false)">Không</div>
             <div class="m-button" @click="selectOption(true)">Xóa</div>
         </div>
@@ -33,7 +33,6 @@ export default {
     methods:{
         // emits không/xóa, không: false, xóa: true
         selectOption(isDel){
-            console.log(this.delList);
             this.$emit("getDelOption",isDel);
         }
     },

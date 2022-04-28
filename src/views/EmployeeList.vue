@@ -22,7 +22,7 @@
                 <TableItem 
                 v-for="asset in fixedAssets" 
                 :asset="asset"
-                :key="asset.id"
+                :key="asset.assetId"
                 @getDelIdSelect="delItemSelected"
                 @dblclick="ShowStaffDialog(asset)"
                 :checkbox="delList.includes(asset.id)"
@@ -87,7 +87,6 @@ export default {
                     if(id == this.delList[i]) this.delList.splice(i,1);
                 }
             }
-            console.log(this.delList);
             this.$emit("getDelList",this.delList);
             if(this.delList.length != this.fixedAssets.length) this.isCheckAll = false;
         },

@@ -11,6 +11,7 @@
 @import url('./components/pagination.css');
 @import url('./components/topheader.css');
 @import url('./components/deldialog.css');
+@import url('./components/toast.css');
 body,html{
     height: 100%;
     width: 100%;

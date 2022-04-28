@@ -33,7 +33,6 @@ export default {
     watch:{
         checkbox: function(newValue){
             this.isCheckBox = newValue;
-            console.log(newValue);
         }
     },
     methods:{

@@ -52,12 +52,14 @@
         @getNewCodeIncre="getNewCodeIncre"
         :assetSelected="assetSelected"
         @getAssetAdd="getAssetAdd"
+        @getStatusSave="handleStatusSave"
         /> 
         <DeleteAlert 
         :isShowAlert="isShowAlert"
         @getDelOption="handleDelOption"
         :delList="delList"
         />
+        <ToastMessage :isShowToast="isShowToast"/>
     </div>
 </template>
 
@@ -65,6 +67,7 @@
 import EmployeeList from "../../views/EmployeeList.vue";
 import AddStaffForm from "../../views/AddStaffForm.vue";
 import DeleteAlert from "../../views/DeleteAlertDialog.vue";
+import ToastMessage from "../base/MISAToastMessage.vue";
 
 import axios from "axios";
 
@@ -74,7 +77,8 @@ export default {
     components:{
         EmployeeList,
         AddStaffForm,
-        DeleteAlert
+        DeleteAlert,
+        ToastMessage
 
     },
     beforeMount(){
@@ -106,14 +110,16 @@ export default {
             this.formMode = formMode;
             this.isShowDialog = show;
             if(show == false){
+                // Reset form mode về ko thêm ko sửa (-1), reset asset đc chọn để nếu chọn lại thì còn có sự thay đổi
                 this.formMode = -1;
+                this.assetSelected = {};
             }
         },
         // Lấy asset thêm từ form để thêm vào mảng render bảng
         getAssetAdd(assetForm){
             // this.fixedAssets.push(assetForm);
-            console.log(assetForm);
-            console.log(this.fixedAssets + ' mangr goocs');
+            
+            this.fixedAssets.push(assetForm);
         },
         // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
         getNewCodeIncre(newCode){
@@ -157,8 +163,20 @@ export default {
                    
                 }
             }       
-        }
+        },
+        handleStatusSave(status){
+            var me = this;
+            if(status == true){
+                this.isShowToast = true;
+                setTimeout(function(){
+                    me.isShowToast = false;
+                },1500);
+                
+            }
+        },
     },
+    // Xử lý khi lưu form thành công hoặc thất bại
+    
     data() {
         return {
             fixedAssets: [],
@@ -168,7 +186,8 @@ export default {
             formMode: null,
             assetSelected: {},
             delList: [],
-            isShowAlert: false
+            isShowAlert: false,
+            isShowToast: false,
         }
     },
 }

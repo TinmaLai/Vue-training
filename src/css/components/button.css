@@ -59,3 +59,10 @@
     bottom: 35%;
     cursor: pointer;
 }
+
+.m-spec-button{
+    color: #1aa4c8;
+    background-color: rgb(224, 224, 224);
+    border: solid 1px #1aa4c8;
+    box-shadow: none;
+}
