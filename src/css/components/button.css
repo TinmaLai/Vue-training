@@ -42,7 +42,7 @@
 
 .field-incre-btn{
     position: absolute;
-    right: 16px;
+    right: 17px;
     background: url('../../asset/icons/qlts-icon.png') no-repeat -204px -332px;
 	width: 8px;
 	height: 5px;
@@ -52,7 +52,7 @@
 
 .field-decre-btn{
     position: absolute;
-    right: 16px;
+    right: 17px;
     background: url('../../asset/icons/qlts-icon.png') no-repeat -204px -343px;
 	width: 8px;
 	height: 5px;

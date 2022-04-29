@@ -20,9 +20,10 @@
             </thead>    
             <tbody>
                 <TableItem 
-                v-for="asset in fixedAssets" 
+                v-for="(asset, index) in fixedAssets" 
                 :asset="asset"
                 :key="asset.assetId"
+                :index="index"
                 @getDelIdSelect="delItemSelected"
                 @dblclick="ShowStaffDialog(asset)"
                 :checkbox="delList.includes(asset.id)"

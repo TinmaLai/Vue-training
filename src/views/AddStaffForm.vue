@@ -2,7 +2,7 @@
     <div id="overlay" class="overlay" :class="{'d-block': isShow}"></div>
     <div class="m-dialog" :class="{'d-block': isShow}">
         <div class="top-form-row">
-            <p class="heading">Sửa tài sản</p>
+            <p class="heading">{{this.formMode == 0 ? 'Sửa' : 'Thêm'}} tài sản</p>
             <button class=" close-form-btn" @click="closeAddStaffForm"></button>
         </div>
         <div class="form-content">
@@ -128,8 +128,17 @@ export default {
         Datepicker,
     },
     mounted() {
-        this.cloneAssetReset = {...this.assetForm}; 
-        
+        this.cloneAssetReset = {quantity: 1,
+                price: 0,
+                wearRate: null,
+                yearsUse: null,
+                wearPerYear: null,
+                accumulate: null,
+                priceExtra: null,
+                assetId: null,
+                buyDate: new Date(),
+                useDate: new Date()};
+
     },
     methods:{
         /**
@@ -144,9 +153,11 @@ export default {
         },  
         //reset form
         resetForm(control){
-            control.assetForm = control.cloneAssetReset;
-            control.$emit("closeStaffDialog",false);
+            this.assetForm = {
+                price: 0
+            };
             control.showCancelAlert = false;
+            control.$emit("closeStaffDialog",false);
         },
         // Hiện popup và xử lý khi muốn đóng form 
         handleCancelAlert(){
@@ -178,11 +189,13 @@ export default {
         },
         setStatus(status){
             if(status == true){
+                this.resetForm(this);
                 this.$emit("getStatusSave",true);
             } else {
+                this.resetForm(this);
                 this.$emit("getStatusSave",false);
             }
-            this.resetForm(this);
+            
         },
         /**
         * Mô tả : Cất giữ liệu vào database
@@ -202,15 +215,16 @@ export default {
                     await axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
                         console.log(res);
                         var cloneAddAssetForm = {...me.assetForm};
+                        me.setStatus(true);
                         me.$emit("getAssetAdd",cloneAddAssetForm);
+                        me.$emit("getNewCodeIncre",me.assetFormCode);
                     })
                 } catch(error){
                     console.log(error);
+                    me.setStatus(false);
                     
                 }
                 // Gán mã tự động tăng cho lần mở form tiếp theo
-                this.$emit("getNewCodeIncre",this.assetFormCode);
-                this.setStatus(true);
             } else if(this.formMode == 0){ // Sửa
                 await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+ me.assetForm.id, me.assetForm).then(function(res){
                     console.log(res);
@@ -236,18 +250,27 @@ export default {
             this.assetForm.wearRate = value.wearRate;
             this.assetForm.yearsUse = value.yearsUse;
         },
-        // format tien 
-        formatPrice(value) {
-            // let val = (value/1).toFixed(2).replace('.', ',');
-            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
+        // format tien
+        // //1,000,000
+        // replaceAll(str, str1, str2){
+        //     var res = str;
+        //     for(let i = 0; i < str.length; i++){
+        //         if(str[i] == str1){
+        //             let sub1 = str.toString().substring(0,i);
+        //             let sub2 = str.toString().substring(i+1);
+        //             str = sub1 + str2 + sub2;
+        //         }
+        //     }
+        //     return res;
+        // }
        
     },
     computed: {
         // Tính giá trị hao mòn năm mỗi khi có thay đổi 
         calcWearPerYear(){
+            
             var valuewear = null;
-            valuewear = (this.assetForm.wearRate * this.assetForm.price)/100;
+            valuewear = (this.assetForm.wearRate * parseInt(this.assetForm.price))/100;
             return valuewear;
         },
         getThisYear(){
@@ -287,10 +310,6 @@ export default {
                 this.assetFormCode = this.newAssetCode;
             }
         },
-        'assetForm.price': function(newValue){
-        
-            this.assetForm.price = this.formatPrice(newValue);
-        }
     },
     data() {
         return {

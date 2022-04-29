@@ -112,7 +112,12 @@ export default {
             if(show == false){
                 // Reset form mode về ko thêm ko sửa (-1), reset asset đc chọn để nếu chọn lại thì còn có sự thay đổi
                 this.formMode = -1;
-                this.assetSelected = {};
+                this.assetSelected = {
+                    price: 0,
+                    wearRate: 0,
+                    buyDate: new Date(),
+                    useDate: new Date(),
+                };
             }
         },
         // Lấy asset thêm từ form để thêm vào mảng render bảng

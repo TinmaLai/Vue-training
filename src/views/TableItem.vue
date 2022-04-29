@@ -3,7 +3,7 @@
         <td>
             <Checkbox :isCheckBox="isCheckBox" />
         </td>
-        <td class="text-center" ref="TableAction">{{asset.id}}</td>
+        <td class="text-center" ref="TableAction">{{index + 1}}</td>
         <td class="text-left">{{asset.assetId}}</td>
         <td class="text-left" >{{asset.name}}</td>
         <td class="text-left">{{asset.type}}</td>
@@ -26,7 +26,7 @@
 <script>
 import Checkbox from "../components/base/MISACheckbox.vue";
 export default {
-    props:["asset","checkbox"],
+    props:["asset","checkbox","index"],
     components:{
         Checkbox
     },
