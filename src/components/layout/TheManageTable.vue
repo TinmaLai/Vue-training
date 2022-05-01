@@ -43,6 +43,7 @@
         @toggleStaffDialog="toggleStaffDialog" 
         @getAssetSelected="getAssetSelected"
         @getDelList="getDelList"
+        :isTableLess="isTableLess"
         />
         <AddStaffForm 
         :isShow="isShowDialog" 
@@ -59,7 +60,7 @@
         @getDelOption="handleDelOption"
         :delList="delList"
         />
-        <ToastMessage :isShowToast="isShowToast"/>
+        <ToastMessage :isShowToast="isShowToast" :status="saveStatus"/>
     </div>
 </template>
 
@@ -95,6 +96,9 @@ export default {
                     // Lấy mã tự tăng
                     var newCode = res.data[res.data.length - 1].assetId;
                     me.newAssetCode = newCode;
+                    if(res.data.length <= 13){
+                        me.isTableLess = true;
+                    }
                 })
                 .catch(function (error) {
                     // handle error
@@ -102,6 +106,11 @@ export default {
                 })
         } catch(error){
             console.log(error);
+        }
+    },
+    watch:{
+        fixedAssets: function(newValue){
+            console.log(newValue);
         }
     },
     methods: {
@@ -115,8 +124,10 @@ export default {
                 this.assetSelected = {
                     price: 0,
                     wearRate: 0,
+                     priceFormat: 0,
                     buyDate: new Date(),
                     useDate: new Date(),
+                    name : '',
                 };
             }
         },
@@ -125,6 +136,25 @@ export default {
             // this.fixedAssets.push(assetForm);
             
             this.fixedAssets.push(assetForm);
+            try{
+                var me = this;
+                axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
+                    .then(function(res){
+                        me.fixedAssets = res.data;
+                        // Lấy mã tự tăng
+                        var newCode = res.data[res.data.length - 1].assetId;
+                        me.newAssetCode = newCode;
+                        if(res.data.length <= 13){
+                            me.isTableLess = true;
+                        }
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+            } catch(error){
+                console.log(error);
+            }
         },
         // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
         getNewCodeIncre(newCode){
@@ -173,10 +203,16 @@ export default {
             var me = this;
             if(status == true){
                 this.isShowToast = true;
+                this.saveStatus = true;
                 setTimeout(function(){
                     me.isShowToast = false;
                 },1500);
-                
+            } else if(status == false){
+                this.isShowToast = true;
+                this.saveStatus = false;
+                setTimeout(function(){
+                    me.isShowToast = false;
+                },1500);
             }
         },
     },
@@ -193,6 +229,8 @@ export default {
             delList: [],
             isShowAlert: false,
             isShowToast: false,
+            isTableLess: false,
+            saveStatus: null,
         }
     },
 }

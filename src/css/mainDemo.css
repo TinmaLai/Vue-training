@@ -175,6 +175,7 @@ body{
     border-radius: 3.5px;
     border: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+    width: 100%;
 }
 
 .m-jicon-button .table-action-excel{
@@ -250,4 +251,7 @@ body{
 }
 .text-right{
     text-align: right;
+}
+.d-opacity{
+    opacity: 1 !important;
 }

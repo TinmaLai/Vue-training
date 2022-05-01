@@ -28,7 +28,9 @@
                 @dblclick="ShowStaffDialog(asset)"
                 :checkbox="delList.includes(asset.id)"
                 />
-                <tr id="pagination-table">
+                
+            </tbody>
+                <tr id="pagination-table" :class="{'tfoot-less': this.isTableLess}">
                     <td colspan="6">
                         <div class="page-navigation">
                             <p class="content-details">Tổng số <b>200</b> bản ghi</p>
@@ -59,7 +61,6 @@
                     <td class="text-right">229</td>
                     <td></td>
                 </tr>
-            </tbody>
         </table>
     </div>
 </template>
@@ -69,7 +70,7 @@ import Checkbox from "../components/base/MISACheckbox.vue";
 import TableItem from "../views/TableItem.vue";
 
 export default {
-    props:["assetAdd","fixedAssets"],
+    props:["assetAdd","fixedAssets","isTableLess"],
     components:{
         Checkbox,
         TableItem

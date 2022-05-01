@@ -10,7 +10,7 @@
     
 }
 .contain-table{
-    max-height: calc(100% - 73px);
+    height: calc(100% - 73px);
     width: 100%;
     overflow-y: auto;
     border-radius: 3.5px;
@@ -108,4 +108,9 @@
 }
 .m-table td:nth-child(11){
     width: 90px;
+}
+.tfoot-less{
+    position: absolute !important;
+    bottom: 0 !important;
+    width: 100% !important;
 }

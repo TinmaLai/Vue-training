@@ -21,3 +21,9 @@
 	width: 18px;
 	height: 20px;
 }
+
+.m-toast .status-false{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -67px -594px;
+	width: 18px;
+	height: 20px;
+}

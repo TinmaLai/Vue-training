@@ -48,7 +48,7 @@
                 <div class="col-4">
                     <label for="">Nguyên giá <span style="color: red">*</span></label>
                     <div class="m-content-right-field mt-input">
-                        <input class="m-field-input" v-model="assetForm.price" type="text">
+                        <input class="m-field-input" v-model="priceFormat" type="text">
                     </div>
                 </div>
                 <div class="col-4">
@@ -153,9 +153,6 @@ export default {
         },  
         //reset form
         resetForm(control){
-            this.assetForm = {
-                price: 0
-            };
             control.showCancelAlert = false;
             control.$emit("closeStaffDialog",false);
         },
@@ -175,7 +172,7 @@ export default {
                     break;
                 }
                 case 'nosave':{
-                    this.assetForm = this.assetSelected;
+                    this.assetForm = this.assetSelectedStore;
                     this.resetForm(this);
                     break;
                 }
@@ -216,23 +213,31 @@ export default {
                         console.log(res);
                         var cloneAddAssetForm = {...me.assetForm};
                         me.setStatus(true);
+                        // Gán mã tự động tăng cho lần mở form tiếp theo
                         me.$emit("getAssetAdd",cloneAddAssetForm);
                         me.$emit("getNewCodeIncre",me.assetFormCode);
+                    }).catch(function(err){
+                        console.log(err);
+                        me.setStatus(false);
                     })
                 } catch(error){
                     console.log(error);
                     me.setStatus(false);
                     
                 }
-                // Gán mã tự động tăng cho lần mở form tiếp theo
+                
             } else if(this.formMode == 0){ // Sửa
-                await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+ me.assetForm.id, me.assetForm).then(function(res){
+
+            try{
+                await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/asset/`+ me.assetForm.id, me.assetForm).then(function(res){
                     console.log(res);
                     me.setStatus(true);
-                }).catch(function(err){
-                    console.log(err);
-                    me.setStatus(false);
-                });
+                })
+            } catch (err){
+                console.log(err);
+                this.assetForm = me.assetSelectedStore;
+                me.setStatus(false);
+            }
                 
             }
         },
@@ -277,18 +282,31 @@ export default {
             const d = new Date();
             let year = d.getFullYear();
             return year;
+        },
+        priceFormat: {
+            get: function () {
+                
+                return this.assetForm.priceFormat;
+            },
+                // setter
+            set: function (newValue) {
+                newValue = newValue.toString().replaceAll(',','');
+                this.assetForm.priceFormat =  newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.assetForm.price = parseInt(newValue);
+            }
         }
     },
     watch: {
         // Lấy thông tin từ hàng được dblclick, nhưng có vẻ watch sẽ ko thay đổi nếu 1 hàng chọn liên tiếp 2 lần
         assetSelected: function(newValue){
+            this.assetSelectedStore = {...newValue};
             this.assetForm = newValue;
             this.assetFormCode = this.assetForm.assetId;
         },
         // Check trạng thái sửa hoặc thêm
         formMode: function(newValue){
             // Lấy mã nếu form là thêm 
-            console.log(newValue);
+            
             if(newValue == 1){
                 var currentCode = this.newAssetCode; // gán cho dễ gọi
                 var numberIncre = "";
@@ -326,12 +344,14 @@ export default {
                 assetId: null,
                 buyDate: new Date(),
                 useDate: new Date(),
+                priceFormat: 0,
             },
             cloneAssetReset: null,
             assetFormCode: null,
             showCancelAlert: false,
             cancelMessage: null,
-            priceFormat: 0,
+            assetSelectedStore: null,
+            
         }
     },
 }
