@@ -13,7 +13,9 @@
                 </div>
                 <div class="col-8">
                     <label for="">Tên tài sản<span style="color: red"> *</span></label>
-                    <div><input autocomplete="on" placeholder="Nhập tên tài sản" v-model="assetForm.name" class="m-field-input mt-input" type="text"></div>
+                       <!-- <input ref="" autocomplete="on" placeholder="Nhập tên tài sản" v-model="assetForm.name" class="m-field-input mt-input" type="text"> -->
+                    <MISAInput :controlledContent="assetForm.name" @bindingData="bindingData" :title="'Tên tài sản không được để trống'" :placeholder="'Nhập tên tài sản'" />
+                    
                 </div>
             </div>
             <div class="row">
@@ -39,8 +41,12 @@
             <div class="row">
                 <div class="col-4">
                     <label for="">Số lượng <span style="color: red">*</span></label>
-                    <div class="m-content-right-icon-field mt-input">
-                        <input class="m-field-input" v-model="assetForm.quantity"  type="number">
+                    <div class="m-content-right-icon-field">
+                        <MISAInput :controlledContent="assetForm.quantity"
+                        @bindingData="bindingData"
+                        :title="'Tên tài sản không được để trống'"
+                        :type="'number'"
+                        />
                         <div @click="this.assetForm.quantity++" class="field-incre-btn"></div>
                         <div @click="this.assetForm.quantity > 0 ? this.assetForm.quantity-- :this.assetForm.quantity" class="field-decre-btn"></div>
                     </div>
@@ -59,8 +65,8 @@
             <div class="row">
                 <div class="col-4">
                     <label for="">Tỷ lệ hao mòn (%) <span style="color: red">*</span></label>
-                    <div class="m-content-right-icon-field mt-input">
-                        <input v-model="this.assetForm.wearRate" type="number" class="m-field-input">
+                    <div class="m-content-right-icon-field ">
+                        <MISAInput :controlledContent="assetForm.wearRate" @bindingData="bindingData" :title="'Tên tài sản không được để trống'" />
                         <div @click="this.assetForm.wearRate++" class="field-incre-btn"></div>
                         <div @click="this.assetForm.wearRate > 0 ? this.assetForm.wearRate-- :this.assetForm.wearRate" class="field-decre-btn"></div>
                     </div>
@@ -70,7 +76,7 @@
                     <div class="m-content-right-field mt-input"><input :value="calcWearPerYear" class="m-field-input" type="text"></div>
                 </div>
                 <div class="col-4">
-                    <label for="">Năm theo dõi <span style="color: red">*</span></label>
+                    <label for="">Năm theo dõi <span style="color: red"></span></label>
                     <div class="m-content-right-field mt-input">
                         <input :value="getThisYear" readonly class="m-field-input readonly" type="text">
                     </div>
@@ -119,6 +125,7 @@ import axios from 'axios';
 import Combobox from '../components/base/MISACombobox.vue';
 import CancelAlert from '../views/CancelAlertDialog.vue';
 import Datepicker from '@vuepic/vue-datepicker';
+import MISAInput from '../components/base/MISAInput.vue'
 
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
@@ -126,6 +133,7 @@ export default {
         Combobox,
         CancelAlert,
         Datepicker,
+        MISAInput,
     },
     mounted() {
         this.cloneAssetReset = {quantity: 1,
@@ -247,13 +255,13 @@ export default {
         * Created date: 08:34 25/04/2022
         */
         getDepartment(value){
-            this.assetForm.partsUse = value.name;
+            this.assetForm.partsUse = value.value;
         },
         // Lấy mã tài sản, đồng thời binding tỷ lệ hao mòn, số năm sử dụng
         getTypeAsset(value){
-            this.assetForm.type = value.name;
-            this.assetForm.wearRate = value.wearRate;
-            this.assetForm.yearsUse = value.yearsUse;
+            this.assetForm.type = value.value;
+            this.assetForm.wearRate = value.itemData.depreciationRate;
+            this.assetForm.yearsUse = value.itemData.lifeTime;
         },
         // format tien
         // //1,000,000
@@ -268,6 +276,15 @@ export default {
         //     }
         //     return res;
         // }
+        /**
+        * Mô tả : Binding data từ ô input vào object
+        * Created by: nbtin
+        * Created date: 14:26 02/05/2022
+        */
+        bindingData(field,data){
+            this.assetForm[field] = data;
+            console.log(this.assetForm.name);   
+        }
        
     },
     computed: {
@@ -334,6 +351,7 @@ export default {
             assets:{},
             asset:{},
             assetForm :{
+                name:'',
                 quantity: 1,
                 price: 0,
                 wearRate: null,

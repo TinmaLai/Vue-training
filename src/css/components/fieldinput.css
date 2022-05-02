@@ -85,3 +85,7 @@
 .input-datepicker{
     border: 1px solid #f5f5f5;
 }
+
+.danger{
+    border-color: red;
+}

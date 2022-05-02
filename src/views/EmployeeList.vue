@@ -31,7 +31,7 @@
                 
             </tbody>
                 <tr id="pagination-table" :class="{'tfoot-less': this.isTableLess}">
-                    <td colspan="6">
+                    <td colspan="6" style="width: 61%">
                         <div class="page-navigation">
                             <p class="content-details">Tổng số <b>200</b> bản ghi</p>
                             <button class="m-dropdown" style="width: 59px; height: 25px;">

@@ -1,27 +1,19 @@
 <template>
-    <div  class="m-combobox">
-        <input v-model="this.optionSelected" @mousedown="this.isShowDrop = false" type="text" :placeholder="placeholder">
-        <div @click="showDrop" class="button">
-            <div class="arrow-icon" ></div>
-        </div>
-        <div class="m-combobox-data" :class="{'d-none' : isShowDrop}">
-            <div 
-            v-for="cate in filterCategories" 
-            :key="cate.id" class="m-combobox-item"
-            @click="setValueSelected(cate)"
-            >{{cate.code}}</div>
-        </div>
-    </div>
+    <ejs-combobox id='combobox' :dataSource='this.filterCategories' :fields="dataFields" allowFiltering='true' @change="setValueSelected" :allowCustom='allowCustom' :placeholder="placeholder" ></ejs-combobox>
 </template>
 
 <script>
+import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
+
 export default {
     props:["tag","placeholder" ],
+    components:{
+        'ejs-combobox' : ComboBoxComponent,
+    },
     methods:{
-        setValueSelected(option){
-            this.optionSelected = option.code;
-            this.isShowDrop = true;
-            this.$emit("getComboSelected",option);
+        setValueSelected(e){
+            console.log(e);
+            this.$emit("getComboSelected",e);
         },
         // show dropdown
         showDrop(){
@@ -32,26 +24,21 @@ export default {
     },
     computed: {
         filterCategories(){
-            var categories = null;
+            var categories = [];
             if(this.tag == "part"){
                 categories = this.categoriesPart;
             } else if(this.tag == "asset"){
-                categories = this.categoriesAsset;
+                categories = this.categoriesAsset
             }
-            
-            var search = this.optionSelected;
-            if(this.optionSelected == null){
-                return categories;
-            }
-            return categories.filter((cate) => {
-                return cate.code.toLowerCase().includes(search.toLowerCase()) == true;
-            }) ;
+            return categories;
         }
     },
     data() {
         return {
+            value: null,
             isShowDrop: true,
             optionSelected: null,
+            dataFields: {value: 'name',text:'code'},
             categoriesPart: [
                 {
                     id: 1,
@@ -75,15 +62,15 @@ export default {
                     id: 1,
                     code: "MTXT",
                     name: "Máy tính xách tay",
-                    wearRate: 2.5,
-                    yearsUse: 5,
+                    depreciationRate: 2.5,
+                    lifeTime: 5,
                 },
                 {
                     id: 2,
                     code: "PC",
                     name: "Máy tính để bàn",
-                    wearRate: 1.7,
-                    yearsUse: 10,
+                    depreciationRate: 1.7,
+                    lifeTime: 10,
                 }
             ]
         }
@@ -91,7 +78,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>

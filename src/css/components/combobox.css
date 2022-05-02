@@ -1,62 +1,42 @@
-.m-combobox{
-    position: relative;
+.e-input-group {
+    margin-top: 10px;
     height: 40px;
     border-radius: 4px;
-    border-width: 1px;
-    border-color: #BBBBBB;
-    border-style: solid;
-    display: flex;
-    width: 100%;
-    align-items: center;
 }
-
-.m-combobox input{
-    width: 100%;
-    padding: 4px 16px 4px 16px;
-    border: none;
-    height: 100%;
-    outline: none;
-}
-
-.m-combobox .button{
-    flex-shrink: 0;
-    width: 39px;
-    height: 40px;
-    border:none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.m-combobox .button .arrow-icon{
+.e-input-group:not(.e-float-icon-left),.e-input-group.e-control-wrapper:not(.e-float-icon-left) {
+    border-width: 1px !important;
+    border-color: #afafaf !important;
+  }
+  
+  .e-input-group input.e-input, .e-input-group.e-control-wrapper input.e-input {
+    min-height: 26px !important;
+    padding-left:16px !important;
+  }
+  .e-input-group, .e-input-group.e-control-wrapper {
+    margin-bottom: 0 !important;
+    border-radius: 4px !important;
+  }
+  .e-ddl.e-input-group.e-control-wrapper .e-ddl-icon::before {
+    content: '' !important;
     background: url('../../asset/icons/qlts-icon.png') no-repeat -72px -338px;
-    width: 8px;
-    height: 5px;
-}
-.m-combobox .m-combobox-data{
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    box-shadow: 1px 2px 5px #000;
-    z-index: 2;
-    background-color: #fff;
-}
-
-.m-combobox .m-combobox-data .m-combobox-item{
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    height: 40px;
-    padding-left: 36px;
-}
-.m-combobox .m-combobox-data .m-combobox-item:hover{
-    background-color: #E9EBEE;
-}
-.m-combobox .m-combobox-data .m-combobox-item.m-combobox-item-selected:active{
-    background-color: #019160;
-    background-image: url(../../asset/icon/btn-prev-page.svg);
-    background-position: 10px center;
-    background-repeat: no-repeat;
-}
-.m-combobox input::placeholder{
-    font-style: italic;
-}
+      width: 8px;
+      height: 5px;
+    font-family: 'e-icons';
+    margin-right: 12px !important;
+  }
+  
+  .e-ddl.e-input-group.e-control-wrapper.e-input-focus::before,
+  .e-ddl.e-input-group.e-control-wrapper.e-input-focus::after {
+    display: none !important;
+    padding-left:16px !important;
+  }
+  
+  .e-input-focus {
+    display: none ;
+    border: 1px solid #afafaf !important;
+  }
+  
+  .e-input-group input.e-input:focus, .e-input-group.e-control-wrapper input.e-input:focus,
+  .e-input-group.e-input-focus  input.e-input, .e-input-group.e-control-wrapper.e-input-focus input.e-input {
+    padding:4px 0 4px 16px !important;
+  }

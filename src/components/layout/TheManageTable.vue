@@ -128,6 +128,7 @@ export default {
                     buyDate: new Date(),
                     useDate: new Date(),
                     name : '',
+                    quantity: 1,
                 };
             }
         },
