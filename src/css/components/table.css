@@ -119,10 +119,12 @@
     position: absolute;
     bottom: 0;
     width: 100%;
+    
+    /* border-top: 1px solid #afafaf; */
+    border-collapse: collapse;
 }
 .contain-all-table{
     height: calc(100% - 73px);
     width: 100%;
     position: relative;
-
 }

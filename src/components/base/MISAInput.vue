@@ -38,7 +38,7 @@ export default {
             } else {
                 this.isAlert = false;
             }
-        }
+        },
     },
     data() {
         return {

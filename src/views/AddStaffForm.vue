@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-8">
                     <label for="">Tên bộ phận sử dụng</label>
-                    <div><input v-model="assetForm.partsUse" class="m-field-input readonly mt-input" type="text" readonly></div>
+                    <div><input v-model="assetForm.partsUse" class="m-field-input readonly mt-input" type="text" disabled></div>
                 </div>
             </div>
             <div class="row">
@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-8">
                     <label for="">Tên loại tài sản</label>
-                    <div><input v-model="assetForm.type" class="m-field-input readonly mt-input" type="text" readonly></div>
+                    <div><input v-model="assetForm.type" class="m-field-input readonly mt-input" type="text" disabled></div>
                 </div>
             </div>
             <div class="row">
@@ -65,6 +65,7 @@
                     <div class="m-content-right-field">
                         <!-- <input class="m-field-input" v-model="priceFormat" type="text"> -->
                         <MISAInput :controlledContent="priceFormat"
+                        @keypress="isNumber"
                         @bindingData="bindingData"
                         :tag="'priceFormat'"
                         v-model="priceFormat"
@@ -199,6 +200,13 @@ export default {
         * Created by: nbtin
         * Created date: 13:39 22/04/2022
         */
+        isNumber($event) {
+            let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+                // 46 is dot
+                $event.preventDefault();
+            }
+        },
         closeAddStaffForm(){
             
             this.handleCancelAlert();
@@ -268,7 +276,6 @@ export default {
             
             for(let key of Object.entries(this.$refs)){
                 for(let value of this.nullValueProperty){
-                    // value = value.toLowerCase();
                     if(key[0].toLowerCase().includes(value.toLowerCase())){
                         // this.$refs.key[0].isAlert = true;
                         
@@ -323,7 +330,7 @@ export default {
                     }
                     
                 }
-            } else alert("co truong rong");
+            } else alert("Có một số trường rỗng ");
         },
         /**
         * Mô tả : Lấy dữ liệu mã bộ phận sử dụng, loại tài sản từ combobox
@@ -381,15 +388,25 @@ export default {
             return year;
         },
         priceFormat: {
-            get: function () {
+            // get: function () {
                 
-                return this.assetForm.priceFormat;
+            //     return this.assetForm.priceFormat;
+            // },
+            //     // setter
+            // set: function (newValue) {
+            //     newValue = newValue.toString().replaceAll('.','');
+            //     this.assetForm.priceFormat =  newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            //     this.assetForm.price = parseInt(newValue);
+
+            // }
+             get: function () {
+                
+                return this.assetForm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             },
                 // setter
             set: function (newValue) {
                 newValue = newValue.toString().replaceAll('.','');
-                this.assetForm.priceFormat =  newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                this.assetForm.price = parseInt(newValue);
+                this.assetForm.price =  newValue;
 
             }
         }
