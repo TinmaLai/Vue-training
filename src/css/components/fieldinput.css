@@ -7,6 +7,10 @@
     outline: none;
 }
 
+.m-field-input:focus{
+    border-color: #1aa4c8 !important;
+}
+
 .m-field-input::placeholder{
     font-style: italic;
 }

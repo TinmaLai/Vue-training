@@ -131,9 +131,6 @@ body{
     margin: 0;
 }
 
-.danger{
-    border-color: red;
-}
 /* CONTENT */
 .staff-manage{
     display: block;
@@ -172,8 +169,8 @@ body{
     position: relative;
 }
 #pagination-table{
-    position: sticky;
-    bottom:0;
+    position: sticky ;
+    bottom:0 ;
     background-color: #fff;
     border-radius: 3.5px;
     border: 1px solid #afafaf;
@@ -223,7 +220,6 @@ body{
     background-color: #000;
     opacity: 0.5;
     z-index: 3;
-    display: none;
 }
 
 .top-form-row{

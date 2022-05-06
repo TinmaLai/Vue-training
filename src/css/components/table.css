@@ -10,9 +10,10 @@
     
 }
 .contain-table{
-    height: calc(100% - 73px);
+    height: calc(100% - 40px);
     width: 100%;
     overflow-y: auto;
+    background-color: white;
     border-radius: 3.5px;
     border: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
@@ -113,4 +114,15 @@
     position: absolute !important;
     bottom: 0 !important;
     width: 100% !important;
+}
+.table-footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.contain-all-table{
+    height: calc(100% - 73px);
+    width: 100%;
+    position: relative;
+
 }

@@ -20,18 +20,17 @@
 <script>
 export default {
     props:["isShowAlert","formMode"],
-    watch:{
-        formMode: function(newValue){
-            if(newValue == 1){
+    mounted(){
+        if(this.formMode == 1){
                 this.message = "Bạn có muốn hủy bỏ khai báo tài sản này";
                 this.add = true;
                 this.edit = false;
-            } else if(newValue == 0){
+            } else if(this.formMode == 0){
                 this.message = "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?";
                 this.add = false;
                 this.edit = true;
             }
-        }
+        
     },
     methods:{
         selectOption(select){

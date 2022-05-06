@@ -9,7 +9,7 @@
         <td class="text-left">{{asset.type}}</td>
         <td class="text-left">{{asset.partsUse}}</td>
         <td class="text-right">{{asset.quantity}}</td>
-        <td class="text-right">{{asset.price}}</td>
+        <td class="text-right">{{asset.priceFormat}}</td>
         <td class="text-right">{{asset.accumulate}}</td>
         <td class="text-right">{{asset.priceExtra}}</td>
         <td class="table-action" :class="{'d-opacity':isHover}">

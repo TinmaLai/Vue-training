@@ -46,7 +46,7 @@
         :isTableLess="isTableLess"
         />
         <AddStaffForm 
-        :isShow="isShowDialog" 
+        v-if="isShowDialog" 
         @closeStaffDialog="toggleStaffDialog" 
         :newAssetCode="newAssetCode" 
         :formMode="formMode"
@@ -82,7 +82,7 @@ export default {
         ToastMessage
 
     },
-    beforeMount(){
+    mounted(){
         /**
         * Mô tả : Call API đưa dữ liệu lên bản
         * Created by: nbtin
@@ -96,22 +96,22 @@ export default {
                     // Lấy mã tự tăng
                     var newCode = res.data[res.data.length - 1].assetId;
                     me.newAssetCode = newCode;
-                    if(res.data.length <= 13){
-                        me.isTableLess = true;
-                    }
+                    
+                    
                 })
                 .catch(function (error) {
                     // handle error
                     console.log(error);
+                    me.fixedAssets = [];
+                    me.newAssetCode = 'TS0001';
+                    me.isTableLess = true;
                 })
+            
         } catch(error){
             console.log(error);
         }
     },
     watch:{
-        fixedAssets: function(newValue){
-            console.log(newValue);
-        }
     },
     methods: {
         // Đóng mở form thêm tài sản
@@ -122,13 +122,22 @@ export default {
                 // Reset form mode về ko thêm ko sửa (-1), reset asset đc chọn để nếu chọn lại thì còn có sự thay đổi
                 this.formMode = -1;
                 this.assetSelected = {
+                    name:'',
+                    quantity: 1,
                     price: 0,
                     wearRate: 0,
-                     priceFormat: 0,
+                    yearsUse: 0,
+                    wearPerYear: null,
+                    accumulate: null,
+                    priceExtra: null,
+                    assetId: null,
                     buyDate: new Date(),
                     useDate: new Date(),
-                    name : '',
-                    quantity: 1,
+                    priceFormat: 0,
+                    type: "",
+                    partsUse: "",
+                    codePart: "",
+                    codeAsset: "",
                 };
             }
         },
@@ -145,9 +154,6 @@ export default {
                         // Lấy mã tự tăng
                         var newCode = res.data[res.data.length - 1].assetId;
                         me.newAssetCode = newCode;
-                        if(res.data.length <= 13){
-                            me.isTableLess = true;
-                        }
                     })
                     .catch(function (error) {
                         // handle error

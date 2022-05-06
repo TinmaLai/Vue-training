@@ -1,27 +1,53 @@
 <template>
-    <ejs-combobox id='combobox' :dataSource='this.filterCategories' :fields="dataFields" allowFiltering='true' @change="setValueSelected" :allowCustom='allowCustom' :placeholder="placeholder" ></ejs-combobox>
+    <div class="m-combobox" :class="{'danger':isAlert}">
+        <ejs-combobox 
+        v-model='content'
+        id='combobox' 
+        :dataSource='this.filterCategories' 
+        :fields="dataFields" 
+        allowFiltering='true' 
+        @change="setValueSelected" 
+        :allowCustom='allowCustom' 
+        :placeholder="placeholder"
+        @blur="checkNullValue"
+        
+         ></ejs-combobox>
+    </div>
 </template>
 
 <script>
 import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 
 export default {
-    props:["tag","placeholder" ],
+    props:["tag","placeholder","control"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
+    watch:{
+        control: function(newValue){
+            this.content = newValue;
+        }
+    },
     methods:{
+        // emit gia tri len cho form
         setValueSelected(e){
             console.log(e);
+            this.itemSelected = e;
             this.$emit("getComboSelected",e);
         },
         // show dropdown
         showDrop(){
             this.isShowDrop = !this.isShowDrop;
             this.optionSelected = "";
+        },
+        checkNullValue(){
+            if(this.itemSelected == null || this.itemSelected.item == null){
+                this.isAlert = true;
+            } else {
+                this.isAlert = false;
+            }
         }
-        
-    },
+    },  
     computed: {
         filterCategories(){
             var categories = [];
@@ -38,7 +64,10 @@ export default {
             value: null,
             isShowDrop: true,
             optionSelected: null,
-            dataFields: {value: 'name',text:'code'},
+            isAlert: false,
+            itemSelected: null,
+            dataFields: {value: 'id',text:'code'},
+            content: "",
             categoriesPart: [
                 {
                     id: 1,

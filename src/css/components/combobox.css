@@ -1,42 +1,71 @@
+.m-combobox {
+  margin-top: 10px;
+  height: 40px;
+  border-radius: 4px;
+  width: 99%;
+  border: 1px solid #afafaf !important;
+}
+
+.m-combobox:focus{
+  border-color: #1aa4c8 !important;
+}
+
 .e-input-group {
-    margin-top: 10px;
-    height: 40px;
-    border-radius: 4px;
+  height: 40px;
+  border-radius: 4px;
+}
+.e-input-group:focus{
+  border-color: #1aa4c8 !important;
+}
+.e-input-group:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper:not(.e-float-icon-left) {
+  border-width: 1px !important;
+  border-color: #afafaf !important;
+}
+.danger {
+  border: 1px solid red !important;
+}
+.e-input-group input.e-input,
+.e-input-group.e-control-wrapper input.e-input {
+  min-height: 26px !important;
+  padding-left: 16px !important;
+}
+.e-input-group,
+.e-input-group.e-control-wrapper {
+  margin-bottom: 0 !important;
+  border-radius: 4px !important;
+}
+.e-ddl.e-input-group.e-control-wrapper .e-ddl-icon::before {
+  content: "" !important;
+  background: url("../../asset/icons/qlts-icon.png") no-repeat -72px -338px;
+  width: 8px;
+  height: 5px;
+  font-family: "e-icons";
+  margin-right: 12px !important;
+}
+
+.e-ddl.e-input-group.e-control-wrapper.e-input-focus::before,
+.e-ddl.e-input-group.e-control-wrapper.e-input-focus::after {
+  display: none !important;
+  padding-left: 16px !important;
+}
+
+.e-input-focus {
+  display: none;
+  /* border: 1px solid #afafaf !important; */
+}
+
+.e-input-group input.e-input:focus,
+.e-input-group.e-control-wrapper input.e-input:focus,
+.e-input-group.e-input-focus input.e-input,
+.e-input-group.e-control-wrapper.e-input-focus input.e-input {
+  padding: 4px 0 4px 16px !important;
+}
+
+input.e-input::selection, textarea.e-input::selection, .e-input-group input.e-input::selection, .e-input-group.e-control-wrapper input.e-input::selection, .e-float-input input::selection, .e-float-input.e-control-wrapper input::selection, .e-input-group textarea.e-input::selection, .e-input-group.e-control-wrapper textarea.e-input::selection, .e-float-input textarea::selection, .e-float-input.e-control-wrapper textarea::selection{
+  background-color: #1aa4c8 !important;
+  color: white;
 }
 .e-input-group:not(.e-float-icon-left),.e-input-group.e-control-wrapper:not(.e-float-icon-left) {
-    border-width: 1px !important;
-    border-color: #afafaf !important;
-  }
-  
-  .e-input-group input.e-input, .e-input-group.e-control-wrapper input.e-input {
-    min-height: 26px !important;
-    padding-left:16px !important;
-  }
-  .e-input-group, .e-input-group.e-control-wrapper {
-    margin-bottom: 0 !important;
-    border-radius: 4px !important;
-  }
-  .e-ddl.e-input-group.e-control-wrapper .e-ddl-icon::before {
-    content: '' !important;
-    background: url('../../asset/icons/qlts-icon.png') no-repeat -72px -338px;
-      width: 8px;
-      height: 5px;
-    font-family: 'e-icons';
-    margin-right: 12px !important;
-  }
-  
-  .e-ddl.e-input-group.e-control-wrapper.e-input-focus::before,
-  .e-ddl.e-input-group.e-control-wrapper.e-input-focus::after {
-    display: none !important;
-    padding-left:16px !important;
-  }
-  
-  .e-input-focus {
-    display: none ;
-    border: 1px solid #afafaf !important;
-  }
-  
-  .e-input-group input.e-input:focus, .e-input-group.e-control-wrapper input.e-input:focus,
-  .e-input-group.e-input-focus  input.e-input, .e-input-group.e-control-wrapper.e-input-focus input.e-input {
-    padding:4px 0 4px 16px !important;
-  }
+  border: none !important;
+}

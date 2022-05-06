@@ -2,22 +2,29 @@
     <input autocomplete="on" 
     :placeholder="placeholder" 
     v-model="content"
-    @change="bindingDataInput" 
+    @input="bindingDataInput" 
     class="m-field-input mt-input"
     :type="type"
     :title="this.isAlert == true ? title : ''"
-    :class="{'danger' : this.isAlert}"
-    tabindex="0"     
+    :class="{'danger' : this.isAlert}"    
     @blur="checkNullValue"
-      >
+
+    >
 </template>
 
 <script>
 export default {
-    props:["controlledContent","title","placeholder","type"],
+    mounted() {
+        this.content = this.controlledContent;
+    },
+    props:["controlledContent","title","placeholder","type","tag","isError"],
     watch:{
         controlledContent : function(newValue){
+            
             this.content = newValue;
+        },
+        isError: function(newValue){
+            console.log(newValue);
         }
     },
     methods:{
@@ -26,7 +33,7 @@ export default {
             this.$emit("bindingData",field,this.content);
         },
         checkNullValue(){
-            if(this.content == ""){
+            if(this.content == "" || this.content == "0" || this.content == null || this.content == undefined){
                 this.isAlert = true;
             } else {
                 this.isAlert = false;
@@ -36,7 +43,8 @@ export default {
     data() {
         return {
             content: "",
-            isAlert: false
+            isAlert: false,
+            isFocus: false,
         }
     },
 
