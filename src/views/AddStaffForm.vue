@@ -99,9 +99,14 @@
                 </div>
                 <div class="col-4">
                     <label for="">Giá trị hao mòn năm <span style="color: red">*</span></label>
-                    <div class="m-content-right-field mt-input">
-                        <input ref="txtRequireWearPearYear" :value="calcWearPerYear" class="m-field-input" type="text">
-                        <!-- <MISAInput :controlledContent="assetForm.wearRate" :tag="'wearRate'" :type="'number'" @bindingData="bindingData" :title="'Tên tài sản không được để trống'" /> -->
+                    <div class="m-content-right-field">
+                        <!-- <input ref="txtRequireWearPearYear" :value="calcWearPerYear" class="m-field-input" type="text"> -->
+                        <MISAInput 
+                        :controlledContent="calcWearPerYear" 
+                        :tag="'wearRate'" 
+                        :type="'text'" 
+                        @bindingData="bindingData" 
+                        :title="'Giá trị hao mòn năm không đưỢc để trống'" />
                     </div>
                 </div>
                 <div class="col-4">
@@ -146,6 +151,7 @@
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
         />
+        
     </div>
 </template>
 
@@ -278,7 +284,6 @@ export default {
                 for(let value of this.nullValueProperty){
                     if(key[0].toLowerCase().includes(value.toLowerCase())){
                         // this.$refs.key[0].isAlert = true;
-                        
                        this.$refs[key[0]].isAlert = true;
                     }
                 }
@@ -302,10 +307,9 @@ export default {
                     try{
                         await axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
                             console.log(res);
-                            var cloneAddAssetForm = {...me.assetForm};
                             me.setStatus(true);
                             // Gán mã tự động tăng cho lần mở form tiếp theo
-                            me.$emit("getAssetAdd",cloneAddAssetForm);
+                            me.$emit("getAsset");
                             me.$emit("getNewCodeIncre",me.assetForm.code);
                         }).catch(function(err){
                             console.log(err);
@@ -322,6 +326,7 @@ export default {
                         await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+ me.assetForm.id, me.assetForm).then(function(res){
                             console.log(res);
                             me.setStatus(true);
+                            me.$emit("getAsset");
                         })
                     } catch (err){
                         console.log(err);

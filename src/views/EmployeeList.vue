@@ -26,7 +26,7 @@
                     :key="asset.assetId"
                     :index="index"
                     @getDelIdSelect="delItemSelected"
-                    @dblclick="ShowStaffDialog(asset)"
+                    @dblclick="ShowStaffDialog(asset.id)"
                     :checkbox="delList.includes(asset.id)"
                     />
                     
@@ -86,6 +86,7 @@
 <script>
 import Checkbox from "../components/base/MISACheckbox.vue";
 import TableItem from "../views/TableItem.vue";
+import axios from "axios";
 
 export default {
     props:["assetAdd","fixedAssets","isTableLess"],
@@ -96,9 +97,20 @@ export default {
     computed:{
     },
     methods:{
-        ShowStaffDialog(asset){
-            this.$emit("getAssetSelected",asset);
-            this.$emit("toggleStaffDialog",true,0);
+        async ShowStaffDialog(id){
+            var asset = {};
+            var me = this;
+            await axios.get(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/${id}`).then(function(res){
+                console.log(res);
+                asset = res.data;
+            }).catch(function(err){
+                console.log(err);
+            }).then(function () {
+                me.$emit("getAssetSelected",asset);
+                me.$emit("toggleStaffDialog",true,0);
+            });
+
+            
         },
         // Lấy tất cả id được chọn để xóa, hoặc lấy ra
         delItemSelected(isDel, id){

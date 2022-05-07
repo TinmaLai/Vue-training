@@ -28,13 +28,13 @@ export default {
         }
     },
     methods:{
+        // emit trường - dữ liệu từ input lên form
         bindingDataInput(field){
             field = this.tag;
-            
             this.$emit("bindingData",field,this.content);
         },
         checkNullValue(){
-            if(this.content == "" || this.content == "0" || this.content == null || this.content == undefined){
+            if(this.content == "" || this.content == "0"){
                 this.isAlert = true;
             } else {
                 this.isAlert = false;

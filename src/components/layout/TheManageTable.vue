@@ -52,7 +52,7 @@
         :formMode="formMode"
         @getNewCodeIncre="getNewCodeIncre"
         :assetSelected="assetSelected"
-        @getAssetAdd="getAssetAdd"
+        @getAsset="getAsset"
         @getStatusSave="handleStatusSave"
         /> 
         <DeleteAlert 
@@ -142,10 +142,10 @@ export default {
             }
         },
         // Lấy asset thêm từ form để thêm vào mảng render bảng
-        getAssetAdd(assetForm){
+        getAsset(){
             // this.fixedAssets.push(assetForm);
             
-            this.fixedAssets.push(assetForm);
+            // this.fixedAssets.push(assetForm);
             try{
                 var me = this;
                 axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
@@ -224,7 +224,6 @@ export default {
             }
         },
     },
-    // Xử lý khi lưu form thành công hoặc thất bại
     
     data() {
         return {
