@@ -20,7 +20,7 @@ export default {
     props:["controlledContent","title","placeholder","type","tag","isError"],
     watch:{
         controlledContent : function(newValue){
-            
+            if(newValue != "" && newValue != "0") this.isAlert = false;
             this.content = newValue;
         },
         isError: function(newValue){
@@ -30,6 +30,7 @@ export default {
     methods:{
         bindingDataInput(field){
             field = this.tag;
+            
             this.$emit("bindingData",field,this.content);
         },
         checkNullValue(){

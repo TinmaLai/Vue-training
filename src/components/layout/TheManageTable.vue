@@ -206,6 +206,7 @@ export default {
                 }
             }       
         },
+        // Xử lý hiện toast message là thành công hay thất bại
         handleStatusSave(status){
             var me = this;
             if(status == true){

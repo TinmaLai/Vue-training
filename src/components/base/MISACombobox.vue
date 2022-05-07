@@ -2,12 +2,13 @@
     <div class="m-combobox" :class="{'danger':isAlert}">
         <ejs-combobox 
         v-model='content'
+        :text='content'
         id='combobox' 
         :dataSource='this.filterCategories' 
         :fields="dataFields" 
         allowFiltering='true' 
         @change="setValueSelected" 
-        :allowCustom='allowCustom' 
+        :allowCustom="allowCustom"
         :placeholder="placeholder"
         @blur="checkNullValue"
         
@@ -33,6 +34,7 @@ export default {
         setValueSelected(e){
             console.log(e);
             this.itemSelected = e;
+            this.content = e.itemData.code;
             this.$emit("getComboSelected",e);
         },
         // show dropdown
@@ -68,6 +70,7 @@ export default {
             itemSelected: null,
             dataFields: {value: 'id',text:'code'},
             content: "",
+            allowCustom: false,
             categoriesPart: [
                 {
                     id: 1,

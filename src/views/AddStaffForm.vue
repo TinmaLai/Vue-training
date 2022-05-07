@@ -352,7 +352,7 @@ export default {
                 this.assetForm.type = value.itemData.name;
                 this.assetForm.wearRate = value.itemData.depreciationRate;
                 this.assetForm.yearsUse = value.itemData.lifeTime;
-                 this.assetForm.codeAsset = value.itemData.code;
+                this.assetForm.codeAsset = value.itemData.code;
             } else {
                 this.assetForm.type = "";
                 this.assetForm.wearRate = 0;
