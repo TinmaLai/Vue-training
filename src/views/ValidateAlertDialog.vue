@@ -13,9 +13,6 @@
 <script>
 export default {
     props:["isShowAlert","formMode"],
-    
-
-
 }
 </script>
 

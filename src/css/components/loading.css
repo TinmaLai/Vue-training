@@ -1,0 +1,7 @@
+.loading-table{
+    background-image: url(../../asset/icons/loading.gif);
+    height: 100px;
+    width: 100%;
+    background-position: center 10px;
+    background-repeat: no-repeat;
+}

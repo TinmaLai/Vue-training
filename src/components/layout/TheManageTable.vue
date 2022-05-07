@@ -1,6 +1,7 @@
 <template>
     <div class="staff-manage">
-        <div class="top-row">
+        <div class="loading-table" v-if="isLoading"></div>
+        <div class="top-row"  v-if="!isLoading">
             <div class="filter">
                 <div class="m-field-input-icon">
                     <div class="btn-icon">
@@ -31,13 +32,14 @@
                     </div>
                 </button>
             </div>
-            <div class="table-action">
+            <div class="table-action" >
                 <button id="add-staff-btn" class="m-button" @click="toggleStaffDialog(true,1)">+Thêm tài sản</button>
                 <button class="m-jicon-button"><div class="table-action-excel"></div></button>
                 <button class="m-jicon-button" @click="popUpDelAlert" ><div class="table-action-del"></div></button>
             </div>
         </div>
         <EmployeeList 
+        v-if="!isLoading"
         :assetAdd="assetAdd" 
         :fixedAssets="fixedAssets"
         @toggleStaffDialog="toggleStaffDialog" 
@@ -141,27 +143,27 @@ export default {
                 };
             }
         },
-        // Lấy asset thêm từ form để thêm vào mảng render bảng
-        getAsset(){
+        // Lấy asset lại từ API
+        async getAsset(){
             // this.fixedAssets.push(assetForm);
             
             // this.fixedAssets.push(assetForm);
-            try{
-                var me = this;
-                axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
-                    .then(function(res){
-                        me.fixedAssets = res.data;
-                        // Lấy mã tự tăng
-                        var newCode = res.data[res.data.length - 1].assetId;
-                        me.newAssetCode = newCode;
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-            } catch(error){
-                console.log(error);
-            }
+            this.isLoading = true;
+            var me = this;
+            await axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
+                .then(function(res){
+                    me.fixedAssets = res.data;
+                    // Lấy mã tự tăng
+                    var newCode = res.data[res.data.length - 1].assetId;
+                    me.newAssetCode = newCode;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                }).then(function(){
+                    me.isLoading = false;
+                })
+            
         },
         // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
         getNewCodeIncre(newCode){
@@ -192,6 +194,7 @@ export default {
                      .then(function(res){
                         console.log(res);
                         // Xóa các phần tử bị xóa ở mảng fixedAssets đổ lên bảng
+                        
                         me.fixedAssets = me.fixedAssets.filter(function(el){
                             return !me.delList.includes(el.id);
                         })
@@ -238,6 +241,7 @@ export default {
             isShowToast: false,
             isTableLess: false,
             saveStatus: null,
+            isLoading: false,
         }
     },
 }
