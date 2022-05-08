@@ -17,7 +17,7 @@ export default {
     mounted() {
         this.content = this.controlledContent;
     },
-    props:["controlledContent","title","placeholder","type","tag","isError"],
+    props:["controlledContent","title","placeholder","type","tag","isError","fieldName"],
     watch:{
         controlledContent : function(newValue){
             if(newValue != "" && newValue != "0") this.isAlert = false;
@@ -33,6 +33,7 @@ export default {
             field = this.tag;
             this.$emit("bindingData",field,this.content);
         },
+        // check Null khi blur
         checkNullValue(){
             if(this.content == "" || this.content == "0"){
                 this.isAlert = true;

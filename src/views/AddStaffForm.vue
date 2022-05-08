@@ -15,6 +15,7 @@
                         :controlledContent="assetForm.code" 
                         :tag="'code'" 
                         @bindingData="bindingData" 
+                        :fieldName="'Mã tài sản'"
                         :title="'Mã tài sản không được để trống'" 
                         :placeholder="'Nhập mã tài sản'" />
                     </div>
@@ -22,13 +23,28 @@
                 <div class="col-8">
                     <label for="">Tên tài sản<span style="color: red"> *</span></label>
                        <!-- <input ref="" autocomplete="on" placeholder="Nhập tên tài sản" v-model="assetForm.name" class="m-field-input mt-input" type="text"> -->
-                    <MISAInput ref="txtRequireName" :controlledContent="assetForm.name" :tag="'name'" @bindingData="bindingData" :title="'Tên tài sản không được để trống'" :placeholder="'Nhập tên tài sản'" />
+                    <MISAInput 
+                    ref="txtRequireName" 
+                    :controlledContent="assetForm.name" 
+                    :tag="'name'" 
+                    @bindingData="bindingData" 
+                    :title="'Tên tài sản không được để trống'" 
+                    :placeholder="'Nhập tên tài sản'" 
+                    :fieldName="'Tên tài sản'"
+                    />
                 </div>
             </div>
             <div class="row">
                 <div class="col-4">
                     <label for="">Mã bộ phận sử dụng <span style="color: red"> *</span></label>
-                    <Combobox ref="txtRequireCodePart" :tag="'part'" placeholder="Chọn mã bộ phận sử dụng" :control="assetForm.codePart" @getComboSelected="getDepartment"/>
+                    <Combobox 
+                    ref="txtRequireCodePart" 
+                    :tag="'part'" 
+                    :fieldName="'Mã bộ phận sử dụng'"
+                    :placeholder="'Chọn mã bộ phận sử dụng'"
+                    :title="'Mã bộ phận không được để trống'"
+                    :control="assetForm.codePart" 
+                    @getComboSelected="getDepartment"/>
                 </div>
                 <div class="col-8">
                     <label for="">Tên bộ phận sử dụng</label>
@@ -38,7 +54,15 @@
             <div class="row">
                 <div class="col-4">
                     <label for="">Mã loại tài sản <span style="color: red">*</span></label>
-                    <Combobox ref="txtRequireCodeAsset" :tag="'asset'" placeholder="Chọn mã loại tài sản" :control="assetForm.codeAsset" @getComboSelected="getTypeAsset"/>
+                    <Combobox
+                    ref="txtRequireCodeAsset" 
+                    :tag="'asset'" 
+                    placeholder="Chọn mã loại tài sản"
+                    :title="'Mã loại tài sản không được để trống'" 
+                    :control="assetForm.codeAsset" 
+                    @getComboSelected="getTypeAsset"
+                    :fieldName="'Mã loại tài sản'"
+                    />
                 </div>
                 <div class="col-8">
                     <label for="">Tên loại tài sản</label>
@@ -55,6 +79,7 @@
                         :title="'Số lượng phải nhiều hơn 0'"
                         :type="'number'"
                         ref="txtRequireQuantity"
+                        :fieldName="'Số lượng'"
                         />
                         <div @click="this.assetForm.quantity++" class="field-incre-btn"></div>
                         <div @click="this.assetForm.quantity > 0 ? this.assetForm.quantity-- :this.assetForm.quantity" class="field-decre-btn"></div>
@@ -67,10 +92,11 @@
                         <MISAInput :controlledContent="priceFormat"
                         @keypress="isNumber"
                         @bindingData="bindingData"
-                        :tag="'priceFormat'"
+                        :tag="'abc'"
                         v-model="priceFormat"
-                        :title="'Số lượng phải nhiều hơn 0'"
+                        :title="'Nguyên giá phải nhiều hơn 0'"
                         :type="'text'"
+                        :fieldName="'Nguyên giá'"
                         ref="txtRequirePrice"
                         />
                     </div>
@@ -83,6 +109,7 @@
                         :tag="'yearsUse'"
                         :title="'Số lượng phải nhiều hơn 0'"
                         :type="'number'"
+                        :fieldName="'Số năm sử dụng'"
                         ref="txtRequireYearsUse"
                         />
                     </div>  
@@ -92,7 +119,15 @@
                 <div class="col-4">
                     <label for="">Tỷ lệ hao mòn (%) <span style="color: red">*</span></label>
                     <div class="m-content-right-icon-field ">
-                        <MISAInput ref="txtRequireWearRate" :controlledContent="assetForm.wearRate" :tag="'wearRate'" :type="'number'" @bindingData="bindingData" :title="'Tên tài sản không được để trống'" />
+                        <MISAInput 
+                        ref="txtRequireWearRate" 
+                        :controlledContent="assetForm.wearRate" 
+                        :tag="'wearRate'" 
+                        :type="'number'" 
+                        @bindingData="bindingData" 
+                        :title="'Tỷ lệ hao mòn không được trống'"
+                        :fieldName="'Tỷ lệ hao mòn'"
+                        />
                         <div @click="this.assetForm.wearRate++" class="field-incre-btn"></div>
                         <div @click="this.assetForm.wearRate > 0 ? this.assetForm.wearRate-- :this.assetForm.wearRate" class="field-decre-btn"></div>
                     </div>
@@ -102,10 +137,12 @@
                     <div class="m-content-right-field">
                         <!-- <input ref="txtRequireWearPearYear" :value="calcWearPerYear" class="m-field-input" type="text"> -->
                         <MISAInput 
-                        :controlledContent="calcWearPerYear" 
-                        :tag="'wearRate'" 
+                        :controlledContent="calcWearPerYear"
                         :type="'text'" 
                         @bindingData="bindingData" 
+                        v-model="calcWearPerYear"
+                        ref="txtRequireWearPerYear"
+                        :fieldName="'Giá trị hao mòn năm'"
                         :title="'Giá trị hao mòn năm không đưỢc để trống'" />
                     </div>
                 </div>
@@ -151,6 +188,11 @@
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
         />
+        <ValidateAlert
+        :isShowAlert="showValidateAlert"
+        :message="nullFields"
+        @selectOption="this.showValidateAlert = false"
+        />
         
     </div>
 </template>
@@ -160,7 +202,8 @@ import axios from 'axios';
 import Combobox from '../components/base/MISACombobox.vue';
 import CancelAlert from '../views/CancelAlertDialog.vue';
 import Datepicker from '@vuepic/vue-datepicker';
-import MISAInput from '../components/base/MISAInput.vue'
+import MISAInput from '../components/base/MISAInput.vue';
+import ValidateAlert from '../views/ValidateAlertDialog.vue'
 
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
@@ -169,8 +212,16 @@ export default {
         CancelAlert,
         Datepicker,
         MISAInput,
+        ValidateAlert,
     },
     mounted() {
+        /**
+        * Mô tả : Hàm mount lấy giá trị đc truyền vào từ bảng ngay khi mount
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 11:43 08/05/2022
+        */
         if(this.formMode == 1){
             var currentCode = this.newAssetCode; // gán cho dễ gọi
             var numberIncre = "";
@@ -193,18 +244,18 @@ export default {
         } else if (this.formMode == 0){
             this.assetForm.code = this.newAssetCode;
             this.assetSelectedStore = {...this.assetSelected};
-        this.assetForm = this.assetSelected;
-        this.assetForm.code = this.assetForm.assetId;
+            this.assetForm = this.assetSelected;
+            this.assetForm.code = this.assetForm.assetId;
         }
-        // asset selected
         
 
     },
     methods:{
         /**
-        * Mô tả : Bắt sự kiện đóng form
+        * Mô tả : Chặn sự kiện nhập chữ ở các ô input số
+        * @param $event
         * Created by: nbtin
-        * Created date: 13:39 22/04/2022
+        * Created date: 11:44 08/05/2022
         */
         isNumber($event) {
             let keyCode = $event.keyCode ? $event.keyCode : $event.which;
@@ -213,21 +264,53 @@ export default {
                 $event.preventDefault();
             }
         },
+        /**
+        * Mô tả : Bắt sự kiện đóng form
+        * Created by: nbtin
+        * Created date: 13:39 22/04/2022
+        */
         closeAddStaffForm(){
             
             this.handleCancelAlert();
             
         },  
-        //reset form
+        /**
+        * Mô tả : Reset form khi close form
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
         resetForm(control){
             control.showCancelAlert = false;
             control.$emit("closeStaffDialog",false);
+        },
+        /**
+        * Mô tả : Định dạng tiền ở dạng dấu chấm VD: 1.000.000 =  một triệu đồng
+        * @param value
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
+        formatPrice(value){
+            return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        },
+        /**
+        * Mô tả : Chuyển chuỗi format thành số bằng cách loại dấu chấm
+        * @param value
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
+        formatToInt(value){
+            return value.toString().replaceAll('.','');
         },
         // Hiện popup và xử lý khi muốn đóng form 
         handleCancelAlert(){
             this.showCancelAlert = true;
         },
-        // Xử lý khi người dùng chọn các button trong alert cancel
+        /**
+        * Mô tả : Xử lý khi người dùng chọn ở cancel alert
+        * @param option
+        * Created by: nbtin
+        * Created date: 11:46 08/05/2022
+        */
         handleCancelOption(option){
             switch(option){
                 case false: {
@@ -251,6 +334,12 @@ export default {
                 
             }
         },
+        /**
+        * Mô tả : Emit lên trạng thái của API khi bấm nút lưu, nhằm hiện toast message phù hợp
+        * @param status
+        * Created by: nbtin
+        * Created date: 11:46 08/05/2022
+        */
         setStatus(status){
             if(status == true){
                 this.resetForm(this);
@@ -261,81 +350,46 @@ export default {
             }
             
         },
+        /**
+        * Mô tả : Tính lại các trường cần thiết trước khi lưu
+        * Created by: nbtin
+        * Created date: 11:49 08/05/2022
+        */
         calAllFieldToSave(){
             
             this.assetForm.assetId = this.assetForm.code;
-            this.assetForm.wearPerYear = this.calcWearPerYear.toString().replaceAll(".","");
-            this.assetForm.accumulate = (this.assetForm.wearPerYear * this.assetForm.yearsUse).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            this.assetForm.priceExtra = (this.assetForm.price - this.assetForm.accumulate.toString().replaceAll(".","")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            // this.assetForm.wearPerYear = this.calcWearPerYear.toString().replaceAll(".","");
+            this.assetForm.accumulate = (this.assetForm.wearPerYear.toString().replaceAll(".","") * this.assetForm.yearsUse).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            this.assetForm.priceExtra = (this.assetForm.price.toString().replaceAll(".","") - this.assetForm.accumulate.toString().replaceAll(".","")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            this.assetForm.price = this.assetForm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         },
+        /**
+        * Mô tả : Check lại tất cả các trường nào còn rỗng trên form
+        * Created by: nbtin
+        * Created date: 11:49 08/05/2022
+        */
         checkNullProperty(){
             var check = true;
             var object = this.assetForm;
             this.nullValueProperty = [];
+            this.nullFields = [];   
+            // Lấy tất cả các trường rỗng push vào 1 mảng
             for(let property in object){
                 if(object[property] == "" || object[property] == "0" || object[property] == null){
                     this.nullValueProperty.push(property);
                     check = false;
                 }
-                // console.log(property + ": " + object[property]);
             }
-            
+            // So sánh mảng các trường rỗng với mảng ref, trường nào có trong mảng ref thì alert danger
             for(let key of Object.entries(this.$refs)){
                 for(let value of this.nullValueProperty){
                     if(key[0].toLowerCase().includes(value.toLowerCase())){
-                        // this.$refs.key[0].isAlert = true;
-                       this.$refs[key[0]].isAlert = true;
+                        this.$refs[key[0]].isAlert = true;
+                        this.nullFields.push(" " + this.$refs[key[0]].fieldName);
                     }
                 }
             }
             return check;
-        },
-        /**
-        * Mô tả : Cất giữ liệu vào database
-        * Created by: nbtin
-        * Created date: 13:39 22/04/2022
-        */
-        async saveAsset(){
-            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
-            var me = this;
-            me.calAllFieldToSave();
-            let check = me.checkNullProperty();
-            console.log(this.nullValueProperty);
-            // Thêm 
-            if(check == true){
-                if(this.formMode == 1){
-                    try{
-                        await axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
-                            console.log(res);
-                            me.setStatus(true);
-                            // Gán mã tự động tăng cho lần mở form tiếp theo
-                            me.$emit("getAsset");
-                            me.$emit("getNewCodeIncre",me.assetForm.code);
-                        }).catch(function(err){
-                            console.log(err);
-                            me.setStatus(false);
-                        })
-                    } catch(error){
-                        console.log(error);
-                        me.setStatus(false);
-                        
-                    }
-                    
-                } else if(this.formMode == 0){ // Sửa
-                    try{
-                        await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+ me.assetForm.id, me.assetForm).then(function(res){
-                            console.log(res);
-                            me.setStatus(true);
-                            me.$emit("getAsset");
-                        })
-                    } catch (err){
-                        console.log(err);
-                        this.assetForm = me.assetSelectedStore;
-                        me.setStatus(false);
-                    }
-                    
-                }
-            } else alert("Có một số trường rỗng ");
         },
         /**
         * Mô tả : Lấy dữ liệu mã bộ phận sử dụng, loại tài sản từ combobox
@@ -376,79 +430,102 @@ export default {
             this.assetForm[field] = data;
             console.log(this.assetForm[field]);   
         },
-
+        /**
+        * Mô tả : Cất giữ liệu vào database
+        * Created by: nbtin
+        * Created date: 13:39 22/04/2022
+        */
+        async saveAsset(){
+            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
+            var me = this;
+            me.calAllFieldToSave();
+            let check = me.checkNullProperty();
+            // Thêm 
+            if(check == true){
+                if(this.formMode == 1){
+                   let status = false;
+                    await axios.post("https://62591883c5f02d964a4c41d3.mockapi.io/assets",me.assetForm).then(function(res){
+                        console.log(res);
+                        status = true;
+                        // Gán mã tự động tăng cho lần mở form tiếp theo
+                        me.$emit("getAsset");
+                        me.$emit("getNewCodeIncre",me.assetForm.code);
+                    }).catch(function(err){
+                        console.log(err);
+                        status = false;
+                    }).then(function(){
+                        // Thông báo là gọi api thành công hay thất bại để hiện toast
+                        me.setStatus(status);
+                    })
+                    
+                    
+                } else if(this.formMode == 0){ // Sửa
+                    try{
+                        await axios.put(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+ me.assetForm.id, me.assetForm).then(function(res){
+                            console.log(res);
+                            me.setStatus(true);
+                            me.$emit("getAsset");
+                        })
+                    } catch (err){
+                        console.log(err);
+                        this.assetForm = me.assetSelectedStore;
+                        me.setStatus(false);
+                    }
+                    
+                }
+            } else{
+                this.showValidateAlert = true;
+            }
+        },
        
     },
     computed: {
         // Tính giá trị hao mòn năm mỗi khi có thay đổi 
-        calcWearPerYear(){
-            var valuewear = null;
-            valuewear = (this.assetForm.wearRate * parseInt(this.assetForm.price))/100;
-            valuewear = Math.floor(valuewear);
-            return valuewear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        calcWearPerYear: {
+            get: function () {
+                
+                return this.formatPrice(this.assetForm.wearPerYear);
+            },
+                // setter
+            set: function (newValue) {
+                newValue = this.formatToInt(newValue);
+                this.assetForm.wearPerYear =  newValue;
+
+            }
         },
+        // Lấy năm hiện tại cho trường năm theo dõi
         getThisYear(){
             const d = new Date();
             let year = d.getFullYear();
             return year;
         },
+        // Thực hiện format trường Nguyên giá
         priceFormat: {
-            // get: function () {
+            get: function () {
+                return this.formatPrice(this.assetForm.price)
                 
-            //     return this.assetForm.priceFormat;
-            // },
-            //     // setter
-            // set: function (newValue) {
-            //     newValue = newValue.toString().replaceAll('.','');
-            //     this.assetForm.priceFormat =  newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            //     this.assetForm.price = parseInt(newValue);
-
-            // }
-             get: function () {
-                
-                return this.assetForm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                // this.assetForm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             },
                 // setter
             set: function (newValue) {
-                newValue = newValue.toString().replaceAll('.','');
+                newValue = this.formatToInt(newValue);
+                //  newValue.toString().replaceAll('.','');
                 this.assetForm.price =  newValue;
-
+                this.assetForm.wearPerYear = (this.assetForm.wearRate * parseInt(this.assetForm.price))/100;
+                this.assetForm.wearPerYear = Math.floor(this.assetForm.wearPerYear);
             }
         }
     },
     watch: {
-        // Lấy thông tin từ hàng được dblclick, nhưng có vẻ watch sẽ ko thay đổi nếu 1 hàng chọn liên tiếp 2 lần
-        assetSelected: function(newValue){
-            this.assetSelectedStore = {...newValue};
-            this.assetForm = newValue;
-            this.assetFormCode = this.assetForm.assetId;
-        },
-        // Check trạng thái sửa hoặc thêm
-        formMode: function(newValue){
-            // Lấy mã nếu form là thêm 
-            
-            if(newValue == 1){
-                var currentCode = this.newAssetCode; // gán cho dễ gọi
-                var numberIncre = "";
-                var pre = "";
-                //Thực hiện cắt chuỗi TS00001 thành 2 phần, phần số và chữ đê tăng số lên + 1
-                for(let i = 0; i < currentCode.length; i++){
-                    if(currentCode[i] != "0" && (currentCode[i-1] == "0" || currentCode[i-1] == "S")){
-                        numberIncre = currentCode.substring(i);
-                        pre = currentCode.substring(0,i);
-                    }
-                }
-                if((parseInt(numberIncre) + 1).toString().length - numberIncre.length > 0){
-                    pre = pre.substring(0,pre.length - 1);
-                }
-                
-                // Gán mã sau khi tăng cho form
-                this.assetFormCode = pre + (parseInt(numberIncre) + 1);
-                // Với form là thêm, message khi cancel form là 
-            } else if (newValue == 0){
-                this.assetFormCode = this.newAssetCode;
-            }
-        },
+        /**
+        * Mô tả : Tính lại giá trị hao mòn năm mỗi khi có thay đổi của tỷ lệ hao mòn, nhưng thế này chưa tối ưu
+        * Created by: nbtin
+        * Created date: 11:51 08/05/2022
+        */
+        'assetForm.wearRate': function(){
+            this.assetForm.wearPerYear = (this.assetForm.wearRate * this.formatToInt(this.assetForm.price))/100;
+            this.assetForm.wearPerYear = Math.floor(this.assetForm.wearPerYear);
+        },  
     },
     data() {
         return {
@@ -461,18 +538,16 @@ export default {
                 price: 0,
                 wearRate: 0,
                 yearsUse: 0,
-                wearPerYear: null,
-                accumulate: null,
-                priceExtra: null,
-                assetId: null,
+                wearPerYear: 0,
+                accumulate: 0,
+                priceExtra: 0,
+                assetId: 0,
                 buyDate: new Date(),
                 useDate: new Date(),
-                priceFormat: 0,
                 type: "",
                 partsUse: "",
                 codePart: "",
                 codeAsset: "",
-                
             },
             cloneAssetReset: null,
             assetFormCode: "",
@@ -480,7 +555,8 @@ export default {
             cancelMessage: null,
             assetSelectedStore: null,
             nullValueProperty: [],
-            
+            showValidateAlert: false,
+            nullFields: [],
         }
     },
 }

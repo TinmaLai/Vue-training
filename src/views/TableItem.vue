@@ -13,7 +13,7 @@
         <td class="text-right">{{asset.accumulate}}</td>
         <td class="text-right">{{asset.priceExtra}}</td>
         <td class="table-action" :class="{'d-opacity':isHover}">
-            <div class="edit">
+            <div class="edit" @click="showEditForm">
                 
             </div>
             <div class="detail">
@@ -53,8 +53,11 @@ export default {
                 this.$emit("getDelIdSelect",false,id);
                 this.isCheckBox = false;
             }
+        },
+        // Hiện form khi click vào button edit
+        showEditForm(){
+            this.$emit("editClick");
         }
-
     },
     data() {
         return {

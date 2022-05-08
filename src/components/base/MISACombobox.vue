@@ -7,7 +7,7 @@
         :dataSource='this.filterCategories' 
         :fields="dataFields" 
         allowFiltering='true' 
-        @change="setValueSelected" 
+        @select="setValueSelected" 
         :allowCustom="allowCustom"
         :placeholder="placeholder"
         @blur="checkNullValue"
@@ -20,7 +20,7 @@
 import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 
 export default {
-    props:["tag","placeholder","control"],
+    props:["tag","placeholder","control","fieldName"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
@@ -42,6 +42,7 @@ export default {
             this.isShowDrop = !this.isShowDrop;
             this.optionSelected = "";
         },
+        // check Null khi blur
         checkNullValue(){
             if(this.itemSelected == null || this.itemSelected.item == null){
                 this.isAlert = true;

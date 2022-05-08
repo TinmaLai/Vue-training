@@ -84,34 +84,33 @@ export default {
         ToastMessage
 
     },
-    mounted(){
+    async mounted(){
         /**
         * Mô tả : Call API đưa dữ liệu lên bản
         * Created by: nbtin
         * Created date: 13:44 22/04/2022
         */
-        try{
-            var me = this;
-            axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
-                .then(function(res){
-                    me.fixedAssets = res.data;
-                    // Lấy mã tự tăng
-                    var newCode = res.data[res.data.length - 1].assetId;
-                    me.newAssetCode = newCode;
-                    
-                    
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                    me.fixedAssets = [];
-                    me.newAssetCode = 'TS0001';
-                    me.isTableLess = true;
-                })
+        this.isLoading = true;
+        var me = this;
+        await axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
+            .then(function(res){
+                me.fixedAssets = res.data;
+                // Lấy mã tự tăng
+                var newCode = res.data[res.data.length - 1].assetId;
+                me.newAssetCode = newCode;
+                
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+                me.fixedAssets = [];
+                me.newAssetCode = 'TS0001';
+                me.isTableLess = true;
+            }).then(function(){
+                me.isLoading = false;
+            })
             
-        } catch(error){
-            console.log(error);
-        }
+        
     },
     watch:{
     },
@@ -150,6 +149,7 @@ export default {
             // this.fixedAssets.push(assetForm);
             this.isLoading = true;
             var me = this;
+            
             await axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
                 .then(function(res){
                     me.fixedAssets = res.data;
@@ -161,7 +161,8 @@ export default {
                     // handle error
                     console.log(error);
                 }).then(function(){
-                    me.isLoading = false;
+                    
+                    setTimeout(function(){me.isLoading = false;},300);
                 })
             
         },

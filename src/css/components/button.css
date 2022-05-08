@@ -7,7 +7,7 @@
     color: #ffffff;
     text-align: center;
     min-width: 100px;
-    cursor: pointer;
+    cursor: pointer !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,7 +28,7 @@
     background-position: 16px center;
     padding-left: 40px;
     padding-right: 16px;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 .m-jicon-button{
     background-color: #ffffff;
@@ -37,7 +37,7 @@
     width: 36px;
     height: 36px;
     border: none;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .field-incre-btn{
@@ -47,7 +47,7 @@
 	width: 8px;
 	height: 5px;
     bottom: 43%;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .field-decre-btn{
@@ -57,7 +57,7 @@
 	width: 8px;
 	height: 5px;
     bottom: 27%;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .m-spec-button{

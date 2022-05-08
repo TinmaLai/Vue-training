@@ -26,6 +26,7 @@
                     :key="asset.assetId"
                     :index="index"
                     @getDelIdSelect="delItemSelected"
+                    @editClick="ShowStaffDialog(asset.id)"
                     @dblclick="ShowStaffDialog(asset.id)"
                     :checkbox="delList.includes(asset.id)"
                     />
@@ -49,7 +50,7 @@
                     <td></td>
                 </tr>
             <tr id="pagination-table">
-                <td colspan="6" style="width: 60%">
+                <td colspan="6" style="width: 63%">
                     <div class="page-navigation">
                         <p class="content-details">Tổng số <b>200</b> bản ghi</p>
                         <button class="m-dropdown" style="width: 59px; height: 25px;">
@@ -73,10 +74,10 @@
                         </div>
                     </div>
                 </td>
-                <td class="text-right">13</td>
-                <td class="text-right">249</td>
-                <td class="text-right">19716</td>
-                <td  class="text-right">229</td>
+                <td class="text-right">{{this.sumRow[0]}}</td>
+                <td class="text-right">{{this.sumRow[1]}}</td>
+                <td class="text-right">{{this.sumRow[2]}}</td>
+                <td  class="text-right">{{this.sumRow[3]}}</td>
                 <td width="90px"></td>
             </tr>
         </table>
@@ -95,8 +96,64 @@ export default {
         TableItem
     },
     computed:{
+        /**
+        * Mô tả : Tính phần tổng cổng ở dưới cùng của bảng
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:19 08/05/2022
+        */
+        sumRow(){
+            var init = 0;
+            var sum = [];
+            if(this.fixedAssets.length != 0){
+                let sumQuantity = this.fixedAssets.reduce((item1,item2) => {
+                    return item1 + item2.quantity;
+                },init);
+                let sumPrice =  this.fixedAssets.reduce((item1,item2) => {
+                    return parseInt(item1) + parseInt(this.formatToInt(item2.price));
+                },init);
+                let sumAccum = this.fixedAssets.reduce((item1,item2) => {
+                    return parseInt(item1) + parseInt(this.formatToInt(item2.accumulate));
+                },init);
+                let sumPriceExtra = this.fixedAssets.reduce((item1,item2) => {
+                    return parseInt(item1) + parseInt(this.formatToInt(item2.priceExtra));
+                },init);
+                sum.push(this.formatPrice(sumQuantity));
+                sum.push(this.formatPrice(sumPrice));
+                sum.push(this.formatPrice(sumAccum));
+                sum.push(this.formatPrice(sumPriceExtra));
+            }
+            console.log(sum);
+            return sum;
+        }
     },
     methods:{
+        /**
+        * Mô tả : Định dạng tiền ở dạng dấu chấm VD: 1.000.000 =  một triệu đồng
+        * @param value
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
+        formatPrice(value){
+            return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        },
+        /**
+        * Mô tả : Chuyển chuỗi format thành số bằng cách loại dấu chấm
+        * @param value
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
+        formatToInt(value){
+            return value.toString().replaceAll('.','');
+        },
+        /**
+        * Mô tả : Call API theo id để lấy bản ghi ở bảng truyền vào form
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 12:22 08/05/2022
+        */
         async ShowStaffDialog(id){
             var asset = {};
             var me = this;

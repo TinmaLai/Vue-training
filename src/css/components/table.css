@@ -5,7 +5,7 @@
     border-collapse: collapse;
     table-layout: fixed;
     text-align: center;
-    word-wrap: break-word;
+    /* word-wrap: break-word; */
     background-color: #ffffff;
     
 }
@@ -34,7 +34,10 @@
     padding: 0 0 0 16px;
 }
 .m-table td{
-    padding: 0;
+    padding: 0 5px 0px 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;       
+    white-space: nowrap;
 }
 .m-table td input {
 }
@@ -58,6 +61,7 @@
     height: 38px;
     gap: 15px;
     opacity: 0;
+    
 }
 
 .m-table .table-action .edit{
