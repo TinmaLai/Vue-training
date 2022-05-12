@@ -54,9 +54,9 @@ export default {
     computed: {
         filterCategories(){
             var categories = [];
-            if(this.tag == "part"){
+            if(this.tag == "DepartmentCode"){
                 categories = this.categoriesPart;
-            } else if(this.tag == "asset"){
+            } else if(this.tag == "FixedAssetCategoryCode"){
                 categories = this.categoriesAsset
             }
             return categories;
@@ -95,15 +95,15 @@ export default {
                     id: 1,
                     code: "MTXT",
                     name: "Máy tính xách tay",
-                    depreciationRate: 2.5,
-                    lifeTime: 5,
+                    DepreciationRate: 2.5,
+                    LifeTime: 5,
                 },
                 {
                     id: 2,
                     code: "PC",
                     name: "Máy tính để bàn",
-                    depreciationRate: 1.7,
-                    lifeTime: 10,
+                    DepreciationRate: 1.7,
+                    LifeTime: 10,
                 }
             ]
         }

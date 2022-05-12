@@ -92,11 +92,12 @@ export default {
         */
         this.isLoading = true;
         var me = this;
-        await axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
+        await axios.get("https://localhost:7062/api/v1/FixedAsset")
             .then(function(res){
+                console.log(res);
                 me.fixedAssets = res.data;
                 // Lấy mã tự tăng
-                var newCode = res.data[res.data.length - 1].assetId;
+                var newCode = res.data[res.data.length - 1].AssetCode;
                 me.newAssetCode = newCode;
                 
             })
@@ -105,7 +106,6 @@ export default {
                 console.log(error);
                 me.fixedAssets = [];
                 me.newAssetCode = 'TS0001';
-                me.isTableLess = true;
             }).then(function(){
                 me.isLoading = false;
             })
@@ -123,20 +123,20 @@ export default {
                 // Reset form mode về ko thêm ko sửa (-1), reset asset đc chọn để nếu chọn lại thì còn có sự thay đổi
                 this.formMode = -1;
                 this.assetSelected = {
-                    name:'',
-                    quantity: 1,
-                    price: 0,
-                    wearRate: 0,
-                    yearsUse: 0,
+                    AssetName:'',
+                    Quantity: 1,
+                    Cost: 0,
+                    DepreciationRate: 0,
+                    Lifetime: 0,
                     wearPerYear: null,
                     accumulate: null,
                     priceExtra: null,
-                    assetId: null,
-                    buyDate: new Date(),
-                    useDate: new Date(),
+                    AssetId: null,
+                    PurchaseDate: new Date(),
+                    ProductionYear: new Date(),
                     priceFormat: 0,
-                    type: "",
-                    partsUse: "",
+                    FixedAssetCategoryName: "",
+                    DepartmentName: "",
                     codePart: "",
                     codeAsset: "",
                 };
@@ -150,7 +150,7 @@ export default {
             this.isLoading = true;
             var me = this;
             
-            await axios.get("https://62591883c5f02d964a4c41d3.mockapi.io/assets")
+            await axios.get("https://localhost:7062/api/v1/FixedAsset")
                 .then(function(res){
                     me.fixedAssets = res.data;
                     // Lấy mã tự tăng
@@ -191,7 +191,7 @@ export default {
                 var me = this;
                 me.isShowAlert = false;
                 for(let i = 0; i < me.delList.length; i++){
-                    await axios.delete(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[i])
+                    await axios.delete(`https://localhost:7062/api/v1/FixedAsset/`+me.delList[i])
                      .then(function(res){
                         console.log(res);
                         // Xóa các phần tử bị xóa ở mảng fixedAssets đổ lên bảng
@@ -208,6 +208,7 @@ export default {
                     })
                    
                 }
+                me.$emit("getAsset");
             }       
         },
         // Xử lý hiện toast message là thành công hay thất bại

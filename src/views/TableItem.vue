@@ -4,12 +4,12 @@
             <Checkbox :isCheckBox="isCheckBox" />
         </td>
         <td class="text-center" ref="TableAction">{{index + 1}}</td>
-        <td class="text-left">{{asset.assetId}}</td>
-        <td class="text-left" >{{asset.name}}</td>
-        <td class="text-left">{{asset.type}}</td>
-        <td class="text-left">{{asset.partsUse}}</td>
-        <td class="text-right">{{asset.quantity}}</td>
-        <td class="text-right">{{asset.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}}</td>
+        <td class="text-left">{{asset.AssetCode}}</td>
+        <td class="text-left" >{{asset.AssetName}}</td>
+        <td class="text-left">{{asset.FixedAssetCategoryName}}</td>
+        <td class="text-left">{{asset.DepartmentName}}</td>
+        <td class="text-right">{{asset.Quantity}}</td>
+        <td class="text-right">{{formatPrice(asset.Cost)}}</td>
         <td class="text-right">{{asset.accumulate}}</td>
         <td class="text-right">{{asset.priceExtra}}</td>
         <td class="table-action" :class="{'d-opacity':isHover}">
@@ -57,7 +57,16 @@ export default {
         // Hiện form khi click vào button edit
         showEditForm(){
             this.$emit("editClick");
-        }
+        },
+        /**
+        * Mô tả : Định dạng tiền ở dạng dấu chấm VD: 1.000.000 =  một triệu đồng
+        * @param value
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
+        formatPrice(value){
+            return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        },
     },
     data() {
         return {

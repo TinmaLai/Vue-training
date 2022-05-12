@@ -18,7 +18,7 @@ export default {
     updated() {
         if(this.delList.length == 1){
             var me = this;
-            axios.get(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/`+me.delList[0])
+            axios.get(`https://localhost:7062/api/v1/FixedAsset/`+me.delList[0])
             .then(function(res){
                 me.message = "Bạn có muốn xóa tài sản " + res.data.assetId + " - " + res.data.name + "?";
             }).catch(function(err){

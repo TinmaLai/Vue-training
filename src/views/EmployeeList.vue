@@ -145,6 +145,7 @@ export default {
         * Created date: 11:45 08/05/2022
         */
         formatToInt(value){
+            if(value != null && value != undefined)
             return value.toString().replaceAll('.','');
         },
         /**
