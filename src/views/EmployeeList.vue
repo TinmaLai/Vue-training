@@ -26,9 +26,9 @@
                     :key="asset.assetId"
                     :index="index"
                     @getDelIdSelect="delItemSelected"
-                    @editClick="ShowStaffDialog(asset.id)"
-                    @dblclick="ShowStaffDialog(asset.id)"
-                    :checkbox="delList.includes(asset.id)"
+                    @editClick="ShowStaffDialog(asset.FixedAssetId)"
+                    @dblclick="ShowStaffDialog(asset.FixedAssetId)"
+                    :checkbox="delList.includes(asset.FixedAssetId)"
                     />
                     
                 </tbody>
@@ -50,7 +50,7 @@
                     <td></td>
                 </tr>
             <tr id="pagination-table">
-                <td colspan="6" style="width: 63%">
+                <td colspan="6" style="width: 62%">
                     <div class="page-navigation">
                         <p class="content-details">Tổng số <b>200</b> bản ghi</p>
                         <button class="m-dropdown" style="width: 59px; height: 25px;">
@@ -108,10 +108,10 @@ export default {
             var sum = [];
             if(this.fixedAssets.length != 0){
                 let sumQuantity = this.fixedAssets.reduce((item1,item2) => {
-                    return item1 + item2.quantity;
+                    return item1 + item2.Quantity;
                 },init);
                 let sumPrice =  this.fixedAssets.reduce((item1,item2) => {
-                    return parseInt(item1) + parseInt(this.formatToInt(item2.price));
+                    return parseInt(item1) + parseInt(this.formatToInt(item2.Cost));
                 },init);
                 let sumAccum = this.fixedAssets.reduce((item1,item2) => {
                     return parseInt(item1) + parseInt(this.formatToInt(item2.accumulate));
@@ -158,7 +158,7 @@ export default {
         async ShowStaffDialog(id){
             var asset = {};
             var me = this;
-            await axios.get(`https://62591883c5f02d964a4c41d3.mockapi.io/assets/${id}`).then(function(res){
+            await axios.get(`https://localhost:7062/api/v1/FixedAsset/${id}`).then(function(res){
                 console.log(res);
                 asset = res.data;
             }).catch(function(err){
@@ -186,8 +186,8 @@ export default {
         checkAll(){
             if(this.isCheckAll == false){
                 for(let i = 0 ; i < this.fixedAssets.length; i++){
-                    if(this.delList.includes(this.fixedAssets[i].id) == false){
-                        this.delList.push(this.fixedAssets[i].id);
+                    if(this.delList.includes(this.fixedAssets[i].FixedAssetId) == false){
+                        this.delList.push(this.fixedAssets[i].FixedAssetId);
                     }
                 }
                 

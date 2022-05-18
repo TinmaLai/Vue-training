@@ -1,8 +1,9 @@
 <template>
     <div class="m-combobox" :class="{'danger':isAlert}">
         <ejs-combobox 
+        :text='this.content'
         v-model='content'
-        :text='content'
+        
         id='combobox' 
         :dataSource='this.filterCategories' 
         :fields="dataFields" 
@@ -18,11 +19,35 @@
 
 <script>
 import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
+import axios from "axios";
 
 export default {
     props:["tag","placeholder","control","fieldName"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
+    },
+    async mounted(){
+        var me = this;
+        if(this.tag == "DepartmentCode"){
+            await axios.get("https://localhost:7062/api/v1/Department").then(function(res){
+                me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
+                me.categoriesPart = res.data;
+                console.log(res);
+            }).catch(function(err){
+                console.log(err);
+            })
+        }
+        else if(this.tag == "FixedAssetCategoryCode"){
+            await axios.get("https://localhost:7062/api/v1/FixedAssetCategory").then(function(res){
+                me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
+                me.categoriesAsset = res.data;
+                console.log(res);
+            }).catch(function(err){
+                console.log(err);
+            })
+        }
+        
+        
     },
     watch:{
         control: function(newValue){
@@ -34,7 +59,11 @@ export default {
         setValueSelected(e){
             console.log(e);
             this.itemSelected = e;
-            this.content = e.itemData.code;
+            if(this.tag == "Department"){
+                this.content = e.itemData.DepartmentCode;
+            } else if(this.tag == "FixedAssetCategory"){
+                this.content = e.itemData.FixedAssetCategoryCode;
+            }
             this.$emit("getComboSelected",e);
         },
         // show dropdown
@@ -58,6 +87,7 @@ export default {
                 categories = this.categoriesPart;
             } else if(this.tag == "FixedAssetCategoryCode"){
                 categories = this.categoriesAsset
+                
             }
             return categories;
         }
@@ -69,43 +99,11 @@ export default {
             optionSelected: null,
             isAlert: false,
             itemSelected: null,
-            dataFields: {value: 'id',text:'code'},
+            dataFields: {},
             content: "",
-            allowCustom: false,
-            categoriesPart: [
-                {
-                    id: 1,
-                    code: "HCKT",
-                    name: "Hành chính kế toán",
-                    
-                },
-                {
-                    id: 2,
-                    code: "TK",
-                    name: "Thư ký",
-                },
-                {
-                    id: 3,
-                    code: "TCTH",
-                    name: "Tài chính tổng hợp",
-                }
-            ],
-            categoriesAsset: [
-                {
-                    id: 1,
-                    code: "MTXT",
-                    name: "Máy tính xách tay",
-                    DepreciationRate: 2.5,
-                    LifeTime: 5,
-                },
-                {
-                    id: 2,
-                    code: "PC",
-                    name: "Máy tính để bàn",
-                    DepreciationRate: 1.7,
-                    LifeTime: 10,
-                }
-            ]
+            allowCustom: true,
+            categoriesPart: [],
+            categoriesAsset: []
         }
     },
 

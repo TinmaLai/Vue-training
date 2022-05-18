@@ -1,6 +1,6 @@
 /*!
- * Font Awesome Free 5.15.1 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ * Font Awesome Free 5.15.1 by @fontawesome - http://fontawesome.com
+ * License - http://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 (function () {
   'use strict';
@@ -3171,7 +3171,7 @@
     return result;
   }
   function codePointAt(string, index) {
-    /*! https://mths.be/codepointat v0.2.0 by @mathias */
+    /*! http://mths.be/codepointat v0.2.0 by @mathias */
     var size = string.length;
     var first = string.charCodeAt(index);
     var second;

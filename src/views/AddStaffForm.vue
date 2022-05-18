@@ -11,9 +11,9 @@
                     <label for="">Mã tài sản <span style="color: red; vertical-align: bottom;"> *</span></label>
                     <div>
                         <MISAInput
-                        ref="txtRequireAssetCode"
-                        :controlledContent="assetForm.AssetCode" 
-                        :tag="'AssetCode'" 
+                        ref="txtRequireFixedAssetCode"
+                        :controlledContent="assetForm.FixedAssetCode" 
+                        :tag="'FixedAssetCode'" 
                         @bindingData="bindingData" 
                         :fieldName="'Mã tài sản'"
                         :title="'Mã tài sản không được để trống'" 
@@ -24,9 +24,9 @@
                     <label for="">Tên tài sản<span style="color: red"> *</span></label>
                        <!-- <input ref="" autocomplete="on" placeholder="Nhập tên tài sản" v-model="assetForm.name" class="m-field-input mt-input" type="text"> -->
                     <MISAInput 
-                    ref="txtRequireAssetName" 
-                    :controlledContent="assetForm.AssetName" 
-                    :tag="'AssetName'" 
+                    ref="txtRequireFixedAssetName" 
+                    :controlledContent="assetForm.FixedAssetName" 
+                    :tag="'FixedAssetName'" 
                     @bindingData="bindingData" 
                     :title="'Tên tài sản không được để trống'" 
                     :placeholder="'Nhập tên tài sản'" 
@@ -141,6 +141,7 @@
                         :type="'text'" 
                         @bindingData="bindingData" 
                         v-model="calcWearPerYear"
+                        
                         ref="txtRequireWearPerYear"
                         :fieldName="'Giá trị hao mòn năm'"
                         :title="'Giá trị hao mòn năm không đưỢc để trống'" />
@@ -159,6 +160,9 @@
                     <div class="datepicker-container">
                         <Datepicker 
                         class="mt-input input-datepicker"
+                        :class="{'danger' : !this.assetForm.PurchaseDate}"
+                        ref="PurchaseDate"
+                        v-model="assetForm.PurchaseDate"
                         format="dd/MM/yyyy"
                         ></Datepicker>
                         <div class="datepicker-icon"></div>
@@ -170,6 +174,8 @@
                         <Datepicker 
                         class="mt-input input-datepicker"
                         format="dd/MM/yyyy"
+                        :class="{'danger' : !this.assetForm.ProductionYear}"
+                        v-model="assetForm.ProductionYear"
                         ></Datepicker>
                         <div class="datepicker-icon"></div>
                     </div>
@@ -229,21 +235,23 @@ export default {
             */
             await axios.get("https://localhost:7062/api/v1/FixedAsset/NewAssetCode").then(function(res){
                 console.log(res);
-                me.assetForm.AssetCode = res.data;
+                me.assetForm.FixedAssetCode = res.data;
             }).catch(function(err){
                 console.log("Lỗi:" +  err);
             })
             // Với form là thêm, message khi cancel form là 
         } else if (this.formMode == 0){
-            this.assetForm.AssetCode = this.newAssetCode;
             this.assetSelectedStore = {...this.assetSelected};
             this.assetForm = this.assetSelected;
-            this.assetForm.AssetCode = this.assetForm.AssetId;
         }
         
 
     },
     methods:{
+        // hien value datepicker xem sao
+        // testShowValueDate(){
+        //     console.log(this.assetForm.ProductionYear.value);
+        // },
         /**
         * Mô tả : Chặn sự kiện nhập chữ ở các ô input số
         * @param $event
@@ -391,8 +399,8 @@ export default {
         */
         getDepartment(value){
             if(value.itemData != null){
-                this.assetForm.DepartmentName = value.itemData.name;
-                this.assetForm.DepartmentCode = value.itemData.code;
+                this.assetForm.DepartmentName = value.itemData.DepartmentName;
+                this.assetForm.DepartmentCode = value.itemData.DepartmentCode;
             } else {
                 this.assetForm.DepartmentName = "";
                 this.assetForm.DepartmentCode = "";
@@ -401,10 +409,10 @@ export default {
         // Lấy mã tài sản, đồng thời binding tỷ lệ hao mòn, số năm sử dụng
         getTypeAsset(value){
             if(value.itemData != null){
-                this.assetForm.FixedAssetCategoryName = value.itemData.name;
+                this.assetForm.FixedAssetCategoryName = value.itemData.FixedAssetCategoryName;
                 this.assetForm.DepreciationRate = value.itemData.DepreciationRate;
                 this.assetForm.LifeTime = value.itemData.LifeTime;
-                this.assetForm.FixedAssetCategoryCode = value.itemData.code;
+                this.assetForm.FixedAssetCategoryCode = value.itemData.FixedAssetCategoryCode;
             } else {
                 this.assetForm.FixedAssetCategoryName = "";
                 this.assetForm.DepreciationRate = 0;
@@ -486,7 +494,7 @@ export default {
                         me.$emit("getAsset");
                         me.$emit("getNewCodeIncre",me.assetForm.AssetCode);
                     }).catch(function(err){
-                        console.log(err);
+                        console.log(err.response.data);
                         status = false;
                     }).then(function(){
                         // Thông báo là gọi api thành công hay thất bại để hiện toast
@@ -497,7 +505,7 @@ export default {
                 } else if(this.formMode == 0){ // Sửa
                     try{
                         
-                        await axios.put(`https://localhost:7062/api/v1/FixedAsset/`+ me.assetForm.AssetId, me.assetForm).then(function(res){
+                        await axios.put(`https://localhost:7062/api/v1/FixedAsset/`+ me.assetForm.FixedAssetId, me.assetForm).then(function(res){
                             console.log(res);
                             me.setStatus(true);
                             me.$emit("getAsset");
@@ -558,7 +566,7 @@ export default {
         * Created by: nbtin
         * Created date: 11:51 08/05/2022
         */
-        'assetForm.wearRate': function(){
+        'assetForm.DepreciationRate': function(){
             this.assetForm.wearPerYear = (this.assetForm.DepreciationRate * this.formatToInt(this.assetForm.Cost))/100;
             this.assetForm.wearPerYear = Math.floor(this.assetForm.wearPerYear);
         },  
@@ -568,8 +576,8 @@ export default {
             assets:{},
             asset:{},
             assetForm :{
-                AssetCode: '',
-                AssetName:'',
+                FixedAssetCode: '',
+                FixedAssetName:'',
                 Quantity: 1,
                 Cost: 0,
                 DepreciationRate: 0,
@@ -577,7 +585,8 @@ export default {
                 wearPerYear: 0,
                 accumulate: 0,
                 priceExtra: 0,
-                PurchaseDate: "2022-05-12T08:08:00.913Z",
+                PurchaseDate: new Date(),
+                ProductionYear: new Date(),
                 // ProductionYear: new Date(),
                 FixedAssetCategoryName: "",
                 DepartmentName: "",

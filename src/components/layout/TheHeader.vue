@@ -9,7 +9,7 @@
             </div>
             <div class="year-filter">
                 <span>Năm</span>
-                <span><b>2021</b></span>
+                <span><b>{{new Date().getFullYear()}}</b></span>
                 <div class="change-year-group-btn">
                     <div class="incre-year"></div>
                     <div class="decre-year"></div>

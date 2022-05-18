@@ -1,17 +1,17 @@
 <template>
-    <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false" @click="delItemSelect(asset.id)" >
+    <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false" @click="delItemSelect(asset.FixedAssetId)" >
         <td>
             <Checkbox :isCheckBox="isCheckBox" />
         </td>
         <td class="text-center" ref="TableAction">{{index + 1}}</td>
-        <td class="text-left">{{asset.AssetCode}}</td>
-        <td class="text-left" >{{asset.AssetName}}</td>
+        <td class="text-left">{{asset.FixedAssetCode}}</td>
+        <td class="text-left" >{{asset.FixedAssetName}}</td>
         <td class="text-left">{{asset.FixedAssetCategoryName}}</td>
         <td class="text-left">{{asset.DepartmentName}}</td>
         <td class="text-right">{{asset.Quantity}}</td>
         <td class="text-right">{{formatPrice(asset.Cost)}}</td>
-        <td class="text-right">{{asset.accumulate}}</td>
-        <td class="text-right">{{asset.priceExtra}}</td>
+        <td class="text-right">{{accumulate}}</td>
+        <td class="text-right">{{priceExtra}}</td>
         <td class="table-action" :class="{'d-opacity':isHover}">
             <div class="edit" @click="showEditForm">
                 
@@ -29,6 +29,14 @@ export default {
     props:["asset","checkbox","index"],
     components:{
         Checkbox
+    },
+    computed:{
+        accumulate(){
+            return this.formatPrice(Math.floor((this.asset.Cost * this.asset.DepreciationRate)/100 * this.asset.LifeTime));
+        },
+        priceExtra(){
+            return this.formatPrice(this.asset.Cost - Math.floor((this.asset.Cost * this.asset.DepreciationRate)/100 * this.asset.LifeTime));
+        }
     },
     watch:{
         checkbox: function(newValue){

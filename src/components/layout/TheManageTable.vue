@@ -99,7 +99,10 @@ export default {
                 // Lấy mã tự tăng
                 var newCode = res.data[res.data.length - 1].AssetCode;
                 me.newAssetCode = newCode;
-                
+                for(let i = 0; i < me.fixedAssets.length; i++){
+                    me.fixedAssets[i].accumulate = Math.floor((me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate)/100 * me.fixedAssets[i].LifeTime);
+                    me.fixedAssets[i].priceExtra = me.fixedAssets[i].Cost - Math.floor((me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate)/100 * me.fixedAssets[i].LifeTime);
+                }
             })
             .catch(function (error) {
                 // handle error
@@ -124,6 +127,7 @@ export default {
                 this.formMode = -1;
                 this.assetSelected = {
                     AssetName:'',
+                    AssetCode: '',
                     Quantity: 1,
                     Cost: 0,
                     DepreciationRate: 0,
@@ -137,8 +141,6 @@ export default {
                     priceFormat: 0,
                     FixedAssetCategoryName: "",
                     DepartmentName: "",
-                    codePart: "",
-                    codeAsset: "",
                 };
             }
         },
@@ -199,6 +201,7 @@ export default {
                         me.fixedAssets = me.fixedAssets.filter(function(el){
                             return !me.delList.includes(el.id);
                         })
+                        me.getAsset();
                         me.delList.splice(i,1); 
                         i--;
                         // console.log(me.delList);
