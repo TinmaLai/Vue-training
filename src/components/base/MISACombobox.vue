@@ -3,7 +3,7 @@
         <ejs-combobox 
         :text='this.content'
         v-model='content'
-        
+        ref="combobox"
         id='combobox' 
         :dataSource='this.filterCategories' 
         :fields="dataFields" 
@@ -12,7 +12,7 @@
         :allowCustom="allowCustom"
         :placeholder="placeholder"
         @blur="checkNullValue"
-        
+        @focus="showPopup()"
          ></ejs-combobox>
     </div>
 </template>
@@ -22,25 +22,30 @@ import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 import axios from "axios";
 
 export default {
-    props:["tag","placeholder","control","fieldName"],
+    props:["tag","placeholder","control","fieldName","flag"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
     async mounted(){
         var me = this;
+        
         if(this.tag == "DepartmentCode"){
-            await axios.get("https://localhost:7062/api/v1/Department").then(function(res){
+            if(this.flag == "filter") this.content = 'bophansudung';
+            await axios.get("https://localhost:7062/api/v1/Departments").then(function(res){
                 me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
                 me.categoriesPart = res.data;
+                if(me.flag == "filter") me.categoriesPart.push({'DepartmentId': 'bophansudung' , 'DepartmentCode': 'Bộ phận sử dụng'});
                 console.log(res);
             }).catch(function(err){
                 console.log(err);
             })
         }
         else if(this.tag == "FixedAssetCategoryCode"){
-            await axios.get("https://localhost:7062/api/v1/FixedAssetCategory").then(function(res){
+            if(this.flag == "filter") this.content = 'loaitaisan';
+            await axios.get("https://localhost:7062/api/v1/FixedAssetCategories").then(function(res){
                 me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
                 me.categoriesAsset = res.data;
+                if(me.flag == "filter") me.categoriesAsset.push({'FixedAssetCategoryId': 'loaitaisan' , 'FixedAssetCategoryCode': 'Loại tài sản'});
                 console.log(res);
             }).catch(function(err){
                 console.log(err);
@@ -55,6 +60,11 @@ export default {
         }
     },
     methods:{
+        // show popup combobox khi focus vao
+        showPopup(){
+            // this.content = "";
+            this.$refs.combobox.showPopup();
+        },
         // emit gia tri len cho form
         setValueSelected(e){
             console.log(e);
@@ -73,10 +83,12 @@ export default {
         },
         // check Null khi blur
         checkNullValue(){
-            if(this.itemSelected == null || this.itemSelected.item == null){
-                this.isAlert = true;
-            } else {
-                this.isAlert = false;
+            if(this.flag != "filter"){
+                if(this.itemSelected == null || this.itemSelected.item == null){
+                    this.isAlert = true;
+                } else {
+                    this.isAlert = false;
+                }
             }
         }
     },  

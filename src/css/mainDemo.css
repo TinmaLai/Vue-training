@@ -68,7 +68,9 @@ body{
     width: 100%;
 }
 
-
+.mt-10{
+    margin-top: 10px;
+}
 body{
     font-family: MISA Font;
     font-size: 13px;

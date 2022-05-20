@@ -2,10 +2,10 @@
    <div class="m-del-popup" :class="{'d-flex' : isShowAlert}">
         <div class="row content">
             <div class="alert-icon"></div>
-            <div class="alert-content">{{'Các trường sau không được để trống: ' + this.message + '.'}}</div>
+            <div class="alert-content">{{ this.message + '.'}}</div>
         </div>
         <div class="row popup-action" :class="{'d-flex': true}">
-            <div class="m-second-button" @click="selectOption()">Đóng</div>
+            <div class="m-button" @click="selectOption()">Đóng</div>
         </div>
     </div>
 </template>

@@ -32,10 +32,16 @@ export default {
     },
     computed:{
         accumulate(){
-            return this.formatPrice(Math.floor((this.asset.Cost * this.asset.DepreciationRate)/100 * this.asset.LifeTime));
+            if(this.asset.DepreciationPerYear != undefined && this.asset.DepreciationPerYear != 0)
+            return this.formatPrice(this.asset.DepreciationPerYear * this.asset.LifeTime);
+            else return this.formatPrice(this.asset.Cost * this.asset.DepreciationRate * this.asset.LifeTime);
         },
         priceExtra(){
-            return this.formatPrice(this.asset.Cost - Math.floor((this.asset.Cost * this.asset.DepreciationRate)/100 * this.asset.LifeTime));
+            var priceExtra = 0;
+            if(this.asset.DepreciationPerYear != undefined && this.asset.DepreciationPerYear != 0)
+            priceExtra = this.formatPrice(this.asset.Cost - Math.floor(this.asset.DepreciationPerYear * this.asset.LifeTime));
+            if(this.formatToInt(priceExtra) < 0) return 0;
+            return priceExtra;
         }
     },
     watch:{
@@ -75,6 +81,16 @@ export default {
         formatPrice(value){
             return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         },
+        /**
+        * Mô tả : Đưa tiền ở dạng dấu chấm về dạng bình thường
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 09:49 20/05/2022
+        */
+       formatToInt(value){
+           return value.toString().replaceAll('.','');
+       }
     },
     data() {
         return {

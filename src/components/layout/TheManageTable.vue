@@ -7,34 +7,35 @@
                     <div class="btn-icon">
                         <div class="search-icon"></div>
                     </div>
-                    <input placeholder="Tìm kiếm tài sản" type="text">
+                    <input @keyup="filterFixedAssets" placeholder="Tìm kiếm tài sản" type="text">
                 </div>
-                <button class="m-dropdown">
+                <div style="position: relative; height: 40px;">
                     <div class="m-dropdown-icon"></div>
-                    <p class="m-dropdown-suggest-icon">Loại tài sản</p>
-                    <div class="arrow-down"></div>
-                    <div class="m-dropdown-data d-none">
-                        <div class="m-dropdown-item">Trang thai 1</div>
-                        <div class="m-dropdown-item">Trang thai 2</div>
-                        <div class="m-dropdown-item">Trang thai 3</div>
-                        <div class="m-dropdown-item m-dropdown-selected">Trang thai 4</div>
-                    </div>
-                </button>
-                <button class="m-dropdown">
+                    <MISACombobox
+                        class="m-dropdown"
+                        placeholder="Loại tài sản"
+                        ref="FilterFixedAssetCategory"
+                        :flag="'filter'"
+                        :tag="'FixedAssetCategoryCode'"
+                        @getComboSelected="getFilterCategoryAsset"
+                    />
+                </div>
+                <div style="position: relative; height: 40px;">
                     <div class="m-dropdown-icon"></div>
-                    <p class="m-dropdown-suggest-icon" >Bộ phận sử dụng</p>
-                    <div class="arrow-down"></div>
-                    <div class="m-dropdown-data d-none">
-                        <div class="m-dropdown-item">Trang thai 1</div>
-                        <div class="m-dropdown-item">Trang thai 2</div>
-                        <div class="m-dropdown-item">Trang thai 3</div>
-                        <div class="m-dropdown-item m-dropdown-selected">Trang thai 4</div>
-                    </div>
-                </button>
+                    <MISACombobox
+                        class="m-dropdown"
+                        placeholder="Bộ phận sử dụng"
+                        ref="FilterDepartment"
+                        :flag="'filter'"
+                        :tag="'DepartmentCode'"
+                        @getComboSelected="getFilterDepartment"
+                    />
+                    
+                </div>
             </div>
             <div class="table-action" >
                 <button id="add-staff-btn" class="m-button" @click="toggleStaffDialog(true,1)">+Thêm tài sản</button>
-                <button class="m-jicon-button"><div class="table-action-excel"></div></button>
+                <button @click="showImportDialog" class="m-jicon-button"><div class="table-action-excel"></div></button>
                 <button class="m-jicon-button" @click="popUpDelAlert" ><div class="table-action-del"></div></button>
             </div>
         </div>
@@ -62,6 +63,10 @@
         @getDelOption="handleDelOption"
         :delList="delList"
         />
+        <ImportExcel
+        :isShowAlert="isShowImportDialog"
+        @selectOption="handleExcelOption"
+        />
         <ToastMessage :isShowToast="isShowToast" :status="saveStatus"/>
     </div>
 </template>
@@ -71,6 +76,8 @@ import EmployeeList from "../../views/EmployeeList.vue";
 import AddStaffForm from "../../views/AddStaffForm.vue";
 import DeleteAlert from "../../views/DeleteAlertDialog.vue";
 import ToastMessage from "../base/MISAToastMessage.vue";
+import MISACombobox from "../base/MISACombobox.vue";
+import ImportExcel from '../../views/ImportExcel.vue';
 
 import axios from "axios";
 
@@ -81,10 +88,13 @@ export default {
         EmployeeList,
         AddStaffForm,
         DeleteAlert,
-        ToastMessage
+        ToastMessage,
+        MISACombobox,
+        ImportExcel
 
     },
     async mounted(){
+        // Bỏ blur đỏ của 2 ô filter
         /**
         * Mô tả : Call API đưa dữ liệu lên bản
         * Created by: nbtin
@@ -92,16 +102,17 @@ export default {
         */
         this.isLoading = true;
         var me = this;
-        await axios.get("https://localhost:7062/api/v1/FixedAsset")
+        await axios.get("https://localhost:7062/api/v1/FixedAssets")
             .then(function(res){
                 console.log(res);
                 me.fixedAssets = res.data;
+                me.cloneAPIFixedAssets = me.fixedAssets;
                 // Lấy mã tự tăng
                 var newCode = res.data[res.data.length - 1].AssetCode;
                 me.newAssetCode = newCode;
                 for(let i = 0; i < me.fixedAssets.length; i++){
-                    me.fixedAssets[i].accumulate = Math.floor((me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate)/100 * me.fixedAssets[i].LifeTime);
-                    me.fixedAssets[i].priceExtra = me.fixedAssets[i].Cost - Math.floor((me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate)/100 * me.fixedAssets[i].LifeTime);
+                    if(me.fixedAssets[i].DepreciationPerYear == 0)
+                        me.fixedAssets[i].DepreciationPerYear = Math.floor(me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate);
                 }
             })
             .catch(function (error) {
@@ -115,9 +126,82 @@ export default {
             
         
     },
-    watch:{
-    },
     methods: {
+        /**
+        * Mô tả : Hiện bảng excel
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 23:32 20/05/2022
+        */
+        showImportDialog(){
+            this.isShowImportDialog = true;
+        },
+        /**
+        * Mô tả : Xử lý khi chọn option trong excel
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 00:18 21/05/2022
+        */
+        async handleExcelOption(option,file){
+            if(option == 'true'){
+                if(file != undefined){
+                    console.log(file);
+                    var formData = new FormData();
+                    formData.append('formFile', file);
+                    var me = this;
+                    await axios.post('https://localhost:7062/api/v1/FixedAssets/import', 
+                        formData,
+                        {
+                            headers:{
+                                'Content-Type': 'multipart/form-data'
+                            }
+                    
+                    }).then(function(res){
+                        console.log(res);
+                        me.handleStatusSave(true);
+                        me.getAsset();
+                    }).catch(function(err){
+                        console.log(err.response);
+                         me.handleStatusSave(false);
+                        me.getAsset();
+                    });
+                }
+                this.isShowImportDialog = false;
+            } else this.isShowImportDialog = false;
+        },
+        /**
+        * Mô tả : Lấy loại tài sản từ chọn combobox filter
+        * @param event: event khi đã chọn combobox
+        * Created by: nbtin
+        * Created date: 20:54 19/05/2022
+        */
+        getFilterCategoryAsset(e){
+            this.filterFixedAssetCategory = e.itemData.FixedAssetCategoryName;
+        },
+        /**
+        * Mô tả : Lấy bộ phận sử dụng từ chọn combobox filter
+        * @param event: event khi dã chọn combobox
+        * Created by: nbtin
+        * Created date: 20:56 19/05/2022
+        */
+        getFilterDepartment(e){
+            this.filterDepartment = e.itemData.DepartmentName;
+        },
+        //TODO: FILTER FIXEDASSET
+        filterFixedAssets(e){
+            clearTimeout(this.timeOut);
+
+            this.timeOut = setTimeout(() => {
+                console.log(e.target.value);
+            }, 1000);
+            // setTimeout(() => {
+            //     this.filteredArrayFixedAssets = this.cloneAPIFixedAssets.filter(asset => asset.FixedAssetName.includes(e.target.value));
+            //     this.fixedAssets = this.filteredArrayFixedAssets;
+            // },1000);
+            
+        },
         // Đóng mở form thêm tài sản
         toggleStaffDialog(show,formMode){
             this.formMode = formMode;
@@ -152,12 +236,18 @@ export default {
             this.isLoading = true;
             var me = this;
             
-            await axios.get("https://localhost:7062/api/v1/FixedAsset")
+            await axios.get("https://localhost:7062/api/v1/FixedAssets")
                 .then(function(res){
                     me.fixedAssets = res.data;
+                    me.cloneAPIFixedAssets = me.fixedAssets;
                     // Lấy mã tự tăng
                     var newCode = res.data[res.data.length - 1].assetId;
                     me.newAssetCode = newCode;
+                    for(let i = 0; i < me.fixedAssets.length; i++){
+                        if(me.fixedAssets[i].DepreciationPerYear == 0)
+                            me.fixedAssets[i].DepreciationPerYear = Math.floor(me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate);
+                        
+                    }
                 })
                 .catch(function (error) {
                     // handle error
@@ -193,7 +283,7 @@ export default {
                 var me = this;
                 me.isShowAlert = false;
                 for(let i = 0; i < me.delList.length; i++){
-                    await axios.delete(`https://localhost:7062/api/v1/FixedAsset/`+me.delList[i])
+                    await axios.delete(`https://localhost:7062/api/v1/FixedAssets/`+me.delList[i])
                      .then(function(res){
                         console.log(res);
                         // Xóa các phần tử bị xóa ở mảng fixedAssets đổ lên bảng
@@ -235,6 +325,9 @@ export default {
     
     data() {
         return {
+            timeOut: null,
+            cloneAPIFixedAssets: [],
+            filteredArrayFixedAssets: [],
             fixedAssets: [],
             isShowDialog: false, 
             assetAdd: {},
@@ -247,6 +340,9 @@ export default {
             isTableLess: false,
             saveStatus: null,
             isLoading: false,
+            filterFixedAssetCategory: "",
+            filterDepartment: "",
+            isShowImportDialog: false,
         }
     },
 }

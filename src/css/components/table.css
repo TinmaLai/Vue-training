@@ -83,36 +83,47 @@
 
 .m-table td:nth-child(1){
     width: 29px;
+    min-width: 29px;
 }
 .m-table td:nth-child(2){
     width: 80px;
+    min-width: 80px;
 }
 .m-table td:nth-child(3){
     width: 170px;
+    min-width: 170px;
 }
 .m-table td:nth-child(4){
     width: 150px;
+    min-width: 150px;
 }
 .m-table td:nth-child(5){
     width: 150px;
+    min-width: 150px;
 }
 .m-table td:nth-child(6){
     width: 150px;
+    min-width: 150px;
 }
 .m-table td:nth-child(7){
     width: 80px;
+    min-width: 80px;
 }
 .m-table td:nth-child(8){
     width: 110px;
+    min-width: 110px;
 }
 .m-table td:nth-child(9){
     width: 123px;
+    min-width: 123px;
 }
 .m-table td:nth-child(10){
     width: 112px;
+    min-width: 112px;
 }
 .m-table td:nth-child(11){
     width: 90px;
+    min-width: 90px;
 }
 .tfoot-less{
     position: absolute !important;

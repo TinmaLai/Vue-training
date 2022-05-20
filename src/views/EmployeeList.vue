@@ -114,10 +114,10 @@ export default {
                     return parseInt(item1) + parseInt(this.formatToInt(item2.Cost));
                 },init);
                 let sumAccum = this.fixedAssets.reduce((item1,item2) => {
-                    return parseInt(item1) + parseInt(this.formatToInt(item2.accumulate));
+                    return parseInt(item1) + parseInt(this.formatToInt(item2.DepreciationPerYear * item2.LifeTime));
                 },init);
                 let sumPriceExtra = this.fixedAssets.reduce((item1,item2) => {
-                    return parseInt(item1) + parseInt(this.formatToInt(item2.priceExtra));
+                    return parseInt(item1) + parseInt(item2.Cost - this.formatToInt(item2.DepreciationPerYear * item2.LifeTime));
                 },init);
                 sum.push(this.formatPrice(sumQuantity));
                 sum.push(this.formatPrice(sumPrice));
@@ -158,7 +158,7 @@ export default {
         async ShowStaffDialog(id){
             var asset = {};
             var me = this;
-            await axios.get(`https://localhost:7062/api/v1/FixedAsset/${id}`).then(function(res){
+            await axios.get(`https://localhost:7062/api/v1/FixedAssets/${id}`).then(function(res){
                 console.log(res);
                 asset = res.data;
             }).catch(function(err){

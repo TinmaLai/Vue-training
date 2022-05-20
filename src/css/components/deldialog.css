@@ -13,12 +13,29 @@
     display: none;
     box-shadow: 0 3px 13px rgba(0, 0, 0, .16);
 }
+
+.m-import-popup{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 200px;
+    border-radius: 4px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    display: none;
+    box-shadow: 0 3px 13px rgba(0, 0, 0, .16);
+    flex-direction: column;
+    padding-left: 20px;
+}
+
 .m-del-popup .alert-icon{
     background: url('../../asset/icons/qlts-icon.png') no-repeat -416px -66px;
 	width: 40px;
 	height: 20px;
 }
-.m-del-popup .content{
+.m-del-popup .content, .m-import-popup .content{
     width: auto;
     display: flex;
     gap: 15px;
@@ -30,13 +47,20 @@
     line-height: 20px;
     margin-right: 10px; 
 }
-.m-del-popup .popup-action{
+.m-import-popup .content{
+    margin-left: 0;
+    margin-top: 0;
+}
+.m-import-popup .m-second-button{
+    width: 100px;
+}
+.m-del-popup .popup-action, .m-import-popup .popup-action{
     display: flex;
     justify-content: flex-end;
     position: absolute;
     bottom: 0;
     gap: 20px;
-    padding-right: 20px;
+    padding-right: 40px;
     display: none;
     
 }
@@ -47,5 +71,7 @@
 
 }
 
-
+.m-del-popup row{
+    display: fl
+}
 

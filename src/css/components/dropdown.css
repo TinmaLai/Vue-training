@@ -9,9 +9,12 @@
     padding: 0;
     text-align: left;
     width: 219px;
-
+    padding-left: 16px;
     align-items: center;
+    color: black;
 }
+
+
 
 .m-dropdown .m-dropdown-suggest{
     font-family: MISA Font Regular; 
@@ -70,6 +73,9 @@
 	width: 24px;
 	height: 24px;
     margin-left: 10px;
+    position: absolute;
+    top: 25%;
+    z-index: 4;
 }
 
 .date-picker{

@@ -20,7 +20,7 @@ export default {
     props:["controlledContent","title","placeholder","type","tag","isError","fieldName"],
     watch:{
         controlledContent : function(newValue){
-            if(newValue != "" && newValue != "0") this.isAlert = false;
+            if(newValue != "") this.isAlert = false;
             this.content = newValue;
         },
         isError: function(newValue){
@@ -35,7 +35,7 @@ export default {
         },
         // check Null khi blur
         checkNullValue(){
-            if(this.content == "" || this.content == "0"){
+            if(this.content === "" ){
                 this.isAlert = true;
             } else {
                 this.isAlert = false;
