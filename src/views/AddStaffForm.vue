@@ -509,48 +509,51 @@ export default {
             var me = this;
             me.calAllFieldToSave();
             let check = me.checkNullProperty();
-            check = me.checkValidateData();
-            // Thêm 
-            if(check == true){
-                if(this.formMode == 1){
-                   let status = false;
-                   let message = "";
-                   console.log(me.assetForm);
-                    await axios.post("https://localhost:7062/api/v1/FixedAssets",me.assetForm).then(function(res){
-                        console.log(res);
-                        status = true;
-                        message = messageResource.SAVE_SUCCESS;
-                        // Gán mã tự động tăng cho lần mở form tiếp theo
-                        me.$emit("getAsset");
-                        me.$emit("getNewCodeIncre",me.assetForm.AssetCode);
-                    }).catch(function(err){
-                        console.log(err.response.data);
-                        status = false;
-                        message = messageResource.SAVE_FAILED;
-                    }).then(function(){
-                        // Thông báo là gọi api thành công hay thất bại để hiện toast
-                        me.setStatus(status, message);
-                    })
-                    
-                    
-                } else if(this.formMode == 0){ // Sửa
-                    try{
-                        
-                        await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm).then(function(res){
-                            console.log(res);
-                            me.setStatus(true);
-                            me.$emit("getAsset");
-                        })
-                    } catch (err){
-                        console.log(err);
-                        this.assetForm = me.assetSelectedStore;
-                        me.setStatus(false);
-                    }
-                    
-                }
-            } else{
+            if(check == false){
                 this.showValidateAlert = true;
             }
+            else if (check == true){
+                check = me.checkValidateData();
+                if(check == false){
+                    this.showValidateAlert = true;
+                } else if(check == true){
+                    if(this.formMode == 1){
+                        let status = false;
+                        let message = "";
+                        console.log(me.assetForm);
+                        await axios.post("https://localhost:7062/api/v1/FixedAssets",me.assetForm).then(function(res){
+                            console.log(res);
+                            status = true;
+                            message = messageResource.SAVE_SUCCESS;
+                            // Gán mã tự động tăng cho lần mở form tiếp theo
+                            me.$emit("getAsset");
+                            me.$emit("getNewCodeIncre",me.assetForm.AssetCode);
+                        }).catch(function(err){
+                            console.log(err.response.data);
+                            status = false;
+                            message = messageResource.SAVE_FAILED;
+                        }).then(function(){
+                            // Thông báo là gọi api thành công hay thất bại để hiện toast
+                            me.setStatus(status, message);
+                        })
+                    } else if(this.formMode == 0){ // Sửa
+                        try{
+                            
+                            await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm).then(function(res){
+                                console.log(res);
+                                me.setStatus(true);
+                                me.$emit("getAsset");
+                            })
+                        } catch (err){
+                            console.log(err);
+                            this.assetForm = me.assetSelectedStore;
+                            me.setStatus(false);
+                        }
+                        
+                    }
+                }   
+            }
+            
         },
        
     },

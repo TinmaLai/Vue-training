@@ -196,6 +196,7 @@ export default {
         filterFixedAssets(){
             clearTimeout(this.timeOut);
             var me = this;
+            
             this.timeOut = setTimeout(async () => {
                 var searchInputValue = this.$refs.searchContent.value;
 
