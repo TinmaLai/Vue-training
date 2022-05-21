@@ -220,6 +220,7 @@ import CancelAlert from '../views/CancelAlertDialog.vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import MISAInput from '../components/base/MISAInput.vue';
 import ValidateAlert from '../views/ValidateAlertDialog.vue';
+import messageResource from '../resources/resource';
 
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
@@ -259,20 +260,6 @@ export default {
     
     },
     methods:{
-        /**
-        * Mô tả : Xử lý người dùng chọn đồng ý hay đóng bảng chọn file import excel
-        * @param
-        * @return
-        * Created by: nbtin
-        * Created date: 23:24 20/05/2022
-        */
-        handleExcelOption(option){
-            if(option == true){
-                console.log("Excel handle");
-            } else {
-                this.ShowImportExcelDialog = true;
-            }
-        },
         /**
         * Mô tả : Chặn sự kiện nhập chữ ở các ô input số
         * @param $event
@@ -362,13 +349,13 @@ export default {
         * Created by: nbtin
         * Created date: 11:46 08/05/2022
         */
-        setStatus(status){
+        setStatus(status,message){
             if(status == true){
                 this.resetForm(this);
-                this.$emit("getStatusSave",true);
+                this.$emit("getStatusSave",true,message);
             } else {
                 this.resetForm(this);
-                this.$emit("getStatusSave",false);
+                this.$emit("getStatusSave",false,message);
             }
             
         },
@@ -417,7 +404,7 @@ export default {
         */
         checkValidateData(){
             var check = true;
-            if(this.assetForm.LifeTime != (Math.floor(1/this.assetForm.DepreciationRate))){
+            if((this.assetForm.LifeTime != (Math.floor(1/this.assetForm.DepreciationRate))) && this.assetForm.LifeTime != 0){
                 
                 this.validateData = "Tỷ lệ hao mòn phải bằng 1/Số năm sử dụng";
                 check = false;
@@ -527,19 +514,22 @@ export default {
             if(check == true){
                 if(this.formMode == 1){
                    let status = false;
+                   let message = "";
                    console.log(me.assetForm);
                     await axios.post("https://localhost:7062/api/v1/FixedAssets",me.assetForm).then(function(res){
                         console.log(res);
                         status = true;
+                        message = messageResource.SAVE_SUCCESS;
                         // Gán mã tự động tăng cho lần mở form tiếp theo
                         me.$emit("getAsset");
                         me.$emit("getNewCodeIncre",me.assetForm.AssetCode);
                     }).catch(function(err){
                         console.log(err.response.data);
                         status = false;
+                        message = messageResource.SAVE_FAILED;
                     }).then(function(){
                         // Thông báo là gọi api thành công hay thất bại để hiện toast
-                        me.setStatus(status);
+                        me.setStatus(status, message);
                     })
                     
                     
@@ -656,7 +646,7 @@ export default {
             cancelMessage: null,
             assetSelectedStore: null,
             nullValueProperty: [],
-            
+            showValidateAlert: false,
             showImportExcelDialog: false,
             nullFields: [],
             validateData: "abc",

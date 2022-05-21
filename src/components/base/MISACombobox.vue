@@ -11,6 +11,7 @@
         @select="setValueSelected" 
         :allowCustom="allowCustom"
         :placeholder="placeholder"
+        :autofill="true"
         @blur="checkNullValue"
         @focus="showPopup()"
          ></ejs-combobox>
@@ -22,7 +23,7 @@ import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 import axios from "axios";
 
 export default {
-    props:["tag","placeholder","control","fieldName","flag"],
+    props:["tag","placeholder","control","fieldName","flag","isFilter"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
@@ -32,9 +33,10 @@ export default {
         if(this.tag == "DepartmentCode"){
             if(this.flag == "filter") this.content = 'bophansudung';
             await axios.get("https://localhost:7062/api/v1/Departments").then(function(res){
-                me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
+                if(me.flag != "filter") me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
+                else me.dataFields =  {value: 'DepartmentId',text:'DepartmentName'};
                 me.categoriesPart = res.data;
-                if(me.flag == "filter") me.categoriesPart.push({'DepartmentId': 'bophansudung' , 'DepartmentCode': 'Bộ phận sử dụng'});
+                if(me.flag == "filter") me.categoriesPart.unshift({'DepartmentId': 'bophansudung' , 'DepartmentName': 'Bộ phận sử dụng'});
                 console.log(res);
             }).catch(function(err){
                 console.log(err);
@@ -43,9 +45,10 @@ export default {
         else if(this.tag == "FixedAssetCategoryCode"){
             if(this.flag == "filter") this.content = 'loaitaisan';
             await axios.get("https://localhost:7062/api/v1/FixedAssetCategories").then(function(res){
-                me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
+                if(me.flag != "filter") me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
+                else me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryName'};
                 me.categoriesAsset = res.data;
-                if(me.flag == "filter") me.categoriesAsset.push({'FixedAssetCategoryId': 'loaitaisan' , 'FixedAssetCategoryCode': 'Loại tài sản'});
+                if(me.flag == "filter") me.categoriesAsset.unshift({'FixedAssetCategoryId': 'loaitaisan' , 'FixedAssetCategoryName': 'Loại tài sản'});
                 console.log(res);
             }).catch(function(err){
                 console.log(err);
@@ -69,11 +72,11 @@ export default {
         setValueSelected(e){
             console.log(e);
             this.itemSelected = e;
-            if(this.tag == "Department"){
-                this.content = e.itemData.DepartmentCode;
-            } else if(this.tag == "FixedAssetCategory"){
-                this.content = e.itemData.FixedAssetCategoryCode;
-            }
+            // if(this.tag == "Department"){
+            //     this.content = e.itemData.DepartmentCode;
+            // } else if(this.tag == "FixedAssetCategory"){
+            //     this.content = e.itemData.FixedAssetCategoryCode;
+            // }
             this.$emit("getComboSelected",e);
         },
         // show dropdown
@@ -84,8 +87,19 @@ export default {
         // check Null khi blur
         checkNullValue(){
             if(this.flag != "filter"){
-                if(this.itemSelected == null || this.itemSelected.item == null){
+                if(this.itemSelected == null || this.itemSelected.item == null || this.content == ""){
                     this.isAlert = true;
+                } else {
+                    this.isAlert = false;
+                }
+            } else if(this.flag == "filter"){
+                // TODO: Set giá trị về mặc định cho combobox khi để trống và blur ra ngoài nhưng vẫn chưa đc
+                if(this.itemSelected == null || this.itemSelected.item == null){
+                    if(this.tag == 'FixedAssetCategoryCode'){
+                        this.content = "Loại tài sản"; 
+                    } else if(this.tag == 'DepartmentCode'){
+                        this.content = "Bộ phận sử dụng";
+                    }
                 } else {
                     this.isAlert = false;
                 }

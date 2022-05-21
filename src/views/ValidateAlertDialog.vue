@@ -15,7 +15,7 @@ export default {
     props:["isShowAlert","message"],
     methods:{
         selectOption(){
-            this.$emit("selectOption")
+            this.$emit("selectOption");
         }
     }
 }

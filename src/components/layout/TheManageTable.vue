@@ -7,7 +7,7 @@
                     <div class="btn-icon">
                         <div class="search-icon"></div>
                     </div>
-                    <input @keyup="filterFixedAssets" placeholder="Tìm kiếm tài sản" type="text">
+                    <input ref="searchContent" @input="filterFixedAssets" placeholder="Tìm kiếm tài sản" type="text">
                 </div>
                 <div style="position: relative; height: 40px;">
                     <div class="m-dropdown-icon"></div>
@@ -67,7 +67,7 @@
         :isShowAlert="isShowImportDialog"
         @selectOption="handleExcelOption"
         />
-        <ToastMessage :isShowToast="isShowToast" :status="saveStatus"/>
+        <ToastMessage :isShowToast="isShowToast" :status="saveStatus" :message="messageToToast"/>
     </div>
 </template>
 
@@ -78,6 +78,7 @@ import DeleteAlert from "../../views/DeleteAlertDialog.vue";
 import ToastMessage from "../base/MISAToastMessage.vue";
 import MISACombobox from "../base/MISACombobox.vue";
 import ImportExcel from '../../views/ImportExcel.vue';
+import messageResource from '../../resources/resource';
 
 import axios from "axios";
 
@@ -160,11 +161,11 @@ export default {
                     
                     }).then(function(res){
                         console.log(res);
-                        me.handleStatusSave(true);
+                        me.handleStatusSave(true,res.data.length + " " + messageResource.SAVE_IMPORT_EXCEL_SUCCESS);
                         me.getAsset();
                     }).catch(function(err){
                         console.log(err.response);
-                         me.handleStatusSave(false);
+                         me.handleStatusSave(false,messageResource.SAVE_IMPORT_EXCEL_FAILED);
                         me.getAsset();
                     });
                 }
@@ -179,6 +180,7 @@ export default {
         */
         getFilterCategoryAsset(e){
             this.filterFixedAssetCategory = e.itemData.FixedAssetCategoryName;
+            this.filterFixedAssets();
         },
         /**
         * Mô tả : Lấy bộ phận sử dụng từ chọn combobox filter
@@ -188,19 +190,33 @@ export default {
         */
         getFilterDepartment(e){
             this.filterDepartment = e.itemData.DepartmentName;
+            this.filterFixedAssets();
         },
         //TODO: FILTER FIXEDASSET
-        filterFixedAssets(e){
+        filterFixedAssets(){
             clearTimeout(this.timeOut);
+            var me = this;
+            this.timeOut = setTimeout(async () => {
+                var searchInputValue = this.$refs.searchContent.value;
 
-            this.timeOut = setTimeout(() => {
-                console.log(e.target.value);
+                var departmentContent = "", fixedAssetCategoryContent = "";
+
+                if(me.filterDepartment == "Bộ phận sử dụng") departmentContent = "";
+                else departmentContent = me.filterDepartment;
+
+                if(me.filterFixedAssetCategory == "Loại tài sản") fixedAssetCategoryContent = "";
+                else fixedAssetCategoryContent = me.filterFixedAssetCategory;
+
+                var queryString = "?searchContent=" + searchInputValue + "&departmentName=" + departmentContent + "&fixedAssetCategoryName=" + fixedAssetCategoryContent; 
+                
+                await axios.get('https://localhost:7062/api/v1/FixedAssets/filter' + queryString).then(function(res){
+                    console.log(res);
+                    me.fixedAssets = res.data;
+
+                }).catch(function(err){
+                    console.log(err);
+                })
             }, 1000);
-            // setTimeout(() => {
-            //     this.filteredArrayFixedAssets = this.cloneAPIFixedAssets.filter(asset => asset.FixedAssetName.includes(e.target.value));
-            //     this.fixedAssets = this.filteredArrayFixedAssets;
-            // },1000);
-            
         },
         // Đóng mở form thêm tài sản
         toggleStaffDialog(show,formMode){
@@ -282,31 +298,28 @@ export default {
             } else{
                 var me = this;
                 me.isShowAlert = false;
-                for(let i = 0; i < me.delList.length; i++){
-                    await axios.delete(`https://localhost:7062/api/v1/FixedAssets/`+me.delList[i])
-                     .then(function(res){
-                        console.log(res);
-                        // Xóa các phần tử bị xóa ở mảng fixedAssets đổ lên bảng
-                        
-                        me.fixedAssets = me.fixedAssets.filter(function(el){
-                            return !me.delList.includes(el.id);
-                        })
-                        me.getAsset();
-                        me.delList.splice(i,1); 
-                        i--;
-                        // console.log(me.delList);
-                        
-                    }).catch(function(err){
-                        console.log(err);
-                    })
-                   
-                }
+                await axios.delete(`https://localhost:7062/api/v1/FixedAssets/multiDelete`,{
+                    data: JSON.stringify(me.delList),
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }).then(function(res){
+                    console.log(res);
+                    me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
+                    me.getAsset();
+                    // console.log(me.delList);
+                    
+                }).catch(function(err){
+                    console.log(err);
+                    me.handleStatusSave(false,messageResource.DELETE_FAILED);
+                })
                 me.$emit("getAsset");
             }       
         },
         // Xử lý hiện toast message là thành công hay thất bại
-        handleStatusSave(status){
+        handleStatusSave(status,message){
             var me = this;
+            this.messageToToast = message;
             if(status == true){
                 this.isShowToast = true;
                 this.saveStatus = true;
@@ -343,6 +356,7 @@ export default {
             filterFixedAssetCategory: "",
             filterDepartment: "",
             isShowImportDialog: false,
+            messageToToast: ""
         }
     },
 }
