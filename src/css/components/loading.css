@@ -1,7 +1,13 @@
 .loading-table{
     background-image: url(../../asset/icons/loading.gif);
-    height: 100px;
+    background-size: 50px;
+    height: 120%;
     width: 100%;
-    background-position: center 10px;
+    background-position: center center;
     background-repeat: no-repeat;
+    z-index: 10;
+    position: absolute;
+    top: 220px;
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
 }

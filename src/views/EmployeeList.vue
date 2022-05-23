@@ -1,7 +1,8 @@
 <template>
     <div class="contain-all-table">
+        
         <div class="contain-table">
-            <table class="staff-list m-table">
+            <table class="staff-list m-table" >
                 <thead>
                     <tr>
                         <td>
@@ -19,41 +20,31 @@
                         <td>Chức năng</td>
                     </tr>
                 </thead>    
-                <tbody>
+                <div class="loading-table" v-show="isLoading"></div>
+                <tbody v-show="!isLoading">
                     <TableItem 
                     v-for="(asset, index) in fixedAssets" 
                     :asset="asset"
                     :key="asset.assetId"
                     :index="index"
                     @getDelIdSelect="delItemSelected"
-                    @editClick="ShowStaffDialog(asset.FixedAssetId)"
-                    @dblclick="ShowStaffDialog(asset.FixedAssetId)"
+                    @cloneClick="ShowStaffDialog(asset.FixedAssetId,2)"
+                    @editClick="ShowStaffDialog(asset.FixedAssetId,0)"
+                    @dblclick="ShowStaffDialog(asset.FixedAssetId,0)"
                     :checkbox="delList.includes(asset.FixedAssetId)"
                     />
-                    
                 </tbody>
+                
             </table>
             
         </div>
         <table class="table-footer">
-            <tr>
-                    <td></td>
-                    <td class=""></td>
-                    <td class="text-left"></td>
-                    <td class="text-left" ></td>
-                    <td class="text-left"></td>
-                    <td class="text-left"></td>
-                    <td class="text-right"></td>
-                    <td class="text-right"></td>
-                    <td class="text-right"></td>
-                    <td class="text-right"></td>
-                    <td></td>
-                </tr>
+            
             <tr id="pagination-table">
                 <td colspan="6" style="width: 62%">
                     <div class="page-navigation">
-                        <p class="content-details">Tổng số <b>200</b> bản ghi</p>
-                        <button class="m-dropdown" style="width: 59px; height: 25px;">
+                        <p class="content-details">Tổng số <b>{{this.totalRecord}}</b> bản ghi</p>
+                        <!-- <button class="m-dropdown" style="width: 59px; height: 25px;">
                             <p class="m-dropdown-suggest">20</p>
                             <div class="arrow-down"></div>
                             <div class="m-dropdown-data d-none">
@@ -61,8 +52,13 @@
                                 <div class="m-dropdown-item">50</div>
                                 <div class="m-dropdown-item">100</div>
                             </div>
-                        </button>
-                        <div class="m-pagination" style="width: 147px;">
+                        </button> -->
+                        <MISACombobox
+                        :tag="'DropdownPagination'"
+                        class="dropdown-pagination"
+                        @getComboSelected="getPageSize"
+                        />
+                        <!-- <div class="m-pagination" style="width: 147px;">
                             <button class="prev-page-button"></button>
                             <div class="m-pagination-pages">
                                 <div class="page-item current-page">1</div>
@@ -71,7 +67,17 @@
                                 <div class="page-item">4</div>
                             </div>
                             <button class="next-page-button"></button>
-                        </div>
+                        </div> -->
+                        <MISAPagination
+                            :pageCount="calTotalPage"
+                            :prev-text="'pre'"
+                            :prev-link-class="'prev-link-class'"
+                            :next-text="'next'"
+                            :next-link-class="'next-link-class'"
+                            :container-class="'m-pagination'"
+                            :click-handler="clickCallback"
+                        >
+                        </MISAPagination>
                     </div>
                 </td>
                 <td class="text-right">{{this.sumRow[0]}}</td>
@@ -87,15 +93,36 @@
 <script>
 import Checkbox from "../components/base/MISACheckbox.vue";
 import TableItem from "../views/TableItem.vue";
+import MISACombobox from "../components/base/MISACombobox.vue";
 import axios from "axios";
 
 export default {
-    props:["assetAdd","fixedAssets","isTableLess"],
+    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord"],
     components:{
         Checkbox,
-        TableItem
+        TableItem,
+        MISACombobox
     },
+    // async mounted(){
+    //     var me = this;
+    //     await axios.get("https://localhost:7062/api/v1/FixedAssets").then(function(res){
+    //         me.totalRecord = res.data.length;
+    //         me.totalPage = Math.ceil(me.totalRecord / me.pageSize);
+    //     }).catch(function(err){
+    //         console.log(err);
+    //     })
+    // },
     computed:{
+        /**
+        * Mô tả : Tính tổng số trang 
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 11:53 22/05/2022
+        */
+        calTotalPage(){
+            return Math.ceil(this.totalRecord/this.pageSize);
+        },
         /**
         * Mô tả : Tính phần tổng cổng ở dưới cùng của bảng
         * @param
@@ -130,6 +157,28 @@ export default {
     },
     methods:{
         /**
+        * Mô tả : Lấy số bản ghi trong 1 trang từ dropdowm phân trang
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 11:48 22/05/2022
+        */
+        getPageSize(e){
+            var pageSize = e.itemData.pageSize;
+            this.pageSize = pageSize;
+            this.$emit("getPageSize",pageSize);
+        },
+        /**
+        * Mô tả : Bắt sự kiện click của phân trang
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 00:00 22/05/2022
+        */
+        clickCallback(pageNumber){
+            this.$emit("getPageNumber",pageNumber);
+        },
+        /**
         * Mô tả : Định dạng tiền ở dạng dấu chấm VD: 1.000.000 =  một triệu đồng
         * @param value
         * Created by: nbtin
@@ -155,7 +204,7 @@ export default {
         * Created by: nbtin
         * Created date: 12:22 08/05/2022
         */
-        async ShowStaffDialog(id){
+        async ShowStaffDialog(id,formMode){
             var asset = {};
             var me = this;
             await axios.get(`https://localhost:7062/api/v1/FixedAssets/${id}`).then(function(res){
@@ -165,7 +214,7 @@ export default {
                 console.log(err);
             }).then(function () {
                 me.$emit("getAssetSelected",asset);
-                me.$emit("toggleStaffDialog",true,0);
+                me.$emit("toggleStaffDialog",true,formMode);
             });
 
             
@@ -211,6 +260,8 @@ export default {
             delList: [],
             checkbox: false,
             isCheckAll: false,
+            pageSize: 15,
+            totalPage : 1,
         }
     },
 }

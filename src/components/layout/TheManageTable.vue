@@ -1,7 +1,6 @@
 <template>
     <div class="staff-manage">
-        <div class="loading-table" v-if="isLoading"></div>
-        <div class="top-row"  v-if="!isLoading">
+        <div class="top-row" >
             <div class="filter">
                 <div class="m-field-input-icon">
                     <div class="btn-icon">
@@ -30,7 +29,6 @@
                         :tag="'DepartmentCode'"
                         @getComboSelected="getFilterDepartment"
                     />
-                    
                 </div>
             </div>
             <div class="table-action" >
@@ -40,13 +38,16 @@
             </div>
         </div>
         <EmployeeList 
-        v-if="!isLoading"
+        @getPageSize="getPageSize"
+        @getPageNumber="searchWithPageNumber"
         :assetAdd="assetAdd" 
         :fixedAssets="fixedAssets"
         @toggleStaffDialog="toggleStaffDialog" 
         @getAssetSelected="getAssetSelected"
         @getDelList="getDelList"
         :isTableLess="isTableLess"
+        :isLoading="this.isLoading"
+        :totalRecord="this.totalRecord"
         />
         <AddStaffForm 
         v-if="isShowDialog" 
@@ -103,14 +104,15 @@ export default {
         */
         this.isLoading = true;
         var me = this;
+        me.searchAsset();
         await axios.get("https://localhost:7062/api/v1/FixedAssets")
             .then(function(res){
                 console.log(res);
-                me.fixedAssets = res.data;
+                // me.fixedAssets = res.data;
                 me.cloneAPIFixedAssets = me.fixedAssets;
                 // Lấy mã tự tăng
-                var newCode = res.data[res.data.length - 1].AssetCode;
-                me.newAssetCode = newCode;
+                me.totalRecord = res.data.length;
+                console.log("total record: ", me.totalRecord);
                 for(let i = 0; i < me.fixedAssets.length; i++){
                     if(me.fixedAssets[i].DepreciationPerYear == 0)
                         me.fixedAssets[i].DepreciationPerYear = Math.floor(me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate);
@@ -119,8 +121,6 @@ export default {
             .catch(function (error) {
                 // handle error
                 console.log(error);
-                me.fixedAssets = [];
-                me.newAssetCode = 'TS0001';
             }).then(function(){
                 me.isLoading = false;
             })
@@ -128,6 +128,29 @@ export default {
         
     },
     methods: {
+        /**
+        * Mô tả : Lấy số bản ghi trong một trang đc emit lên
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 12:00 22/05/2022
+        */
+        getPageSize(pageSize){
+            this.pageSize = pageSize;
+            this.searchAsset();
+        },
+        /**
+        * Mô tả : Tìm kiếm với pageNumber emit lên
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 00:17 22/05/2022
+        */
+        searchWithPageNumber(pageNumber){
+            // this.filterFixedAssets();
+            this.pageNumber = pageNumber;
+            this.searchAsset();
+        },
         /**
         * Mô tả : Hiện bảng excel
         * @param
@@ -180,7 +203,7 @@ export default {
         */
         getFilterCategoryAsset(e){
             this.filterFixedAssetCategory = e.itemData.FixedAssetCategoryName;
-            this.filterFixedAssets();
+            this.searchAsset();
         },
         /**
         * Mô tả : Lấy bộ phận sử dụng từ chọn combobox filter
@@ -190,34 +213,63 @@ export default {
         */
         getFilterDepartment(e){
             this.filterDepartment = e.itemData.DepartmentName;
-            this.filterFixedAssets();
+            this.searchAsset();
         },
         //TODO: FILTER FIXEDASSET
+        /**
+        * Mô tả : Hàm filter 
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 00:37 22/05/2022
+        */
         filterFixedAssets(){
             clearTimeout(this.timeOut);
-            var me = this;
             
-            this.timeOut = setTimeout(async () => {
-                var searchInputValue = this.$refs.searchContent.value;
+            this.timeOut = setTimeout(this.searchAsset, 1000);
+        },
+        /**
+        * Mô tả : Hàm call api để search
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 00:36 22/05/2022
+        */
+        async searchAsset(){
+            var me = this;
 
-                var departmentContent = "", fixedAssetCategoryContent = "";
+            var searchInputValue = this.$refs.searchContent.value;
 
-                if(me.filterDepartment == "Bộ phận sử dụng") departmentContent = "";
-                else departmentContent = me.filterDepartment;
+            var departmentContent = "", fixedAssetCategoryContent = "";
 
-                if(me.filterFixedAssetCategory == "Loại tài sản") fixedAssetCategoryContent = "";
-                else fixedAssetCategoryContent = me.filterFixedAssetCategory;
+            if(me.filterDepartment == "Bộ phận sử dụng") departmentContent = "";
+            else departmentContent = me.filterDepartment;
 
-                var queryString = "?searchContent=" + searchInputValue + "&departmentName=" + departmentContent + "&fixedAssetCategoryName=" + fixedAssetCategoryContent; 
+            if(me.filterFixedAssetCategory == "Loại tài sản") fixedAssetCategoryContent = "";
+            else fixedAssetCategoryContent = me.filterFixedAssetCategory;
+
+            // var queryString = "?searchContent=" + searchInputValue + "&departmentName=" + departmentContent + "&fixedAssetCategoryName=" + fixedAssetCategoryContent; 
+            var paramAxios = {
+                searchContent: searchInputValue,
+                departmentName: departmentContent,
+                fixedAssetCategoryName: fixedAssetCategoryContent,
+                pageSize: this.pageSize,
+                pageNumber: this.pageNumber
+            }
+            this.isLoading = true;
+            await axios.get('https://localhost:7062/api/v1/FixedAssets/filter',
+            {
+                params: paramAxios
+            }).then(function(res){
+                console.log(res);
+                me.fixedAssets = res.data;
+                me.isLoading = false;
+            }).catch(function(err){
+                console.log(err);
                 
-                await axios.get('https://localhost:7062/api/v1/FixedAssets/filter' + queryString).then(function(res){
-                    console.log(res);
-                    me.fixedAssets = res.data;
-
-                }).catch(function(err){
-                    console.log(err);
-                })
-            }, 1000);
+            }).then(function(){
+                me.isLoading = false;
+            })
         },
         // Đóng mở form thêm tài sản
         toggleStaffDialog(show,formMode){
@@ -252,27 +304,25 @@ export default {
             // this.fixedAssets.push(assetForm);
             this.isLoading = true;
             var me = this;
-            
-            await axios.get("https://localhost:7062/api/v1/FixedAssets")
-                .then(function(res){
-                    me.fixedAssets = res.data;
-                    me.cloneAPIFixedAssets = me.fixedAssets;
-                    // Lấy mã tự tăng
-                    var newCode = res.data[res.data.length - 1].assetId;
-                    me.newAssetCode = newCode;
-                    for(let i = 0; i < me.fixedAssets.length; i++){
-                        if(me.fixedAssets[i].DepreciationPerYear == 0)
-                            me.fixedAssets[i].DepreciationPerYear = Math.floor(me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate);
+            me.searchAsset();
+            // await axios.get("https://localhost:7062/api/v1/FixedAssets")
+            //     .then(function(){
+            //         // me.fixedAssets = res.data;
+            //         me.cloneAPIFixedAssets = me.fixedAssets;
+            //         // Lấy mã tự tăng
+            //         for(let i = 0; i < me.fixedAssets.length; i++){
+            //             if(me.fixedAssets[i].DepreciationPerYear == 0)
+            //                 me.fixedAssets[i].DepreciationPerYear = Math.floor(me.fixedAssets[i].Cost * me.fixedAssets[i].DepreciationRate);
                         
-                    }
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                }).then(function(){
+            //         }
+            //     })
+            //     .catch(function (error) {
+            //         // handle error
+            //         console.log(error);
+            //     }).then(function(){
                     
-                    setTimeout(function(){me.isLoading = false;},300);
-                })
+            //         setTimeout(function(){me.isLoading = false;},300);
+            //     })
             
         },
         // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
@@ -339,6 +389,7 @@ export default {
     
     data() {
         return {
+            pageNumber: 1,
             timeOut: null,
             cloneAPIFixedAssets: [],
             filteredArrayFixedAssets: [],
@@ -357,7 +408,9 @@ export default {
             filterFixedAssetCategory: "",
             filterDepartment: "",
             isShowImportDialog: false,
-            messageToToast: ""
+            messageToToast: "",
+            pageSize: 15,
+            totalRecord: 0,
         }
     },
 }

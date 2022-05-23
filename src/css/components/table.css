@@ -6,7 +6,7 @@
     table-layout: fixed;
     text-align: center;
     /* word-wrap: break-word; */
-    background-color: #ffffff;
+    position: relative;
     
 }
 .contain-table{

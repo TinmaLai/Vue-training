@@ -14,7 +14,8 @@
     "core-js": "^3.8.3",
     "v-mask": "^2.3.0",
     "vue": "^3.2.13",
-    "vue-class-component": "^8.0.0-rc.1"
+    "vue-class-component": "^8.0.0-rc.1",
+    "vuejs-paginate-next": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

@@ -16,7 +16,7 @@
             <div class="edit" @click="showEditForm">
                 
             </div>
-            <div class="detail">
+            <div class="detail" @click="showCloneForm" >
 
             </div>
         </td>
@@ -50,6 +50,16 @@ export default {
         }
     },
     methods:{
+        /**
+        * Mô tả : Hiện ra diglog nhân bản
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:20 22/05/2022
+        */
+        showCloneForm(){
+            this.$emit("cloneClick");
+        },
         // Hover hiện ra cột chức năng của hàng trong bảng
         hoverDisplay(){
             this.isHover = true;

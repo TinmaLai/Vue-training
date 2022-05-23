@@ -1,17 +1,18 @@
 <template>
     <div class="m-combobox" :class="{'danger':isAlert}">
         <ejs-combobox 
-        :text='this.content'
+        :text='content'
         v-model='content'
-        ref="combobox"
+        ref="comboboxFocus"
         id='combobox' 
-        :dataSource='this.filterCategories' 
+        :dataSource='filterCategories' 
         :fields="dataFields" 
         allowFiltering='true' 
         @select="setValueSelected" 
         :allowCustom="allowCustom"
         :placeholder="placeholder"
         :autofill="true"
+        :showClearButton="false"
         @blur="checkNullValue"
         @focus="showPopup()"
          ></ejs-combobox>
@@ -23,33 +24,47 @@ import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 import axios from "axios";
 
 export default {
-    props:["tag","placeholder","control","fieldName","flag","isFilter"],
+    props:["tag","placeholder","control","fieldName","flag"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
     async mounted(){
         var me = this;
-        
-        if(this.tag == "DepartmentCode"){
+        if (this.tag == "DropdownPagination"){
+            this.content = 'default';
+            this.categoriesPagination = [{
+                    'id': '2',
+                    'pageSize': '20'
+                },
+                {
+                    'id': '3',
+                    'pageSize': '30'
+                },
+                {
+                    'id': '4',
+                    'pageSize': '40'
+                }];
+            this.dataFields = {value: 'id', text:'pageSize'}
+            this.categoriesPagination.unshift({'id': 'default' , 'pageSize': '15'});
+        }else if(this.tag == "DepartmentCode"){
             if(this.flag == "filter") this.content = 'bophansudung';
             await axios.get("https://localhost:7062/api/v1/Departments").then(function(res){
                 if(me.flag != "filter") me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
                 else me.dataFields =  {value: 'DepartmentId',text:'DepartmentName'};
                 me.categoriesPart = res.data;
                 if(me.flag == "filter") me.categoriesPart.unshift({'DepartmentId': 'bophansudung' , 'DepartmentName': 'Bộ phận sử dụng'});
-                console.log(res);
+                
             }).catch(function(err){
                 console.log(err);
             })
-        }
-        else if(this.tag == "FixedAssetCategoryCode"){
+        }else if(this.tag == "FixedAssetCategoryCode"){
             if(this.flag == "filter") this.content = 'loaitaisan';
             await axios.get("https://localhost:7062/api/v1/FixedAssetCategories").then(function(res){
                 if(me.flag != "filter") me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
                 else me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryName'};
                 me.categoriesAsset = res.data;
                 if(me.flag == "filter") me.categoriesAsset.unshift({'FixedAssetCategoryId': 'loaitaisan' , 'FixedAssetCategoryName': 'Loại tài sản'});
-                console.log(res);
+               
             }).catch(function(err){
                 console.log(err);
             })
@@ -66,17 +81,11 @@ export default {
         // show popup combobox khi focus vao
         showPopup(){
             // this.content = "";
-            this.$refs.combobox.showPopup();
+            this.$refs.comboboxFocus.showPopup();
         },
         // emit gia tri len cho form
         setValueSelected(e){
-            console.log(e);
             this.itemSelected = e;
-            // if(this.tag == "Department"){
-            //     this.content = e.itemData.DepartmentCode;
-            // } else if(this.tag == "FixedAssetCategory"){
-            //     this.content = e.itemData.FixedAssetCategoryCode;
-            // }
             this.$emit("getComboSelected",e);
         },
         // show dropdown
@@ -86,7 +95,7 @@ export default {
         },
         // check Null khi blur
         checkNullValue(){
-            if(this.flag != "filter"){
+            if(this.flag != "filter" && this.tag != "DropdownPagination"){
                 if(this.itemSelected == null || this.itemSelected.item == null || this.content == ""){
                     this.isAlert = true;
                 } else {
@@ -105,15 +114,16 @@ export default {
                 }
             }
         }
-    },  
+    }, 
     computed: {
         filterCategories(){
             var categories = [];
-            if(this.tag == "DepartmentCode"){
-                categories = this.categoriesPart;
-            } else if(this.tag == "FixedAssetCategoryCode"){
-                categories = this.categoriesAsset
-                
+            if(this.tag == "DropdownPagination"){
+                return this.categoriesPagination;
+            }else if(this.tag == "DepartmentCode"){
+                return this.categoriesPart;
+            }else if(this.tag == "FixedAssetCategoryCode"){
+                return this.categoriesAsset;
             }
             return categories;
         }
@@ -129,7 +139,9 @@ export default {
             content: "",
             allowCustom: true,
             categoriesPart: [],
-            categoriesAsset: []
+            categoriesAsset: [],
+            categoriesPagination: [],
+            totalPages: 0,
         }
     },
 

@@ -20,15 +20,15 @@
 export default {
     props:["isShowAlert","formMode"],
     mounted(){
-        if(this.formMode == 1){
+        if(this.formMode == 1 || this.formMode == 2){
                 this.message = "Bạn có muốn hủy bỏ khai báo tài sản này";
                 this.add = true;
                 this.edit = false;
-            } else if(this.formMode == 0){
-                this.message = "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?";
-                this.add = false;
-                this.edit = true;
-            }
+        } else if(this.formMode == 0){
+            this.message = "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?";
+            this.add = false;
+            this.edit = true;
+        }
         
     },
     methods:{

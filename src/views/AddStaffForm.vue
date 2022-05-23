@@ -240,6 +240,27 @@ export default {
         * Created date: 11:43 08/05/2022
         */
         if(this.formMode == 1){
+            await this.getNewCode();
+            // Với form là thêm, message khi cancel form là 
+        } else if (this.formMode == 0){
+            this.assetSelectedStore = {...this.assetSelected};
+            this.assetForm = this.assetSelected;
+        } else if(this.formMode == 2){
+            this.assetForm = this.assetSelected;
+            await this.getNewCode();
+            
+        }
+    
+    },
+    methods:{
+        /**
+        * Mô tả : Lấy code mới từ API
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:33 22/05/2022
+        */
+        async getNewCode(){
             var me = this;
             /**
             * Mô tả : Lấy code mới từ API khi chọn thêm tài sản
@@ -252,14 +273,7 @@ export default {
             }).catch(function(err){
                 console.log("Lỗi:" +  err);
             })
-            // Với form là thêm, message khi cancel form là 
-        } else if (this.formMode == 0){
-            this.assetSelectedStore = {...this.assetSelected};
-            this.assetForm = this.assetSelected;
-        }
-    
-    },
-    methods:{
+        },
         /**
         * Mô tả : Chặn sự kiện nhập chữ ở các ô input số
         * @param $event
@@ -410,7 +424,7 @@ export default {
                 check = false;
                 return check;
             }
-            if(this.assetForm.DepreciationPerYear > this.assetForm.Cost){
+            if(Number(this.assetForm.DepreciationPerYear) > Number(this.assetForm.Cost)){
                 this.validateData = "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá";
                 check = false;
                 return check;
@@ -517,7 +531,7 @@ export default {
                 if(check == false){
                     this.showValidateAlert = true;
                 } else if(check == true){
-                    if(this.formMode == 1){
+                    if(this.formMode == 1 || this.formMode == 2){
                         let status = false;
                         let message = "";
                         console.log(me.assetForm);
@@ -537,18 +551,21 @@ export default {
                             me.setStatus(status, message);
                         })
                     } else if(this.formMode == 0){ // Sửa
-                        try{
-                            
-                            await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm).then(function(res){
-                                console.log(res);
-                                me.setStatus(true);
-                                me.$emit("getAsset");
-                            })
-                        } catch (err){
+                        let message = "";
+                        let status = "";
+                        await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm)
+                        .then(function(res){
+                            console.log(res);
+                            status = true;
+                            message = messageResource.EDIT_SUCCESS;
+                            me.$emit("getAsset");
+                        }).catch(function(err){
+                            status = false;
                             console.log(err);
-                            this.assetForm = me.assetSelectedStore;
-                            me.setStatus(false);
-                        }
+                        }).then(function(){
+                             me.setStatus(status, message);
+                        })
+                        
                         
                     }
                 }   
