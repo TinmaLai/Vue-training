@@ -14,7 +14,6 @@
         :autofill="true"
         :showClearButton="false"
         @blur="checkNullValue"
-        @focus="showPopup()"
          ></ejs-combobox>
     </div>
 </template>

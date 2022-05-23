@@ -169,12 +169,15 @@
                 <div class="col-4">
                     <label for="">Ngày mua <span style="color: red">*</span></label>
                     <div class="datepicker-container">
-                        <Datepicker 
+                        <Datepicker
                         class="mt-input input-datepicker"
                         :class="{'danger' : !this.assetForm.PurchaseDate}"
                         ref="PurchaseDate"
                         v-model="assetForm.PurchaseDate"
                         format="dd/MM/yyyy"
+                        textInput
+                        selectText="Chọn"
+                        cancelText="Hủy"
                         ></Datepicker>
                         <div class="datepicker-icon"></div>
                     </div>
@@ -185,8 +188,11 @@
                         <Datepicker 
                         class="mt-input input-datepicker"
                         format="dd/MM/yyyy"
-                        :class="{'danger' : !this.assetForm.ProductionYear}"
-                        v-model="assetForm.ProductionYear"
+                        :class="{'danger' : !this.assetForm.UseDate}"
+                        v-model="assetForm.UseDate"
+                        textInput
+                        selectText="Chọn"
+                        cancelText="Hủy"
                         ></Datepicker>
                         <div class="datepicker-icon"></div>
                     </div>
@@ -205,7 +211,7 @@
         />
         <ValidateAlert
         :isShowAlert="showValidateAlert"
-        :message="nullFields.length != 0 ? 'Các trường sau không được để trống: ' + nullFields : validateData"
+        :message="errMesage()"
         @selectOption="this.showValidateAlert = false"
         />
         
@@ -250,9 +256,22 @@ export default {
             await this.getNewCode();
             
         }
-    
+        this.$refs.txtRequireFixedAssetCode.focusInput();
     },
     methods:{
+        /**
+        * Mô tả: Chọn ra câu cảnh báo khi có lỗi
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 13:11 23/05/2022
+        */
+        errMesage(){
+            if(this.nullFields.length > 0){
+                return messageResource.VALIDATE_NULL + this.nullFields;
+            } else if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
+            else return this.validateDataMsg;
+        },
         /**
         * Mô tả : Lấy code mới từ API
         * @param
@@ -379,9 +398,10 @@ export default {
         * Created date: 11:49 08/05/2022
         */
         calAllFieldToSave(){
-            
-            this.assetForm.accumulate = (this.assetForm.DepreciationPerYear.toString().replaceAll(".","") * this.assetForm.yearsUse).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            this.assetForm.priceExtra = (this.assetForm.Cost.toString().replaceAll(".","") - this.assetForm.accumulate.toString().replaceAll(".","")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            this.assetForm.ProductionYear = Number(this.assetForm.TrackedYear) - Number(new Date(this.assetForm.UseDate).getFullYear());
+            this.assetForm.Accumulate = this.assetForm.ProductionYear * Number(this.assetForm.DepreciationPerYear);
+            // this.assetForm.accumulate = (this.assetForm.DepreciationPerYear.toString().replaceAll(".","") * this.assetForm.yearsUse).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            // this.assetForm.priceExtra = (this.assetForm.Cost.toString().replaceAll(".","") - this.assetForm.accumulate.toString().replaceAll(".","")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         },
         /**
         * Mô tả : Check lại tất cả các trường nào còn rỗng trên form
@@ -418,14 +438,22 @@ export default {
         */
         checkValidateData(){
             var check = true;
-            if((this.assetForm.LifeTime != (Math.floor(1/this.assetForm.DepreciationRate))) && this.assetForm.LifeTime != 0){
-                
-                this.validateData = "Tỷ lệ hao mòn phải bằng 1/Số năm sử dụng";
-                check = false;
-                return check;
+            if(Number.isInteger(1/this.assetForm.LifeTime)){
+                if(1/this.assetForm.LifeTime != Number(this.assetForm.DepreciationRate)/100 && this.assetForm.LifeTime != 0){
+                    this.validateDataMsg = messageResource.VALIDATE_DEPRECIATION_RATE;
+                    check = false;
+                    return check;
+                }
+            }
+            else {
+                if(Number((1/this.assetForm.LifeTime).toFixed(2)) != Number(Number((this.assetForm.DepreciationRate)/100).toFixed(2)) && this.assetForm.LifeTime != 0){
+                    this.validateDataMsg = messageResource.VALIDATE_DEPRECIATION_RATE;
+                    check = false;
+                    return check;
+                }
             }
             if(Number(this.assetForm.DepreciationPerYear) > Number(this.assetForm.Cost)){
-                this.validateData = "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá";
+                this.validateDataMsg = messageResource.VALIDATE_DEPRECIATION_YEAR;
                 check = false;
                 return check;
             }
@@ -451,7 +479,7 @@ export default {
             if(value.itemData != null){
                 this.assetForm.FixedAssetCategoryId = value.itemData.FixedAssetCategoryId;
                 this.assetForm.FixedAssetCategoryName = value.itemData.FixedAssetCategoryName;
-                this.assetForm.DepreciationRate = value.itemData.DepreciationRate;
+                this.assetForm.DepreciationRate = value.itemData.DepreciationRate * 100;
                 this.assetForm.LifeTime = value.itemData.LifeTime;
                 this.assetForm.FixedAssetCategoryCode = value.itemData.FixedAssetCategoryCode;
             } else {
@@ -542,13 +570,18 @@ export default {
                             // Gán mã tự động tăng cho lần mở form tiếp theo
                             me.$emit("getAsset");
                             me.$emit("getNewCodeIncre",me.assetForm.AssetCode);
-                        }).catch(function(err){
-                            console.log(err.response.data);
-                            status = false;
-                            message = messageResource.SAVE_FAILED;
-                        }).then(function(){
-                            // Thông báo là gọi api thành công hay thất bại để hiện toast
                             me.setStatus(status, message);
+                        }).catch(function(err){
+                            var errMsg = err.response.data.data.data[0];
+                        
+                            if(errMsg.includes("trùng")){
+                                me.isDuplicate = true;
+                                me.showValidateAlert = true;
+                            }else {
+                                status = false;
+                                message = messageResource.SAVE_FAILED;
+                                me.setStatus(status, message);
+                            }
                         })
                     } else if(this.formMode == 0){ // Sửa
                         let message = "";
@@ -575,6 +608,7 @@ export default {
        
     },
     computed: {
+        
         // Lấy năm hiện tại cho trường năm theo dõi
         getThisYear(){
             const d = new Date();
@@ -653,7 +687,8 @@ export default {
                 accumulate: 0,
                 priceExtra: 0,
                 PurchaseDate: new Date(),
-                ProductionYear: new Date(),
+                UseDate: new Date(),
+                ProductionYear: 0,
                 FixedAssetCategoryName: "",
                 DepartmentName: "",
                 DepartmentCode: "",
@@ -669,7 +704,8 @@ export default {
             showValidateAlert: false,
             showImportExcelDialog: false,
             nullFields: [],
-            validateData: "abc",
+            validateDataMsg: "",
+            isDuplicateCode: false,
         }
     },
 }

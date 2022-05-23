@@ -41,18 +41,10 @@
         <table class="table-footer">
             
             <tr id="pagination-table">
-                <td colspan="6" style="width: 62%">
+                <td>
                     <div class="page-navigation">
                         <p class="content-details">Tổng số <b>{{this.totalRecord}}</b> bản ghi</p>
-                        <!-- <button class="m-dropdown" style="width: 59px; height: 25px;">
-                            <p class="m-dropdown-suggest">20</p>
-                            <div class="arrow-down"></div>
-                            <div class="m-dropdown-data d-none">
-                                <div class="m-dropdown-item">10</div>
-                                <div class="m-dropdown-item">50</div>
-                                <div class="m-dropdown-item">100</div>
-                            </div>
-                        </button> -->
+                        
                         <MISACombobox
                         :tag="'DropdownPagination'"
                         class="dropdown-pagination"
@@ -80,10 +72,10 @@
                         </MISAPagination>
                     </div>
                 </td>
-                <td class="text-right">{{this.sumRow[0]}}</td>
-                <td class="text-right">{{this.sumRow[1]}}</td>
-                <td class="text-right">{{this.sumRow[2]}}</td>
-                <td  class="text-right">{{this.sumRow[3]}}</td>
+                <td class="text-right text-bold">{{this.sumRow[0]}}</td>
+                <td class="text-right text-bold">{{this.sumRow[1]}}</td>
+                <td class="text-right text-bold">{{this.sumRow[2]}}</td>
+                <td class="text-right text-bold">{{this.sumRow[3]}}</td>
                 <td width="90px"></td>
             </tr>
         </table>
@@ -97,7 +89,7 @@ import MISACombobox from "../components/base/MISACombobox.vue";
 import axios from "axios";
 
 export default {
-    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord"],
+    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord","delFlag"],
     components:{
         Checkbox,
         TableItem,
@@ -132,7 +124,7 @@ export default {
         */
         sumRow(){
             var init = 0;
-            var sum = [];
+            var sum = [0,0,0,0];
             if(this.fixedAssets.length != 0){
                 let sumQuantity = this.fixedAssets.reduce((item1,item2) => {
                     return item1 + item2.Quantity;
@@ -141,15 +133,17 @@ export default {
                     return parseInt(item1) + parseInt(this.formatToInt(item2.Cost));
                 },init);
                 let sumAccum = this.fixedAssets.reduce((item1,item2) => {
-                    return parseInt(item1) + parseInt(this.formatToInt(item2.DepreciationPerYear * item2.LifeTime));
+                    return parseInt(item1) + parseInt(this.formatToInt(item2.DepreciationPerYear * item2.ProductionYear));
                 },init);
                 let sumPriceExtra = this.fixedAssets.reduce((item1,item2) => {
-                    return parseInt(item1) + parseInt(item2.Cost - this.formatToInt(item2.DepreciationPerYear * item2.LifeTime));
+                    console.log('depreciation per year: ', parseInt(item2.Cost - this.formatToInt(item2.DepreciationPerYear * item2.ProductionYear)));
+                    return parseInt(item1) + parseInt(item2.Cost - this.formatToInt(item2.DepreciationPerYear * item2.ProductionYear));
+                    
                 },init);
-                sum.push(this.formatPrice(sumQuantity));
-                sum.push(this.formatPrice(sumPrice));
-                sum.push(this.formatPrice(sumAccum));
-                sum.push(this.formatPrice(sumPriceExtra));
+                sum[0] = (this.formatPrice(sumQuantity));
+                sum[1] = (this.formatPrice(sumPrice));
+                sum[2] = (this.formatPrice(sumAccum));
+                sum[3] = (sumPriceExtra > 0 ? this.formatPrice(sumPriceExtra) : 0);
             }
             console.log(sum);
             return sum;
@@ -223,6 +217,7 @@ export default {
         delItemSelected(isDel, id){
             if(isDel == true){
                 this.delList.push(id);
+                this.$emit("getDelFlag", false);
             } else if(isDel == false) {
                 for(let i = 0; i < this.delList.length; i++){
                     if(id == this.delList[i]) this.delList.splice(i,1);
@@ -253,6 +248,9 @@ export default {
         // assetAdd: function(newValue){
         // this.assets.add(newValue);
         // }
+        delFlag: function(oldValue, newValue){
+            if(newValue == true || oldValue == true) this.delList = [];
+        }
     },
     data() {
         return {

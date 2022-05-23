@@ -8,8 +8,8 @@
     :title="this.isAlert == true ? title : ''"
     :class="{'danger' : this.isAlert}"    
     @blur="checkNullValue"
-
-    >
+    ref="inputTxt"
+        >
 </template>
 
 <script>
@@ -28,6 +28,10 @@ export default {
         }
     },
     methods:{
+        //Hàm focus vào ô đầu tiên
+        focusInput(){
+            this.$refs.inputTxt.focus();
+        },
         // emit trường - dữ liệu từ input lên form
         bindingDataInput(field){
             field = this.tag;

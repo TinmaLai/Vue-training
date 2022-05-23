@@ -45,8 +45,10 @@
         @toggleStaffDialog="toggleStaffDialog" 
         @getAssetSelected="getAssetSelected"
         @getDelList="getDelList"
+        @getDelFlag="getDelFlag"
         :isTableLess="isTableLess"
         :isLoading="this.isLoading"
+        :delFlag="this.delFlag"
         :totalRecord="this.totalRecord"
         />
         <AddStaffForm 
@@ -128,6 +130,16 @@ export default {
         
     },
     methods: {
+        /**
+        * Mô tả: Cập nhật lại mảng sau khi xóa, dùng flag = false từ thằng con
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 21:13 23/05/2022
+        */
+        getDelFlag(){
+            this.delFlag = false;
+        },
         /**
         * Mô tả : Lấy số bản ghi trong một trang đc emit lên
         * @param
@@ -358,10 +370,14 @@ export default {
                     console.log(res);
                     me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
                     me.getAsset();
+                    me.delList = [];
+                    me.delFlag = true;
                     // console.log(me.delList);
                     
                 }).catch(function(err){
+                    me.delList = [];
                     console.log(err);
+                    me.delFlag = true;
                     me.handleStatusSave(false,messageResource.DELETE_FAILED);
                 })
                 me.$emit("getAsset");
@@ -411,6 +427,7 @@ export default {
             messageToToast: "",
             pageSize: 15,
             totalRecord: 0,
+            delFlag: false,
         }
     },
 }

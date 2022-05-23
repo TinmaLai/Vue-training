@@ -33,14 +33,14 @@ export default {
     computed:{
         accumulate(){
             if(this.asset.DepreciationPerYear != undefined && this.asset.DepreciationPerYear != 0)
-            return this.formatPrice(this.asset.DepreciationPerYear * this.asset.LifeTime);
-            else return this.formatPrice(this.asset.Cost * this.asset.DepreciationRate * this.asset.LifeTime);
+            return this.formatPrice(this.asset.DepreciationPerYear * this.asset.ProductionYear);
+            else return this.formatPrice(this.asset.Cost * this.asset.DepreciationRate * this.asset.ProductionYear);
         },
         priceExtra(){
             var priceExtra = 0;
-            if(this.asset.DepreciationPerYear != undefined && this.asset.DepreciationPerYear != 0)
-            priceExtra = this.formatPrice(this.asset.Cost - Math.floor(this.asset.DepreciationPerYear * this.asset.LifeTime));
-            if(this.formatToInt(priceExtra) < 0) return 0;
+            if(this.asset.DepreciationPerYear != undefined)
+            priceExtra = this.formatPrice(this.asset.Cost - Math.floor(this.asset.DepreciationPerYear * this.asset.ProductionYear));
+            if(this.asset.priceExtra < 0) return 0;
             return priceExtra;
         }
     },
