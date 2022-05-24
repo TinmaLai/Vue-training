@@ -84,6 +84,7 @@
                         <MISAInput :controlledContent="assetForm.Quantity"
                         @bindingData="bindingData"
                         :tag="'Quantity'"
+                         @keypress="isNumber"
                         :title="'Số lượng phải nhiều hơn 0'"
                         ref="txtRequireQuantity"
                         :fieldName="'Số lượng'"
@@ -117,6 +118,7 @@
                         :controlledContent="assetForm.LifeTime"
                         @bindingData="bindingData"
                         :tag="'LifeTime'"
+                         @keypress="isNumber"
                         :title="'Số lượng phải nhiều hơn 0'"
                         :fieldName="'Số năm sử dụng'"
                         ref="txtRequireLifeTime"
@@ -150,6 +152,7 @@
                         <MISAInput 
                         :controlledContent="calcDepreciationPerYear"
                         :type="'text'" 
+                         @keypress="isNumber"
                         @bindingData="bindingData" 
                         v-model="calcDepreciationPerYear"
                         maxlength="25"
@@ -178,6 +181,7 @@
                         textInput
                         selectText="Chọn"
                         cancelText="Hủy"
+                        
                         ></Datepicker>
                         <div class="datepicker-icon"></div>
                     </div>
@@ -193,6 +197,7 @@
                         textInput
                         selectText="Chọn"
                         cancelText="Hủy"
+                        @focusPrev="this.$refs.txtRequireDepreciationPerYear.focus()"
                         ></Datepicker>
                         <div class="datepicker-icon"></div>
                     </div>
@@ -201,8 +206,18 @@
             </div>
         </div>
         <div class="form-action">
-            <button class="m-second-button ignore-btn" @click="closeAddStaffForm">Hủy</button>
-            <button id="form-save-button" class="m-button" @click="saveAsset">Lưu</button>
+            <button 
+            class="m-second-button ignore-btn" 
+            @click="closeAddStaffForm"
+            v-shortkey="['esc']" @shortkey="closeAddStaffForm()"
+            >Hủy</button>
+            <button 
+            id="form-save-button" 
+            class="m-button" 
+            @click="saveAsset"
+            v-shortkey="['ctrl','f']" @shortkey="saveAsset()"
+            
+            >Lưu</button>
         </div>
         <CancelAlert 
         :isShowAlert="showCancelAlert"
@@ -228,6 +243,7 @@ import MISAInput from '../components/base/MISAInput.vue';
 import ValidateAlert from '../views/ValidateAlertDialog.vue';
 import messageResource from '../resources/resource';
 
+
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
     components:{
@@ -245,17 +261,21 @@ export default {
         * Created by: nbtin
         * Created date: 11:43 08/05/2022
         */
+        
         if(this.formMode == 1){
+            // Nếu formmode là 1 (thêm) thì lấy mã mới
             await this.getNewCode();
-            // Với form là thêm, message khi cancel form là 
         } else if (this.formMode == 0){
+            // Nếu formmode là 0 (sửa) thì lấy ra asset đã được chọn từ API
             this.assetSelectedStore = {...this.assetSelected};
             this.assetForm = this.assetSelected;
         } else if(this.formMode == 2){
+            // Nếu formmode là 2 (Nhân bản) thì lấy ra asset được chọn từ API đồng thời thay mã mới tự sinh
             this.assetForm = this.assetSelected;
             await this.getNewCode();
             
         }
+        // Gán focus vào ô đầu tiên khi vừa mở form
         this.$refs.txtRequireFixedAssetCode.focusInput();
     },
     methods:{
@@ -267,7 +287,9 @@ export default {
         * Created date: 13:11 23/05/2022
         */
         errMesage(){
+            
             if(this.nullFields.length > 0){
+                // Nếu mảng các trường rỗng có tồn tại rỗng thì thông báo rỗng trước tiên
                 return messageResource.VALIDATE_NULL + this.nullFields;
             } else if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
             else return this.validateDataMsg;
@@ -288,6 +310,7 @@ export default {
             */
             await axios.get("https://localhost:7062/api/v1/FixedAssets/NewAssetCode").then(function(res){
                 console.log(res);
+                // Gán lại mã mới 
                 me.assetForm.FixedAssetCode = res.data;
             }).catch(function(err){
                 console.log("Lỗi:" +  err);
@@ -335,7 +358,7 @@ export default {
             return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         },
         /**
-        * Mô tả : Chuyển chuỗi format thành số bằng cách loại dấu chấm
+        * Mô tả : Chuyển chuỗi format thành số bằng cách loại bỏ dấu chấm
         * @param value
         * Created by: nbtin
         * Created date: 11:45 08/05/2022
@@ -343,12 +366,12 @@ export default {
         formatToInt(value){
             return value.toString().replaceAll('.','');
         },
-        // Hiện popup và xử lý khi muốn đóng form 
+        // Hiện alert cảnh báo và xử lý khi muốn đóng form 
         handleCancelAlert(){
             this.showCancelAlert = true;
         },
         /**
-        * Mô tả : Xử lý khi người dùng chọn ở cancel alert
+        * Mô tả : Xử lý khi người dùng chọn option button ở cancel alert
         * @param option
         * Created by: nbtin
         * Created date: 11:46 08/05/2022
@@ -356,19 +379,23 @@ export default {
         handleCancelOption(option){
             switch(option){
                 case false: {
+                    // Đóng alert
                     this.showCancelAlert = false;
                     break;
                 }
                 case true:{
+                    // Đóng form
                     this.resetForm(this);
                     break;
                 }
                 case 'nosave':{
+                    // Không lưu và đóng form
                     this.assetForm = this.assetSelectedStore;
                     this.resetForm(this);
                     break;
                 }
                 case 'save':{
+                    // Lưu và đóng form
                     this.saveAsset();
                     break;
                 }
@@ -398,6 +425,7 @@ export default {
         * Created date: 11:49 08/05/2022
         */
         calAllFieldToSave(){
+            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
             this.assetForm.ProductionYear = Number(this.assetForm.TrackedYear) - Number(new Date(this.assetForm.UseDate).getFullYear());
             this.assetForm.Accumulate = this.assetForm.ProductionYear * Number(this.assetForm.DepreciationPerYear);
             // this.assetForm.accumulate = (this.assetForm.DepreciationPerYear.toString().replaceAll(".","") * this.assetForm.yearsUse).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -411,16 +439,17 @@ export default {
         checkNullProperty(){
             var check = true;
             var object = this.assetForm;
+            // Mảng chứa các giá trị rỗng để xét null, và các trường rỗng để hiện thông báo
             this.nullValueProperty = [];
             this.nullFields = [];   
-            // Lấy tất cả các trường rỗng push vào 1 mảng
+            // Lấy tất cả các trường rỗng push vào 1 mảng (so sánh giá trị của object)
             for(let property in object){
                 if(object[property] === "" || object[property] === null){
                     this.nullValueProperty.push(property);
                     check = false;
                 }
             }
-            // So sánh mảng các trường rỗng với mảng ref, trường nào có trong mảng ref thì alert danger
+            // So sánh mảng các trường rỗng với mảng ref, trường nào có trong mảng ref thì push vào mảng các trường rỗng
             for(let key of Object.entries(this.$refs)){
                 for(let value of this.nullValueProperty){
                     if(key[0].toLowerCase().includes(value.toLowerCase())){
@@ -438,7 +467,9 @@ export default {
         */
         checkValidateData(){
             var check = true;
+            // If trong trường hợp là số nguyên hay số hữu tỉ, nếu là số hữu tỉ thì làm tròn đến 2 chữ số
             if(Number.isInteger(1/this.assetForm.LifeTime)){
+                // Xét nếu tỉ lệ hao mòn năm khác 1/số năm sử dụng
                 if(1/this.assetForm.LifeTime != Number(this.assetForm.DepreciationRate)/100 && this.assetForm.LifeTime != 0){
                     this.validateDataMsg = messageResource.VALIDATE_DEPRECIATION_RATE;
                     check = false;
@@ -452,6 +483,7 @@ export default {
                     return check;
                 }
             }
+            // Kiểm tra nếu giá trị hao mòn năm lớn hơn nguyên giá
             if(Number(this.assetForm.DepreciationPerYear) > Number(this.assetForm.Cost)){
                 this.validateDataMsg = messageResource.VALIDATE_DEPRECIATION_YEAR;
                 check = false;
@@ -474,7 +506,11 @@ export default {
                 this.assetForm.DepartmentCode = "";
             }
         },
-        // Lấy mã tài sản, đồng thời binding tỷ lệ hao mòn, số năm sử dụng
+        /**
+        * Mô tả : Lấy dữ liệu mã bộ phận sử dụng, loại tài sản từ combobox
+        * Created by: nbtin
+        * Created date: 08:34 25/04/2022
+        */
         getTypeAsset(value){
             if(value.itemData != null){
                 this.assetForm.FixedAssetCategoryId = value.itemData.FixedAssetCategoryId;
@@ -482,6 +518,7 @@ export default {
                 this.assetForm.DepreciationRate = value.itemData.DepreciationRate * 100;
                 this.assetForm.LifeTime = value.itemData.LifeTime;
                 this.assetForm.FixedAssetCategoryCode = value.itemData.FixedAssetCategoryCode;
+                this.assetForm.DepreciationPerYear = (this.assetForm.DepreciationRate * this.assetForm.Cost)/100;
             } else {
                 this.assetForm.FixedAssetCategoryName = "";
                 this.assetForm.DepreciationRate = 0;
@@ -505,75 +542,37 @@ export default {
         * Created date: 13:39 22/04/2022
         */
         async saveAsset(){
-            // var testObject = {
-            //     // AssetCode: "1232123",
-            //     // AssetName: "string",
-            //     // DepartmentCode: "3123213",
-            //     // DepartmentName: "string",
-            //     // FixedAssetCategoryCode: "3123123",
-            //     // FixedAssetCategoryName: "string",
-            //     // Cost: 10,
-            //     // Quantity: 10,
-            //     // DepreciationRate: 10,
-            //     // TrackedYear: 10,
-            //     // LifeTime: 10,
-            //     // purchaseDate: "2022-05-12T08:08:00.913Z",
-            //     AssetCode: "TS00021",
-            //     AssetName: "Test theem 2",
-            //     Cost: 10000000,//
-            //     DepartmentCode: "HCKT",
-            //     DepartmentName: "Hành chính kế toán",
-            //     DepreciationRate: 2.5,
-            //     FixedAssetCategoryCode: "MTXT",
-            //     FixedAssetCategoryName: "Máy tính xách tay",
-            //     LifeTime: 5,
-            //     PurchaseDate: "2022-05-12T08:08:00.913Z",
-            //     Quantity: 1,
-            //     accumulate: "NaN",
-            //     priceExtra: "NaN",
-            //     priceFormat: "10.000.000",
-            //     DepreciationPerYear: 250000,
-            //     TrackedYear: 2020
-            // };
-            //  await axios.post("https://localhost:7062/api/v1/FixedAsset",testObject).then(function(res){
-            //             console.log(res);
-            //             // Gán mã tự động tăng cho lần mở form tiếp theo
-            //         }).catch(function(err){
-            //             console.log(err);
-            //         }).then(function(){
-            //             // Thông báo là gọi api thành công hay thất bại để hiện toast
-            //         })
-
-
-
-
-            //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
             var me = this;
+            // Gọi hàm tính lại các trường trước khi 'Lưu'
             me.calAllFieldToSave();
+            // Gọi hàm check xem có trường rỗng hay không trước khi Lưu
             let check = me.checkNullProperty();
             if(check == false){
                 this.showValidateAlert = true;
             }
             else if (check == true){
+                // Sau khi check rỗng thì mới check nghiệp vụ
                 check = me.checkValidateData();
                 if(check == false){
                     this.showValidateAlert = true;
                 } else if(check == true){
+                    // Nếu điều kiện thỏa mãn, bắt formmode để biết form trạng thái gì (0: Sửa, 1: Thêm, 2: Nhân bản)
                     if(this.formMode == 1 || this.formMode == 2){
                         let status = false;
                         let message = "";
                         console.log(me.assetForm);
+                        //Gọi hàm để thêm tài sản lên api
                         await axios.post("https://localhost:7062/api/v1/FixedAssets",me.assetForm).then(function(res){
                             console.log(res);
                             status = true;
                             message = messageResource.SAVE_SUCCESS;
                             // Gán mã tự động tăng cho lần mở form tiếp theo
                             me.$emit("getAsset");
-                            me.$emit("getNewCodeIncre",me.assetForm.AssetCode);
                             me.setStatus(status, message);
                         }).catch(function(err){
+                            // Xử lý nếu call POST API thất bại
                             var errMsg = err.response.data.data.data[0];
-                        
+                            // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
                             if(errMsg.includes("trùng")){
                                 me.isDuplicate = true;
                                 me.showValidateAlert = true;
@@ -583,39 +582,40 @@ export default {
                                 me.setStatus(status, message);
                             }
                         })
-                    } else if(this.formMode == 0){ // Sửa
+                    } else if(this.formMode == 0){ // Nếu formmode là 0 thì 
                         let message = "";
                         let status = "";
+                        // Gọi API Put để update tài sản trong database
                         await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm)
                         .then(function(res){
                             console.log(res);
                             status = true;
+                            // Hiện thông báo thành công
                             message = messageResource.EDIT_SUCCESS;
                             me.$emit("getAsset");
                         }).catch(function(err){
                             status = false;
+                            // Hiện thông báo thất bại
+                            message = messageResource.EDIT_FAILED;
                             console.log(err);
                         }).then(function(){
-                             me.setStatus(status, message);
+                            // Dù gọi API thất bại hay thành công vẫn thực hiện việc hiện toast với trạng thái và message
+                            me.setStatus(status, message);
                         })
-                        
-                        
                     }
                 }   
             }
-            
         },
        
     },
     computed: {
-        
         // Lấy năm hiện tại cho trường năm theo dõi
         getThisYear(){
             const d = new Date();
             let year = d.getFullYear();
             return year;
         },
-        // Tính giá trị hao mòn năm mỗi khi có thay đổi 
+        // Format giá trị hao mòn năm
         calcDepreciationPerYear: {
             get: function () {
                 
@@ -629,8 +629,7 @@ export default {
             }
         },
         
-        
-        // Thực hiện format trường Nguyên giá
+        // Thực hiện format trường Nguyên giá đồng thời tính lại giá trị hao mòn năm
         priceFormat: {
             get: function () {
                 return this.formatPrice(this.assetForm.Cost)
@@ -646,7 +645,7 @@ export default {
                 this.assetForm.DepreciationPerYear = Math.floor(this.assetForm.DepreciationPerYear);
             }
         },
-        // Thực hiện format tỷ lệ hao mòn
+        // Thực hiện format tỷ lệ hao mòn đồng thời tính lại giá trị hao mòn năm
         calDepreciationRate: {
             get: function(){
                 return this.assetForm.DepreciationRate;
@@ -658,19 +657,13 @@ export default {
             }
         }
     },
-    watch: {
-        /**
-        * Mô tả : Tính lại giá trị hao mòn năm mỗi khi có thay đổi của tỷ lệ hao mòn, nhưng thế này chưa tối ưu
-        * Created by: nbtin
-        * Created date: 11:51 08/05/2022
-        */
+    watch: {  
         // 'assetForm.DepreciationRate': function(newValue,oldValue){
-        //     if(oldValue != 0){
-        //         this.assetForm.DepreciationPerYear = (newValue * this.formatToInt(this.assetForm.Cost))/100;
-        //         this.assetForm.DepreciationPerYear = Math.floor(this.assetForm.DepreciationPerYear);
-        //     }
-            
-        // },  
+        //     // if(this.assetForm.DepreciationPerYear == (this.assetForm.Cost * oldValue)/100){
+        //         console.log(oldValue);
+        //         this.assetForm.DepreciationPerYear = this.assetForm.Cost * (newValue/100);
+        //     // }
+        // }
     },
     data() {
         return {

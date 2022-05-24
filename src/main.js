@@ -11,5 +11,7 @@ registerLicense(
 
 const app = createApp(App);
 app.component("MISAPagination", Paginate);
+app.use(require('vue3-shortkey'));
+
 
 app.mount('#app')

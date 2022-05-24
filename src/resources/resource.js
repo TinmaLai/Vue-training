@@ -12,6 +12,9 @@ const messageResource = {
     VALIDATE_DEPRECIATION_YEAR: "Giá trị hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá.",
     VALIDATE_DUPLICATE_CODE: "Mã đã trùng, vui lòng nhập mã khác.",
     VALIDATE_NULL: "Các trường sau không được để trống: ",
+    CANCEL_QUESTION_ADD: "Bạn có muốn hủy bỏ khai báo tài sản này",
+    CANCEL_QUESTION_UPDATE: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
+    DELETE_QUESTION: " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?"
 
 };
 export default messageResource;

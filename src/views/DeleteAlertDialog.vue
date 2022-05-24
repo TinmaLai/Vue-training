@@ -12,7 +12,9 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from "axios";
+import messageResource from '../resources/resource';
+
 export default {
     props:["isShowAlert","delList"],
     async updated() {
@@ -27,7 +29,7 @@ export default {
             
         } else {
             var pre = this.delList.length < 10 ? "0" : "";
-            this.message = pre + this.delList.length + " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?";
+            this.message = pre + this.delList.length + messageResource.DELETE_QUESTION;
         }
     },
     methods:{

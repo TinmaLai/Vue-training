@@ -29,9 +29,22 @@ export default {
     },
     async mounted(){
         var me = this;
+        /**
+        * Mô tả: Kiểm tra xem combobox thuôc loại gì qua tag (dropdown cho phân trang, hay cho form hay filter)
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 22:56 23/05/2022
+        */
         if (this.tag == "DropdownPagination"){
-            this.content = 'default';
-            this.categoriesPagination = [{
+            // Để giá trị mặc định
+            this.content = '15';
+            this.categoriesPagination = [
+                {
+                    'id': '1',
+                    'pageSize': '15'
+                },
+                {
                     'id': '2',
                     'pageSize': '20'
                 },
@@ -44,27 +57,36 @@ export default {
                     'pageSize': '40'
                 }];
             this.dataFields = {value: 'id', text:'pageSize'}
-            this.categoriesPagination.unshift({'id': 'default' , 'pageSize': '15'});
         }else if(this.tag == "DepartmentCode"){
-            if(this.flag == "filter") this.content = 'bophansudung';
+            // Nếu tag là filter thì nó là combobox sử dụng cho phần filter
+            if(this.flag == "filter") this.content = 'Bộ phận sử dụng';
+            // Gọi api lấy danh sách các bộ phận sử dụng bind vào combobox
             await axios.get("https://localhost:7062/api/v1/Departments").then(function(res){
+                // Gắn datafields cho combobox theo id, value
                 if(me.flag != "filter") me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
                 else me.dataFields =  {value: 'DepartmentId',text:'DepartmentName'};
                 me.categoriesPart = res.data;
+                // nếu là combobox sử dụng cho filter thì thêm 1 item mặc định tên là "bộ phận sử dụng"
                 if(me.flag == "filter") me.categoriesPart.unshift({'DepartmentId': 'bophansudung' , 'DepartmentName': 'Bộ phận sử dụng'});
                 
             }).catch(function(err){
+                // Xử lý lỗi khi call API nếu có
                 console.log(err);
             })
         }else if(this.tag == "FixedAssetCategoryCode"){
-            if(this.flag == "filter") this.content = 'loaitaisan';
+            // Nếu tag là filter thì nó là combobox sử dụng cho phần filter
+            if(this.flag == "filter") this.content = 'Loại tài sản';
+            // Gọi api lấy danh sách các loại tài sản bind vào combobox
             await axios.get("https://localhost:7062/api/v1/FixedAssetCategories").then(function(res){
+                // Gắn datafields cho combobox theo id, value
                 if(me.flag != "filter") me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
                 else me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryName'};
                 me.categoriesAsset = res.data;
+                // nếu là combobox sử dụng cho filter thì thêm 1 item mặc định tên là "Loại tài sản"
                 if(me.flag == "filter") me.categoriesAsset.unshift({'FixedAssetCategoryId': 'loaitaisan' , 'FixedAssetCategoryName': 'Loại tài sản'});
                
             }).catch(function(err){
+                // Xử lý lỗi nếu có
                 console.log(err);
             })
         }
@@ -77,31 +99,34 @@ export default {
         }
     },
     methods:{
-        // show popup combobox khi focus vao
-        showPopup(){
-            // this.content = "";
-            this.$refs.comboboxFocus.showPopup();
-        },
-        // emit gia tri len cho form
+        /**
+        * Mô tả: Emit lên item được chọn từ combobox
+        * @param e: sự kiện click item
+        * @return
+        * Created by: nbtin
+        * Created date: 23:08 23/05/2022
+        */
         setValueSelected(e){
             this.itemSelected = e;
             this.$emit("getComboSelected",e);
         },
-        // show dropdown
-        showDrop(){
-            this.isShowDrop = !this.isShowDrop;
-            this.optionSelected = "";
-        },
-        // check Null khi blur
+        /**
+        * Mô tả: Check rỗng cho combobox khi được click ra ngoài
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 23:10 23/05/2022
+        */
         checkNullValue(){
+            // Nếu combobox là dùng cho filter thì không cần check rỗng
             if(this.flag != "filter" && this.tag != "DropdownPagination"){
-                if(this.itemSelected == null || this.itemSelected.item == null || this.content == ""){
+                if((this.itemSelected == null || this.itemSelected.item == null) && this.content == ""){
                     this.isAlert = true;
                 } else {
                     this.isAlert = false;
                 }
             } else if(this.flag == "filter"){
-                // TODO: Set giá trị về mặc định cho combobox khi để trống và blur ra ngoài nhưng vẫn chưa đc
+                // Nếu item được chọn là null thì sẽ tính là rỗng
                 if(this.itemSelected == null || this.itemSelected.item == null){
                     if(this.tag == 'FixedAssetCategoryCode'){
                         this.content = "Loại tài sản"; 
@@ -115,6 +140,12 @@ export default {
         }
     }, 
     computed: {
+        /**
+        * Mô tả: Computed chung dùng để lựa chọn ra mảng giá trị dành cho combobox, tùy theo prop tag đc gán vào
+        * @return categories: Mảng giá trị
+        * Created by: nbtin
+        * Created date: 23:12 23/05/2022
+        */
         filterCategories(){
             var categories = [];
             if(this.tag == "DropdownPagination"){

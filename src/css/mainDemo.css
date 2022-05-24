@@ -198,7 +198,7 @@ body{
 }
 
 ::-webkit-scrollbar {
-    height: 0px;
+    height: 6px;
     width: 2px;
     scroll-padding: 20px;
   }
@@ -258,4 +258,10 @@ body{
 }
 .d-opacity{
     opacity: 1 !important;
+}
+.text-no-data{
+    /* margin-left: 10px; */
+    margin-top: 10px;
+    font-size: 15px;
+    width: 200px;
 }

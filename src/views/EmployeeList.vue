@@ -21,6 +21,9 @@
                     </tr>
                 </thead>    
                 <div class="loading-table" v-show="isLoading"></div>
+                <div class="text-no-data" v-if="fixedAssets.length == 0">
+                    Hiện tại không có dữ liệu.
+                </div>
                 <tbody v-show="!isLoading">
                     <TableItem 
                     v-for="(asset, index) in fixedAssets" 
@@ -50,17 +53,8 @@
                         class="dropdown-pagination"
                         @getComboSelected="getPageSize"
                         />
-                        <!-- <div class="m-pagination" style="width: 147px;">
-                            <button class="prev-page-button"></button>
-                            <div class="m-pagination-pages">
-                                <div class="page-item current-page">1</div>
-                                <div class="page-item">2</div>
-                                <div class="page-item">...</div>
-                                <div class="page-item">4</div>
-                            </div>
-                            <button class="next-page-button"></button>
-                        </div> -->
                         <MISAPagination
+                            v-model="pageNumCurrent"
                             :pageCount="calTotalPage"
                             :prev-text="'pre'"
                             :prev-link-class="'prev-link-class'"
@@ -68,6 +62,7 @@
                             :next-link-class="'next-link-class'"
                             :container-class="'m-pagination'"
                             :click-handler="clickCallback"
+                            
                         >
                         </MISAPagination>
                     </div>
@@ -89,21 +84,12 @@ import MISACombobox from "../components/base/MISACombobox.vue";
 import axios from "axios";
 
 export default {
-    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord","delFlag"],
+    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord","delFlag","pageNumberCurrent"],
     components:{
         Checkbox,
         TableItem,
         MISACombobox
     },
-    // async mounted(){
-    //     var me = this;
-    //     await axios.get("https://localhost:7062/api/v1/FixedAssets").then(function(res){
-    //         me.totalRecord = res.data.length;
-    //         me.totalPage = Math.ceil(me.totalRecord / me.pageSize);
-    //     }).catch(function(err){
-    //         console.log(err);
-    //     })
-    // },
     computed:{
         /**
         * Mô tả : Tính tổng số trang 
@@ -126,17 +112,21 @@ export default {
             var init = 0;
             var sum = [0,0,0,0];
             if(this.fixedAssets.length != 0){
+                // Tổng số lượng
                 let sumQuantity = this.fixedAssets.reduce((item1,item2) => {
                     return item1 + item2.Quantity;
                 },init);
+                // Tổng nguyên giá
                 let sumPrice =  this.fixedAssets.reduce((item1,item2) => {
                     return parseInt(item1) + parseInt(this.formatToInt(item2.Cost));
                 },init);
+                // Tổng lũy kế
                 let sumAccum = this.fixedAssets.reduce((item1,item2) => {
                     return parseInt(item1) + parseInt(this.formatToInt(item2.DepreciationPerYear * item2.ProductionYear));
                 },init);
+                // Tổng giá trị còn lại
                 let sumPriceExtra = this.fixedAssets.reduce((item1,item2) => {
-                    console.log('depreciation per year: ', parseInt(item2.Cost - this.formatToInt(item2.DepreciationPerYear * item2.ProductionYear)));
+                    
                     return parseInt(item1) + parseInt(item2.Cost - this.formatToInt(item2.DepreciationPerYear * item2.ProductionYear));
                     
                 },init);
@@ -160,6 +150,7 @@ export default {
         getPageSize(e){
             var pageSize = e.itemData.pageSize;
             this.pageSize = pageSize;
+            // Emit lên pageSize(Số bản ghi 1 trang)
             this.$emit("getPageSize",pageSize);
         },
         /**
@@ -226,9 +217,14 @@ export default {
             this.$emit("getDelList",this.delList);
             if(this.delList.length != this.fixedAssets.length) this.isCheckAll = false;
         },
-        // Check tất cả 
+        /**
+        * Mô tả: Check tất cả các checkbox
+        * Created by: nbtin
+        * Created date: 09:35 24/05/2022
+        */
         checkAll(){
             if(this.isCheckAll == false){
+                // Kiểm tra nếu id của asset chưa nằm trong mảng các id xóa thì thêm vào, đã có rồi thì lấy ra
                 for(let i = 0 ; i < this.fixedAssets.length; i++){
                     if(this.delList.includes(this.fixedAssets[i].FixedAssetId) == false){
                         this.delList.push(this.fixedAssets[i].FixedAssetId);
@@ -238,6 +234,7 @@ export default {
             } else {
                 this.delList = [];
             }
+            // Emit mảng delList lên cho component cha
             this.$emit("getDelList",this.delList);
             this.isCheckAll = !this.isCheckAll;
             
@@ -245,6 +242,10 @@ export default {
     },
     // Thêm dữ liệu từ form vào bảng, nhưng chưa được
     watch: {
+        // Watch page Number để set trang hiện tại cho pagination
+        pageNumberCurrent: function(newValue){
+            this.pageNumCurrent = newValue;
+        },
         // assetAdd: function(newValue){
         // this.assets.add(newValue);
         // }
@@ -255,6 +256,7 @@ export default {
     data() {
         return {
             assets:{},
+            pageNumCurrent: 1,
             delList: [],
             checkbox: false,
             isCheckAll: false,

@@ -20,7 +20,6 @@ export default {
     methods:{
         selectOption(optionSelected){
             var file = this.$refs.chooseFile.files[0];
-            // console.log(file);
             this.$emit("selectOption",optionSelected,file);
         }
     }

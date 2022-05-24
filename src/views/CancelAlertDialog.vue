@@ -17,21 +17,32 @@
 </template>
 
 <script>
+import messageResource from '../resources/resource';
+
 export default {
     props:["isShowAlert","formMode"],
     mounted(){
         if(this.formMode == 1 || this.formMode == 2){
-                this.message = "Bạn có muốn hủy bỏ khai báo tài sản này";
+                this.message = messageResource.CANCEL_QUESTION_ADD;
+                //Gán lại trạng thái data để hiện hàng action button  tùy theo trạng thái form
                 this.add = true;
                 this.edit = false;
         } else if(this.formMode == 0){
-            this.message = "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?";
+            this.message = messageResource.CANCEL_QUESTION_UPDATE;
+            //Gán lại trạng thái data để hiện hàng action button  tùy theo trạng thái form
             this.add = false;
             this.edit = true;
         }
         
     },
     methods:{
+        /**
+        * Mô tả: Hàm emit lên option chọn từ alert
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 07:54 24/05/2022
+        */
         selectOption(select){
             this.$emit("getCancelOption",select);
         }

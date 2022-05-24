@@ -63,6 +63,13 @@
 export default {
     props:["isMinimize"],
     methods:{
+        /**
+        * Mô tả: Thực hiện thu gọn/phóng to menu ở bên trái
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 07:23 24/05/2022
+        */
         toggleMenu(isMinimize){
             this.$emit("toggleMinimize",!isMinimize);
         }
