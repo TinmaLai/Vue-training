@@ -56,6 +56,7 @@
         :delFlag="this.delFlag"
         :totalRecord="this.totalRecord"
         :pageNumberCurrent="this.pageNumber"
+        @getAsset="getAsset"
         />
         <AddStaffForm 
         v-if="isShowDialog" 
@@ -118,7 +119,14 @@ export default {
         var me = this;
         // Gọi hàm search với giá trị pageSize, pageNumber mặc định (10,1)
         me.searchAsset();
-        await axios.get("https://localhost:7062/api/v1/FixedAssets")
+        me.getAllAssets();
+            
+        
+    },
+    methods: {
+        async getAllAssets(){
+            var me = this;
+            await axios.get("https://localhost:7062/api/v1/FixedAssets")
             .then(function(res){
                 console.log(res);
                 // Call get toàn bộ danh sách tài sản để lấy tổng số bản ghi (totalRecord)
@@ -136,10 +144,7 @@ export default {
                 // Dù call thất bại hay thành công cũng tắt loading đi
                 me.isLoading = false;
             })
-            
-        
-    },
-    methods: {
+        },
         /**
         * Mô tả: Cập nhật lại mảng danh sách id cần xóa sau khi xóa, dùng flag = false từ component con
         * @param
@@ -341,7 +346,9 @@ export default {
         async getAsset(){
             this.isLoading = true;
             var me = this;
+            
             me.searchAsset();
+            me.getAllAssets();
             
         },
         // Lấy ra code sau khi tăng để gán cho lần mở form tiếp theo
