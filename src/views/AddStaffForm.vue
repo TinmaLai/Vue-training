@@ -226,7 +226,7 @@
         />
         <ValidateAlert
         :isShowAlert="showValidateAlert"
-        :message="errMesage()"
+        :message="errMessage()"
         @selectOption="this.showValidateAlert = false"
         />
         
@@ -286,13 +286,14 @@ export default {
         * Created by: nbtin
         * Created date: 13:11 23/05/2022
         */
-        errMesage(){
+        errMessage(msg){
             
             if(this.nullFields.length > 0){
                 // Nếu mảng các trường rỗng có tồn tại rỗng thì thông báo rỗng trước tiên
                 return messageResource.VALIDATE_NULL + this.nullFields;
-            } else if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
-            else return this.validateDataMsg;
+            } else if(this.validateDataMsg != "") return this.validateDataMsg;
+            // if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
+            return msg;
         },
         /**
         * Mô tả : Lấy code mới từ API
@@ -572,15 +573,18 @@ export default {
                         }).catch(function(err){
                             // Xử lý nếu call POST API thất bại
                             var errMsg = err.response.data.data.data[0];
+                            console.log('errmsg line 576: ',errMsg);
                             // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-                            if(errMsg.includes("trùng")){
-                                me.isDuplicate = true;
-                                me.showValidateAlert = true;
-                            }else {
-                                status = false;
-                                message = messageResource.SAVE_FAILED;
-                                me.setStatus(status, message);
-                            }
+                            me.errMessage(errMsg);
+                            me.showValidateAlert = true;
+                            // if(errMsg.includes("trùng")){
+                            //     me.isDuplicate = true;
+                            //     me.showValidateAlert = true;
+                            // }else {
+                            //     status = false;
+                            //     message = messageResource.SAVE_FAILED;
+                            //     me.setStatus(status, message);
+                            // }
                         })
                     } else if(this.formMode == 0){ // Nếu formmode là 0 thì 
                         let message = "";
@@ -595,6 +599,12 @@ export default {
                             me.$emit("getAsset");
                         }).catch(function(err){
                             status = false;
+                            var errMsg = err.response.data.data.data[0];
+                            // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+                            if(errMsg.includes("trùng")){
+                                me.isDuplicate = true;
+                                me.showValidateAlert = true;
+                            }
                             // Hiện thông báo thất bại
                             message = messageResource.EDIT_FAILED;
                             console.log(err);
