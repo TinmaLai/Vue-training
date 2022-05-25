@@ -12,7 +12,7 @@
             </div>
             <span class="item-text">Tổng quan</span>
         </div>
-        <div class="menu-left-item collapse">
+        <div class="menu-left-item collapse actived">
             <div class="item-btn actived">
                 <div class="asset"></div>
             </div>

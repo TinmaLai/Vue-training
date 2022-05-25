@@ -103,6 +103,10 @@ a{
     color: #fff;
     font-family: MISA Font Regular;
 }
+.menu-left-item.actived{
+    background-color: #1aa4c8;
+    color: white;
+}
 .menu-left .minimize{
     height: 30px;
     width: 30px;
