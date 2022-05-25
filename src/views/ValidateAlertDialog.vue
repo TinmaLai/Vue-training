@@ -5,7 +5,7 @@
             <div class="alert-content">{{ this.message + '.'}}</div>
         </div>
         <div class="row popup-action" :class="{'d-flex': true}">
-            <div class="m-button" @click="selectOption()">Đóng</div>
+            <div class="m-button" @click="selectOption()" v-shortkey="['esc']" @shortkey="selectOption()">Đóng</div>
         </div>
     </div>
 </template>

@@ -226,7 +226,7 @@
         />
         <ValidateAlert
         :isShowAlert="showValidateAlert"
-        :message="errMessage()"
+        :message="errMesage()"
         @selectOption="this.showValidateAlert = false"
         />
         
@@ -286,14 +286,13 @@ export default {
         * Created by: nbtin
         * Created date: 13:11 23/05/2022
         */
-        errMessage(msg){
+        errMesage(){
             
             if(this.nullFields.length > 0){
                 // Nếu mảng các trường rỗng có tồn tại rỗng thì thông báo rỗng trước tiên
                 return messageResource.VALIDATE_NULL + this.nullFields;
-            } else if(this.validateDataMsg != "") return this.validateDataMsg;
-            // if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
-            return msg;
+            } else if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
+            else return this.validateDataMsg;
         },
         /**
         * Mô tả : Lấy code mới từ API
@@ -573,23 +572,20 @@ export default {
                         }).catch(function(err){
                             // Xử lý nếu call POST API thất bại
                             var errMsg = err.response.data.data.data[0];
-                            console.log('errmsg line 576: ',errMsg);
                             // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-                            me.errMessage(errMsg);
-                            me.showValidateAlert = true;
-                            // if(errMsg.includes("trùng")){
-                            //     me.isDuplicate = true;
-                            //     me.showValidateAlert = true;
-                            // }else {
-                            //     status = false;
-                            //     message = messageResource.SAVE_FAILED;
-                            //     me.setStatus(status, message);
-                            // }
+                            if(errMsg.includes("trùng")){
+                                me.isDuplicate = true;
+                                me.showValidateAlert = true;
+                            }else {
+                                status = false;
+                                message = messageResource.SAVE_FAILED;
+                                me.setStatus(status, message);
+                            }
                         })
                     } else if(this.formMode == 0){ // Nếu formmode là 0 thì 
                         let message = "";
                         let status = "";
-                        // Gọi API Put để update tài sản trong database
+                        // Gọi API Put để updat
                         await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm)
                         .then(function(res){
                             console.log(res);
@@ -597,20 +593,19 @@ export default {
                             // Hiện thông báo thành công
                             message = messageResource.EDIT_SUCCESS;
                             me.$emit("getAsset");
+                            me.setStatus(status, message);
                         }).catch(function(err){
-                            status = false;
                             var errMsg = err.response.data.data.data[0];
-                            // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
                             if(errMsg.includes("trùng")){
                                 me.isDuplicate = true;
                                 me.showValidateAlert = true;
+                            }else {
+                                status = false;
+                                // Hiện thông báo thất bại
+                                message = messageResource.EDIT_FAILED;
+                                me.setStatus(status, message);
                             }
-                            // Hiện thông báo thất bại
-                            message = messageResource.EDIT_FAILED;
                             console.log(err);
-                        }).then(function(){
-                            // Dù gọi API thất bại hay thành công vẫn thực hiện việc hiện toast với trạng thái và message
-                            me.setStatus(status, message);
                         })
                     }
                 }   
