@@ -5,7 +5,7 @@
     padding-left: 16px;
     justify-content:space-between;
     gap: 10px;
-    width: 147px;
+    /* width: 147px; */
     list-style-type: none;
 }
 .m-pagination li{

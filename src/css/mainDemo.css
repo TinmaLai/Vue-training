@@ -163,7 +163,8 @@ body{
 
 .page-navigation{
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    gap: 20px;
     width: 359px;
     align-items: center;
     padding-left: 16px;

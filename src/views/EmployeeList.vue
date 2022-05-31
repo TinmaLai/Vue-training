@@ -84,7 +84,7 @@ import MISACombobox from "../components/base/MISACombobox.vue";
 import axios from "axios";
 
 export default {
-    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord","delFlag","pageNumberCurrent"],
+    props:["assetAdd","fixedAssets","isTableLess","isLoading","totalRecord","delFlag","pageNumberCurrent","currentTotalRecord"],
     components:{
         Checkbox,
         TableItem,
@@ -99,7 +99,7 @@ export default {
         * Created date: 11:53 22/05/2022
         */
         calTotalPage(){
-            return Math.ceil(this.totalRecord/this.pageSize);
+            return Math.ceil(this.currentTotalRecord/this.pageSize);
         },
         /**
         * Mô tả : Tính phần tổng cổng ở dưới cùng của bảng
@@ -197,7 +197,7 @@ export default {
                 asset = res.data;
             }).catch(function(err){
                 console.log(err);
-            }).then(function () {
+            }).then(function () {           
                 me.$emit("getAssetSelected",asset);
                 me.$emit("toggleStaffDialog",true,formMode);
             });
@@ -249,8 +249,8 @@ export default {
         // assetAdd: function(newValue){
         // this.assets.add(newValue);
         // }
-        delFlag: function(oldValue, newValue){
-            if(newValue == true || oldValue == true) this.delList = [];
+        delFlag: function( newValue){
+            if(newValue == true) this.delList = [];
         }
     },
     data() {

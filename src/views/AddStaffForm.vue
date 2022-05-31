@@ -171,36 +171,19 @@
             <div class="row">
                 <div class="col-4">
                     <label for="">Ngày mua <span style="color: red">*</span></label>
-                    <div class="datepicker-container">
-                        <Datepicker
-                        class="mt-input input-datepicker"
-                        :class="{'danger' : !this.assetForm.PurchaseDate}"
-                        ref="PurchaseDate"
-                        v-model="assetForm.PurchaseDate"
-                        format="dd/MM/yyyy"
-                        textInput
-                        selectText="Chọn"
-                        cancelText="Hủy"
-                        
-                        ></Datepicker>
-                        <div class="datepicker-icon"></div>
-                    </div>
+                    
+                    <MISADatepicker
+                        @getDate="newValue => this.assetForm.PurchaseDate = newValue"
+                        :control="this.assetForm.PurchaseDate"
+                    />
                 </div>
                 <div class="col-4">
                     <label for="">Ngày bắt đầu sử dụng <span style="color: red">*</span></label>
-                    <div class="datepicker-container">
-                        <Datepicker 
-                        class="mt-input input-datepicker"
-                        format="dd/MM/yyyy"
-                        :class="{'danger' : !this.assetForm.UseDate}"
-                        v-model="assetForm.UseDate"
-                        textInput
-                        selectText="Chọn"
-                        cancelText="Hủy"
-                        @focusPrev="this.$refs.txtRequireDepreciationPerYear.focus()"
-                        ></Datepicker>
-                        <div class="datepicker-icon"></div>
-                    </div>
+                    
+                    <MISADatepicker
+                        @getDate="newValue => this.assetForm.UseDate = newValue"
+                        :control="this.assetForm.UseDate"
+                    />
                 </div>
                 <div class="col-4"></div>
             </div>
@@ -227,7 +210,7 @@
         <ValidateAlert
         :isShowAlert="showValidateAlert"
         :message="errMesage()"
-        @selectOption="this.showValidateAlert = false"
+        @selectOption="handleSelectValidate"
         />
         
         
@@ -238,20 +221,20 @@
 import axios from 'axios';
 import Combobox from '../components/base/MISACombobox.vue';
 import CancelAlert from '../views/CancelAlertDialog.vue';
-import Datepicker from '@vuepic/vue-datepicker';
+
 import MISAInput from '../components/base/MISAInput.vue';
 import ValidateAlert from '../views/ValidateAlertDialog.vue';
 import messageResource from '../resources/resource';
-
+import MISADatepicker from '../components/base/MISADatepicker.vue';
 
 export default {
     props:["isShow","newAssetCode","formMode","assetSelected"],
     components:{
         Combobox,
         CancelAlert,
-        Datepicker,
         MISAInput,
         ValidateAlert,
+        MISADatepicker,
     },
     async mounted() {
         /**
@@ -276,9 +259,46 @@ export default {
             
         }
         // Gán focus vào ô đầu tiên khi vừa mở form
-        this.$refs.txtRequireFixedAssetCode.focusInput();
+        this.$refs.txtRequireFixedAssetCode.setFocus();
     },
     methods:{
+        /**
+        * Mô tả: Bind ngày từ datepicker
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 20:00 30/05/2022
+        */
+        getDate(value){
+            console.log(value);
+        },
+        /**
+        * Mô tả: Xử lý focus vào ô rỗng đầu tiên sau khi đóng validate rỗng
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:27 30/05/2022
+        */
+        handleSelectValidate(){
+            this.showValidateAlert = false;
+            for(let key of Object.entries(this.$refs)){
+                // focus vào ô lỗi đầu tiên
+                // this.$refs[key[0]].setFocus();
+                var checkFocus = false;
+                for(let value of this.nullValueProperty){
+                    if(key[0].toLowerCase().includes(value.toLowerCase())){
+                        // console.log(this.$refs[key[0]].$el.children[0].children[1]);
+                        // console.log(this.$refs[key[0]]);
+                        this.$refs[key[0]].setFocus();
+                        checkFocus = true;
+                        break;
+                    }
+                    
+                }
+                // Kiểm tra xem đã focus đc ô đầu tiên chưa 
+                if(checkFocus == true) break;
+            }
+        },
         /**
         * Mô tả: Chọn ra câu cảnh báo khi có lỗi
         * @param

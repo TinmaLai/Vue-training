@@ -14,6 +14,7 @@
         :autofill="true"
         :showClearButton="false"
         @blur="checkNullValue"
+        @input="getChange"
          ></ejs-combobox>
     </div>
 </template>
@@ -96,9 +97,32 @@ export default {
     watch:{
         control: function(newValue){
             this.content = newValue;
-        }
+        },
     },
     methods:{
+        /**
+        * Mô tả: Quan sát giá trị của combobox
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 22:56 30/05/2022
+        */
+        getChange(event){
+            console.log(event.item);
+            if(event.itemData == null){
+                this.$emit("getComboSelected","");
+            }
+        },
+        /**
+        * Mô tả: Set focus cho ô combobox
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:51 30/05/2022
+        */
+        setFocus(){
+            this.$refs.comboboxFocus.$el.focus();
+        },
         /**
         * Mô tả: Emit lên item được chọn từ combobox
         * @param e: sự kiện click item
@@ -125,18 +149,19 @@ export default {
                 } else {
                     this.isAlert = false;
                 }
-            } else if(this.flag == "filter"){
-                // Nếu item được chọn là null thì sẽ tính là rỗng
-                if(this.itemSelected == null || this.itemSelected.item == null){
-                    if(this.tag == 'FixedAssetCategoryCode'){
-                        this.content = "Loại tài sản"; 
-                    } else if(this.tag == 'DepartmentCode'){
-                        this.content = "Bộ phận sử dụng";
-                    }
-                } else {
-                    this.isAlert = false;
-                }
-            }
+            } 
+            // else if(this.flag == "filter"){
+            //     // Nếu item được chọn là null thì sẽ tính là rỗng
+            //     if(this.itemSelected == null || this.itemSelected.item == null){
+            //         if(this.tag == 'FixedAssetCategoryCode'){
+            //             this.content = "Loại tài sản"; 
+            //         } else if(this.tag == 'DepartmentCode'){
+            //             this.content = "Bộ phận sử dụng";
+            //         }
+            //     } else {
+            //         this.isAlert = false;
+            //     }
+            // }
         }
     }, 
     computed: {

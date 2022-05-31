@@ -51,6 +51,7 @@
         @getAssetSelected="getAssetSelected"
         @getDelList="getDelList"
         @getDelFlag="getDelFlag"
+        :currentTotalRecord="currentTotalRecord"
         :isTableLess="isTableLess"
         :isLoading="this.isLoading"
         :delFlag="this.delFlag"
@@ -242,7 +243,9 @@ export default {
         * Created date: 20:54 19/05/2022
         */
         getFilterCategoryAsset(e){
+            if(e != "")
             this.filterFixedAssetCategory = e.itemData.FixedAssetCategoryName;
+            else this.filterFixedAssetCategory = "";
             // Thực hiện tìm kiếm luôn sau khi combobox filter được chọn
             this.searchAsset();
         },
@@ -253,7 +256,9 @@ export default {
         * Created date: 20:56 19/05/2022
         */
         getFilterDepartment(e){
+            if(e != "")
             this.filterDepartment = e.itemData.DepartmentName;
+            else this.filterDepartment = "";
             // Thực hiện tìm kiếm luôn sau khi combobox filter được chọn
             this.searchAsset();
         },
@@ -285,10 +290,10 @@ export default {
 
             var departmentContent = "", fixedAssetCategoryContent = "";
 
-            if(me.filterDepartment == "Bộ phận sử dụng") departmentContent = "";
+            if(me.filterDepartment == "Bộ phận sử dụng" || me.filterDepartment == "") departmentContent = "";
             else departmentContent = me.filterDepartment;
 
-            if(me.filterFixedAssetCategory == "Loại tài sản") fixedAssetCategoryContent = "";
+            if(me.filterFixedAssetCategory == "Loại tài sản" || me.filterFixedAssetCategory == "") fixedAssetCategoryContent = "";
             else fixedAssetCategoryContent = me.filterFixedAssetCategory;
 
             // param call API
@@ -305,8 +310,10 @@ export default {
             {
                 params: paramAxios
             }).then(function(res){
-                console.log(res);
-                me.fixedAssets = res.data;
+                console.log('res search:', res.data.fixedAssets);
+                me.fixedAssets = res.data.fixedAssets;
+                // Gán lại số bản ghi tìm dược để chia lại số trang
+                me.currentTotalRecord = res.data.count;
                 // Loading khi search
                 me.isLoading = false;
             }).catch(function(err){
@@ -391,9 +398,9 @@ export default {
                     console.log(res);
                     // Hiện thông báo xóa thành công
                     me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
-                    me.getAsset();
                     me.delList = [];
                     me.delFlag = true;
+                    me.getAsset();
                     
                 }).catch(function(err){
                     me.delList = [];
@@ -459,6 +466,7 @@ export default {
             pageSize: 15,
             totalRecord: 0,
             delFlag: false,
+            currentTotalRecord: 0,
         }
     },
 }

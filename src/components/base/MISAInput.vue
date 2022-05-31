@@ -35,7 +35,7 @@ export default {
         * Created by: nbtin
         * Created date: 23:19 23/05/2022
         */
-        focusInput(){
+        setFocus(){
             this.$refs.inputTxt.focus();
         },
         /**
