@@ -328,7 +328,7 @@ export default {
             * Created by: nbtin
             * Created date: 16:34 12/05/2022
             */
-            await axios.get("https://localhost:7062/api/v1/FixedAssets/NewAssetCode").then(function(res){
+            await axios.get("http://localhost:5062/api/v1/FixedAssets/NewAssetCode").then(function(res){
                 console.log(res);
                 // Gán lại mã mới 
                 me.assetForm.FixedAssetCode = res.data;
@@ -582,7 +582,7 @@ export default {
                         let message = "";
                         console.log(me.assetForm);
                         //Gọi hàm để thêm tài sản lên api
-                        await axios.post("https://localhost:7062/api/v1/FixedAssets",me.assetForm).then(function(res){
+                        await axios.post("http://localhost:5062/api/v1/FixedAssets",me.assetForm).then(function(res){
                             console.log(res);
                             status = true;
                             message = messageResource.SAVE_SUCCESS;
@@ -606,7 +606,7 @@ export default {
                         let message = "";
                         let status = "";
                         // Gọi API Put để updat
-                        await axios.put(`https://localhost:7062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm)
+                        await axios.put(`http://localhost:5062/api/v1/FixedAssets/`+ me.assetForm.FixedAssetId, me.assetForm)
                         .then(function(res){
                             console.log(res);
                             status = true;

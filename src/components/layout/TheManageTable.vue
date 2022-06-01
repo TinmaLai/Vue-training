@@ -127,7 +127,7 @@ export default {
     methods: {
         async getAllAssets(){
             var me = this;
-            await axios.get("https://localhost:7062/api/v1/FixedAssets")
+            await axios.get("http://localhost:5062/api/v1/FixedAssets")
             .then(function(res){
                 console.log(res);
                 // Call get toàn bộ danh sách tài sản để lấy tổng số bản ghi (totalRecord)
@@ -209,7 +209,7 @@ export default {
                     formData.append('formFile', file);
                     var me = this;
                     me.isLoading = true;
-                    await axios.post('https://localhost:7062/api/v1/FixedAssets/import', 
+                    await axios.post('http://localhost:5062/api/v1/FixedAssets/import', 
                         formData,
                         {
                             headers:{
@@ -306,7 +306,7 @@ export default {
             }
             this.isLoading = true;
             // Gọi API để thực hiện filter, phân trang
-            await axios.get('https://localhost:7062/api/v1/FixedAssets/filter',
+            await axios.get('http://localhost:5062/api/v1/FixedAssets/filter',
             {
                 params: paramAxios
             }).then(function(res){
@@ -389,7 +389,7 @@ export default {
                 var me = this;
                 me.isShowAlert = false;
                 // Gọi API để xóa theo danh sách id được tick checkbox
-                await axios.delete(`https://localhost:7062/api/v1/FixedAssets/multiDelete`,{
+                await axios.delete(`http://localhost:5062/api/v1/FixedAssets/multiDelete`,{
                     data: JSON.stringify(me.delList),
                     headers: {
                         "content-type": "application/json",

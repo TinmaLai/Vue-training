@@ -15,8 +15,10 @@
     "v-mask": "^2.3.0",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-rc.1",
+    "vue-router": "^4.0.15",
     "vue3-shortkey": "^4.0.0",
-    "vuejs-paginate-next": "^1.0.2"
+    "vuejs-paginate-next": "^1.0.2",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

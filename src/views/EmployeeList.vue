@@ -192,7 +192,7 @@ export default {
         async ShowStaffDialog(id,formMode){
             var asset = {};
             var me = this;
-            await axios.get(`https://localhost:7062/api/v1/FixedAssets/${id}`).then(function(res){
+            await axios.get(`http://localhost:5062/api/v1/FixedAssets/${id}`).then(function(res){
                 console.log(res);
                 asset = res.data;
             }).catch(function(err){

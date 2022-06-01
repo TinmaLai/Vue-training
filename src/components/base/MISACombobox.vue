@@ -62,7 +62,7 @@ export default {
             // Nếu tag là filter thì nó là combobox sử dụng cho phần filter
             if(this.flag == "filter") this.content = 'Bộ phận sử dụng';
             // Gọi api lấy danh sách các bộ phận sử dụng bind vào combobox
-            await axios.get("https://localhost:7062/api/v1/Departments").then(function(res){
+            await axios.get("http://localhost:5062/api/v1/Departments").then(function(res){
                 // Gắn datafields cho combobox theo id, value
                 if(me.flag != "filter") me.dataFields = {value: 'DepartmentId',text:'DepartmentCode'};
                 else me.dataFields =  {value: 'DepartmentId',text:'DepartmentName'};
@@ -78,7 +78,7 @@ export default {
             // Nếu tag là filter thì nó là combobox sử dụng cho phần filter
             if(this.flag == "filter") this.content = 'Loại tài sản';
             // Gọi api lấy danh sách các loại tài sản bind vào combobox
-            await axios.get("https://localhost:7062/api/v1/FixedAssetCategories").then(function(res){
+            await axios.get("http://localhost:5062/api/v1/FixedAssetCategories").then(function(res){
                 // Gắn datafields cho combobox theo id, value
                 if(me.flag != "filter") me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryCode'};
                 else me.dataFields = {value: 'FixedAssetCategoryId',text:'FixedAssetCategoryName'};

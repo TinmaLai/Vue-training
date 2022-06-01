@@ -20,7 +20,7 @@ export default {
     async updated() {
         if(this.delList.length == 1){
             var me = this;
-            await axios.get(`https://localhost:7062/api/v1/FixedAssets/`+me.delList[0])
+            await axios.get(`http://localhost:5062/api/v1/FixedAssets/`+me.delList[0])
             .then(function(res){
                 me.message = "Bạn có muốn xóa tài sản " + res.data.FixedAssetCode + " - " + res.data.FixedAssetName + "?";
             }).catch(function(err){
