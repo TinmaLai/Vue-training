@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+}
+#frmLogin {
+    height: 100vh !important;
+    color: #4f4f4f;
+    margin: 0;
+    line-height: 1.6;
+    background-color: #fff;
+}
+
+.login {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url(../../asset/icons/Op3-Background-1920.png);
+    height: 100%;
+}
+
+.grid-login {
+    width: 770px;
+    display: flex;
+    align-items: center;
+    /* flex-direction: column; */
+    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 16px 30px rgb(0 0 0 / 16%);
+    overflow: hidden;
+    position: absolute;
+    height: 560px;
+}
+.img-login {
+    background-image: url(../../asset/icons/img_Login-Local.png);
+    width: 100%;
+    height: 100%;
+}
+
+.half-ctn {
+    width: 50% !important;
+    text-align: center;
+}
+
+.main-login-ctn {
+    margin: 40px;
+}
+
+.grid-login-normal {
+    text-align: center;
+}
+
+.input-login {
+    width: 100%;
+    height: 44px;
+    padding: 0px 20px;
+    margin-top: 16px;
+    border-radius: 4px;
+    outline: none;
+    border: 1px solid #dadce0;
+    font-size: 13px;
+    /* align-items: center; */
+    box-sizing: border-box;
+    background-color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.button {
+    width: 100%;
+    height: 44px;
+    border-radius: 4px;
+    font-size: 16px !important;
+    outline: none;
+    border: none;
+    background-color: #1a73e8;
+    color: #fff !important;
+    cursor: pointer;
+}
+
+.logo {
+    margin: 0px auto;
+    background-repeat: no-repeat;
+    height: 60px;
+    width: 100px;
+    background-size: cover;
+    background-image: url(../../asset/icons/Logo\ MISA_VN.svg);
+    background-size: contain;
+}
+
+.logo-text {
+    text-align: center;
+    font-size: 15px;
+}
+.button-text{
+    color: #fff !important;
+}
+
+.wrong-login{
+    
+}

@@ -1,65 +1,35 @@
 import { createApp } from "vue";
-import { createStore } from "vuex";
 import App from "./App.vue";
-
-
+import VueCookies from 'vue-cookies';
+import store from './store/store';
+import axios from 'axios';
 import { registerLicense } from "@syncfusion/ej2-base";
 import Paginate from "vuejs-paginate-next";
-import router from './routes';
+import router from './router/routes';
 
 // Registering Syncfusion license key
 registerLicense(
     "ORg4AjUWIQA/Gnt2VVhhQlFaclhJW3xLYVF2R2FJfl56dlNMYl9BJAtUQF1hS35WdkZhW31WcHNcRmNe"
 );
+axios.defaults.withCredentials = true;
 
-const store = createStore({
-    state() {
-        return {
-            isAuthen: false,
-        };
-    },
-    mutations: {
-        setIsAuth(state, isAuth) {
-            if (isAuth == true) {
-                state.isAuthen = true;
-            } else state.isAuthen = false;
-        },
-    },
-    getters: {
-        isAuthentication(state) {
-            return state.isAuthen;
-        }
+// Xử lý lỗi Authen khi F5
+axios.interceptors.response.use(undefined, function(error) {
+    if (error) {
+      const originalRequest = error.config;
+      if (error.response.status === 404 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        store.dispatch("logout");
+        return router.push("/");
+      }
     }
-});
-
-
-
-
-
-router.beforeEach(async (to, from, next) => {
-    const { isAuthentication } = store.getters;
-    // next-line: check if route ("to" object) needs authenticated
-    if (to.matched.some((record) => record.meta.requiresAuth) && isAuthentication == false) {
-        next('/');
-    } else if (isAuthentication == true) {
-        switch (to.name) {
-            case 'Login':
-                next({ path: '/' });
-                break;
-            case 'Main':
-                next();
-                break;
-            default:
-                next();
-                break;
-        }
-    } else next();
-});
+  });
 
 const app = createApp(App);
 app.component("MISAPagination", Paginate);
 app.use(require("vue3-shortkey"));
 app.use(router);
 app.use(store);
+app.use(VueCookies);
 
 app.mount("#app");

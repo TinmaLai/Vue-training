@@ -497,7 +497,7 @@ export default {
                 }
             }
             else {
-                if(Number((1/this.assetForm.LifeTime).toFixed(2)) != Number(Number((this.assetForm.DepreciationRate)/100).toFixed(2)) && this.assetForm.LifeTime != 0){
+                if(Number((1/this.assetForm.LifeTime).toFixed(4)) != Number(Number((this.assetForm.DepreciationRate)/100).toFixed(4)) && this.assetForm.LifeTime != 0){
                     this.validateDataMsg = messageResource.VALIDATE_DEPRECIATION_RATE;
                     check = false;
                     return check;

@@ -19,10 +19,19 @@ export default {
         TheHeader,
         TheManageTable
     },
+    
+
     methods:{
+        /**
+        * Mô tả: Thu đóng menu left
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 10:37 02/06/2022
+        */
         toggleMinimize(minimizeBool){
-        console.log(minimizeBool);
-        this.isMinimize = minimizeBool;
+            console.log(minimizeBool);
+            this.isMinimize = minimizeBool;
         }
     },
     data() {

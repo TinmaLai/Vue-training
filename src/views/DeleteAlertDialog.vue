@@ -6,7 +6,7 @@
         </div>
         <div class="row popup-action" :class="{'d-flex': true} " >
             <div class="m-second-button" @click="selectOption(false)">Không</div>
-            <div class="m-button" @click="selectOption(true)">Xóa</div>
+            <button ref="btnDel" class="m-button" @click="selectOption(true)">Xóa</button>
         </div>
     </div>
 </template>
@@ -18,6 +18,14 @@ import messageResource from '../resources/resource';
 export default {
     props:["isShowAlert","delList"],
     async updated() {
+        this.$refs.btnDel.focus();
+        /**
+        * Mô tả:Hiện thông báo message
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 14:33 02/06/2022
+        */
         if(this.delList.length == 1){
             var me = this;
             await axios.get(`http://localhost:5062/api/v1/FixedAssets/`+me.delList[0])

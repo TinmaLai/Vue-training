@@ -21,18 +21,40 @@
             </a>
             <a href="#"><div class="user-action-item extension"></div></a>
             <a href="#"><div class="user-action-item question"></div></a>
-            <a href="#" class="avatar-block">
+            <a @click="this.isShowLogout = !this.isShowLogout" href="#" class="avatar-block">
                 <div class="user-action-item avatar"></div>
-                <div class="arrow-down"></div>
+                <div  class="arrow-down"></div>
+                <div @click="logoutBtn" v-if="this.isShowLogout" class="logout-btn m-button">Đăng xuất</div>
             </a>
         </div>
     </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
     name: 'App',
-    components:{}
+    components:{},
+    data() {
+        return {
+            isShowLogout: false,
+        }
+    },
+    methods:{
+         ...mapActions(["logout"]),
+        /**
+        * Mô tả: Hàm đăng xuất, chuyển trang về login, call api ở store
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 17:14 03/06/2022
+        */
+        async logoutBtn(){
+            this.$router.push('/');
+            await this.logout();
+            
+        }
+    }
 }
 </script>
 

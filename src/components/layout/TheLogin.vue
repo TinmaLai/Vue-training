@@ -1,55 +1,80 @@
 <template>
-    <div>
-        Trang login
-        <div>
-            <label>Username: </label>
-            <input v-model="this.loginForm.username"/>
-        </div>
-         <div>
-            <label>Password: </label>
-            <input v-model="this.loginForm.password"/>
-        </div>
-        <router-link to="/main"><button @click="login">Đăng nhập</button></router-link>
+    <div id="frmLogin">
+      <div class="login w-100 h-100">
+          <div class="grid-login">
+            <div class="half-ctn img-login"></div>
+            <div class="half-ctn">
+                <div class="main-login-ctn">
+                    <div class="logo"></div>
+                    <div class="logo-text">
+                        Đăng nhập để làm việc với <b>MISA QLTS</b>
+                    </div>
+                    
+                    <form @submit.prevent="submit" id="normal-login">
+                        <div class="grid-login-normal">
+                            <div class="username-login">
+                                <input v-model="form.username" id="iptUserName" class="input-login" placeholder="Username, email hoặc số điện thoại">
+                            </div>
+                            <div class="password-login">
+                                <input v-model="form.password" id="iptPassword" type="password" placeholder="Mật khẩu" class="input-login">
+                                <div class="eye on-eye">
+                                </div>
+                            </div>
+                           
+                            <div class="button-login" style="margin-top: 20px;">
+                                <button type="submit" class="button button-text" id="login">Đăng nhập</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="wrong-login">
+                        <div>Sai tài khoản hoặc mật khẩu, vui lòng đăng nhập lại.</div>
+                        <div><button class="m-button">Đóng</button></div>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
     </div>
 
 </template>
 
 <script>
 import axios from 'axios';
+import { mapActions } from "vuex";
 axios.defaults.withCredentials = true;
 
 export default {
     methods: {
-        async login(){
-            var me = this;
-            await axios.post("http://localhost:5062/api/v1/Users",me.loginForm,
-                {
-                    withCredentials: true,
-                    headers:{
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type':'application/json',
-                    },
-                    
-                }
-                
-            ).then(function(response) {
-                console.log(response);
-                console.log('hehehehe');
-                me.$store.commit('setIsAuth',true);
-
-                
-            }).catch(function(err){
-                console.log(err.response);
-                me.$store.commit('setIsAuth',false);
-            })
+    ...mapActions(["login"]),
+    /**
+    * Mô tả: Hàm đăng nhập với userform, chuyển trang vào main, show màn hình sai tài khoản mật khẩu nếu cần
+    * @param
+    * @return
+    * Created by: nbtin
+    * Created date: 17:15 03/06/2022
+    */
+    async submit() {
+        const user = {
+            username: this.form.username,
+            password: this.form.password
+        }
+        try{
+            await this.login(user);
+            this.$router.push("/main");
+            this.showError = false;
+        } catch (err){
+            console.log('loi');
+            this.showError = true;
         }
     },
+  },
     data() {
         return {
-            loginForm: {
+            form: {
                 username: '',
                 password: '',          
-            }
+            },
+            showError: false
         }
     },
 }
@@ -57,6 +82,6 @@ export default {
     
 </script>
 
-<style>
-
+<style scoped>
+    @import url(../../css/components/login.css);
 </style>
