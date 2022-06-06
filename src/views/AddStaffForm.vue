@@ -311,7 +311,11 @@ export default {
             if(this.nullFields.length > 0){
                 // Nếu mảng các trường rỗng có tồn tại rỗng thì thông báo rỗng trước tiên
                 return messageResource.VALIDATE_NULL + this.nullFields;
-            } else if(this.isDuplicate == true) return messageResource.VALIDATE_DUPLICATE_CODE;
+            } else if(this.isDuplicate == true) {
+                this.isDuplicate = false;
+                return messageResource.VALIDATE_DUPLICATE_CODE;
+                
+            }
             else return this.validateDataMsg;
         },
         /**
@@ -487,6 +491,7 @@ export default {
         */
         checkValidateData(){
             var check = true;
+            this.validateDataMsg = '';
             // If trong trường hợp là số nguyên hay số hữu tỉ, nếu là số hữu tỉ thì làm tròn đến 2 chữ số
             if(Number.isInteger(1/this.assetForm.LifeTime)){
                 // Xét nếu tỉ lệ hao mòn năm khác 1/số năm sử dụng
@@ -582,26 +587,43 @@ export default {
                         let message = "";
                         console.log(me.assetForm);
                         //Gọi hàm để thêm tài sản lên api
-                        await axios.post("http://localhost:5062/api/v1/FixedAssets",me.assetForm).then(function(res){
-                            console.log(res);
-                            status = true;
-                            message = messageResource.SAVE_SUCCESS;
-                            // Gán mã tự động tăng cho lần mở form tiếp theo
-                            me.$emit("getAsset");
-                            me.setStatus(status, message);
-                        }).catch(function(err){
-                            // Xử lý nếu call POST API thất bại
-                            var errMsg = err.response.data.data.data[0];
-                            // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-                            if(errMsg.includes("trùng")){
-                                me.isDuplicate = true;
-                                me.showValidateAlert = true;
-                            }else {
-                                status = false;
-                                message = messageResource.SAVE_FAILED;
+                        await axios.post("http://localhost:5062/api/v1/FixedAssets",me.assetForm)
+                        .then(function(res){
+                            console.log('post status', res);
+                            if(res.data != 1){
+                                // Xử lý nếu call POST API thất bại
+                                var errMsg = res.data.data.data[0];
+                                // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+                                if(errMsg.includes("trùng")){
+                                    me.isDuplicate = true;
+                                    me.showValidateAlert = true;
+                                }else {
+                                    status = false;
+                                    message = messageResource.SAVE_FAILED;
+                                    me.setStatus(status, message);
+                                }
+                            } else {
+                                status = true;
+                                message = messageResource.SAVE_SUCCESS;
+                                // Gán mã tự động tăng cho lần mở form tiếp theo
+                                me.$emit("getAsset");
                                 me.setStatus(status, message);
                             }
+                            
                         })
+                        // .catch(function(err){
+                        //     // Xử lý nếu call POST API thất bại
+                        //     var errMsg = err.response.data.data.data[0];
+                        //     // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+                        //     if(errMsg.includes("trùng")){
+                        //         me.isDuplicate = true;
+                        //         me.showValidateAlert = true;
+                        //     }else {
+                        //         status = false;
+                        //         message = messageResource.SAVE_FAILED;
+                        //         me.setStatus(status, message);
+                        //     }
+                        // })
                     } else if(this.formMode == 0){ // Nếu formmode là 0 thì 
                         let message = "";
                         let status = "";

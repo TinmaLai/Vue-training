@@ -101,5 +101,18 @@ body {
 }
 
 .wrong-login{
-    
+    position: absolute;
+    height: 150px;
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0 16px 30px rgb(0 0 0 / 16%);
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+}
+.closeBtn{
+    margin-top: 40px;
 }
