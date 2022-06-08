@@ -14,8 +14,8 @@
     width: 66%;
 }
 .m-dialog{
-    width: 60vw;
-    height: 83vh;
+    width: 950px;
+    height: auto;
     border-radius: 4px;
     display: flex;
     flex-direction: column;
@@ -48,8 +48,8 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    position: fixed;
-    bottom: 0;
+    /* position: absolute; */
+    /* bottom: 0; */
     border-radius: 4px;
 }
 .m-dialog .form-action button{

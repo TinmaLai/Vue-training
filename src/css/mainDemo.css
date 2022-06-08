@@ -18,6 +18,9 @@
 @import "../../node_modules/@syncfusion/ej2-base/styles/material.css";
 @import "../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
 @import "../../node_modules/@syncfusion/ej2-vue-dropdowns/styles/material.css";
+@import url('./components/licenses.css');
+@import url('./components/addlicenseform.css');
+
 body,html{
     height: 100%;
     width: 100%;
@@ -92,18 +95,15 @@ body{
     z-index: -1;
 }
 
-.content{
-    width: calc(100% - 200px);
-    display: block;
-}
+
 
 .content{
-    width: calc(100% - 66px);
+    width: calc(100% - 230px);
     display: block;
 }
 
 .heading{
-    font-size: 24px;
+    font-size: 20px;
     font-family: MISA Font Bold;
 }
 .title{
@@ -198,11 +198,11 @@ body{
     left: 50%;
 }
 
-::-webkit-scrollbar {
-    height: 6px;
+body::-webkit-scrollbar {
+    height: 0px;
     width: 2px;
     scroll-padding: 20px;
-  }
+}
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1; 
@@ -265,4 +265,7 @@ body{
     margin-top: 10px;
     font-size: 15px;
     width: 200px;
+}
+.content-minimize{
+    width: calc(100% - 66px);
 }

@@ -41,39 +41,41 @@
             </table>
             
         </div>
-        <table class="table-footer">
-            
-            <tr id="pagination-table">
-                <td>
-                    <div class="page-navigation">
-                        <p class="content-details">Tổng số <b>{{this.totalRecord}}</b> bản ghi</p>
-                        
-                        <MISACombobox
-                        :tag="'DropdownPagination'"
-                        class="dropdown-pagination"
-                        @getComboSelected="getPageSize"
-                        />
-                        <MISAPagination
-                            v-model="pageNumCurrent"
-                            :pageCount="calTotalPage"
-                            :prev-text="'pre'"
-                            :prev-link-class="'prev-link-class'"
-                            :next-text="'next'"
-                            :next-link-class="'next-link-class'"
-                            :container-class="'m-pagination'"
-                            :click-handler="clickCallback"
+        <div class="outer-footer">
+            <table class="table-footer">
+                
+                <tr id="pagination-table">
+                    <td>
+                        <div class="page-navigation">
+                            <p class="content-details">Tổng số <b>{{this.totalRecord}}</b> bản ghi</p>
                             
-                        >
-                        </MISAPagination>
-                    </div>
-                </td>
-                <td class="text-right text-bold">{{this.sumRow[0]}}</td>
-                <td class="text-right text-bold">{{this.sumRow[1]}}</td>
-                <td class="text-right text-bold">{{this.sumRow[2]}}</td>
-                <td class="text-right text-bold">{{this.sumRow[3]}}</td>
-                <td width="90px"></td>
-            </tr>
-        </table>
+                            <MISACombobox
+                            :tag="'DropdownPagination'"
+                            class="dropdown-pagination"
+                            @getComboSelected="getPageSize"
+                            />
+                            <MISAPagination
+                                v-model="pageNumCurrent"
+                                :pageCount="calTotalPage"
+                                :prev-text="'pre'"
+                                :prev-link-class="'prev-link-class'"
+                                :next-text="'next'"
+                                :next-link-class="'next-link-class'"
+                                :container-class="'m-pagination'"
+                                :click-handler="clickCallback"
+                                
+                            >
+                            </MISAPagination>
+                        </div>
+                    </td>
+                    <td class="text-right text-bold">{{this.sumRow[0]}}</td>
+                    <td class="text-right text-bold">{{this.sumRow[1]}}</td>
+                    <td class="text-right text-bold">{{this.sumRow[2]}}</td>
+                    <td class="text-right text-bold">{{this.sumRow[3]}}</td>
+                    <td width="90px"></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </template>
 

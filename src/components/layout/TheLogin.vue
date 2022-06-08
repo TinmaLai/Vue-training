@@ -12,11 +12,11 @@
                         
                         <form @submit.prevent="submit" id="normal-login">
                             <div class="grid-login-normal">
-                                <div class="username-login">
-                                    <input v-model="form.username" id="iptUserName" class="input-login" placeholder="Username, email hoặc số điện thoại">
+                                <div  class="username-login">
+                                    <input @focus="this.showError = false" v-model="form.username" id="iptUserName" class="input-login" placeholder="Username, email hoặc số điện thoại">
                                 </div>
                                 <div class="password-login">
-                                    <input v-model="form.password" id="iptPassword" type="password" placeholder="Mật khẩu" class="input-login">
+                                    <input @focus="this.showError = false" v-model="form.password" id="iptPassword" type="password" placeholder="Mật khẩu" class="input-login">
                                     <div class="eye on-eye">
                                     </div>
                                 </div>
@@ -24,14 +24,14 @@
                                 <div class="button-login" style="margin-top: 20px;">
                                     <button type="submit" class="button button-text" id="login">Đăng nhập</button>
                                 </div>
+                                <div v-if="this.showError" class="wrong-login">
+                                    <div style="text-align:left; font-weight: 700; color: red;">Sai tài khoản hoặc mật khẩu, vui lòng đăng nhập lại.</div>
+                                </div>
                             </div>
                         </form>
                         
                     </div>
-                <div v-if="this.showError" class="wrong-login">
-                    <div style="text-align:left; font-weight: 700;">Sai tài khoản hoặc mật khẩu, vui lòng đăng nhập lại.</div>
-                    <div @click="this.showError = false" class="closeBtn"><button class="m-button">Đóng</button></div>
-                </div>
+                
             </div>
           </div>
       </div>
@@ -62,7 +62,7 @@ export default {
         }
         await this.login(user);
         if(store.getters.isWrongPass == false){
-            this.$router.push("/main");
+            this.$router.push("/fixedassets");
             this.showError = false;
         } else {
             this.showError = true;

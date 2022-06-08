@@ -7,7 +7,7 @@
             <div class="location">
                 <span>Sở Tài Chính</span>
             </div>
-            <div class="year-filter">
+            <div class="year-filter" v-if="this.hasYearFilter">
                 <span>Năm</span>
                 <span><b>{{new Date().getFullYear()}}</b></span>
                 <div class="change-year-group-btn">
@@ -34,6 +34,7 @@
 import { mapActions } from "vuex";
 export default {
     name: 'App',
+    props: ["hasYearFilter"],
     components:{},
     data() {
         return {

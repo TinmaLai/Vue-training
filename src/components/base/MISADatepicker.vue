@@ -8,6 +8,7 @@
         cancelText="Hủy"
         v-model="date"
         @update:modelValue="selectDate"
+        :inputClassName="this.date === null ? 'danger' : 'dp-custom-input'"
         />
         <div class="datepicker-icon"></div>
     </div>
@@ -57,5 +58,7 @@ export default {
 </script>
 
 <style>
-
+    .dp-custom-input{
+        border: 1px solid #afafaf; 
+    }
 </style>

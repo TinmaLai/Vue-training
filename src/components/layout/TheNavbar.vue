@@ -12,13 +12,24 @@
             </div>
             <span class="item-text">Tổng quan</span>
         </div>
-        <div class="menu-left-item collapse actived">
-            <div class="item-btn actived">
-                <div class="asset"></div>
+        <router-link to="/fixedassets">
+            <div class="menu-left-item collapse actived">
+                <div class="item-btn actived">
+                    <div class="asset"></div>
+                </div>
+                <span class="item-text">Tài sản</span>
+                <span class="collapse-icon"></span>
             </div>
-            <span class="item-text">Tài sản</span>
-            <span class="collapse-icon"></span>
-        </div>
+        </router-link>
+        <router-link to="/license">
+            <div class="menu-left-item collapse">
+                <div class="item-btn">
+                    
+                </div>
+                <span class="item-text">Ghi tăng</span>
+                <span class="collapse-icon"></span>
+            </div>
+        </router-link>
         <div class="menu-left-item collapse">
             <div class="item-btn">
                 <div class="assetHT"></div>

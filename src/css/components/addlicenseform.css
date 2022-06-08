@@ -1,0 +1,91 @@
+
+.add-license-content{
+    background-color: #f4f7ff;
+    height: 100%;
+    width: 100%;
+    margin:0;
+    
+    padding: 11px;
+}
+.license-form-heading{
+    font-weight: 700;
+    font-size: 16px;
+}
+.add-license-form{
+    background-color: #fff;
+    padding: 11px;
+    margin-top: 11px;
+    margin-bottom: 11px;
+}
+.col-12{
+    width: 100%;
+}
+.add-license-form .row:last-child{
+    margin-bottom: 0;
+}
+.add-license-detail{
+    background-color: #fff;
+    padding-top: 11px;
+    margin-top: 11px;
+    margin-bottom: 11px;
+}
+.add-license-detail .m-second-button{
+    background-color: white;
+    box-shadow: 0 2px 5px rgb(54, 53, 53);
+}
+.add-license-detail .m-field-input-icon{
+    width: 270px;
+}
+.add-license-detail .detail-table td:nth-child(7){
+    width: 50px;
+    min-width: 150px;
+}
+.add-license-detail .detail-table td:nth-child(2){
+    padding-left: 20px;
+}
+.add-license-detail .detail-table td:nth-child(3){
+    width: 130px;
+    min-width: 130px;
+}
+.add-license-detail .detail-table td:nth-child(4){
+    width: 200px;
+    min-width: 200px;
+}
+.add-license-detail .detail-table td:nth-child(6){
+    width: 150px;
+    min-width: 150px;
+}
+.add-license-detail .detail-table th:nth-child(2){
+    padding-left: 20px;
+}
+.add-license-detail{
+    height: 40%;
+}
+.license-dialog > *{
+    margin: 0;
+}
+.top-form-row{
+    padding-left: 11px;
+    padding-right: 11px;
+}
+.add-license-detail .detail-toolbar{
+    padding: 0 11px 11px 11px;
+    margin: 0;
+}
+.add-license-detail .contain-detail-table{
+    height: 300px;
+}
+.detail-table-footer{
+    position: absolute;
+    bottom: 40px;
+    /* width: 100%; */
+    overflow-x: auto;
+    /* border-top: 1px solid #afafaf; */
+    border-collapse: collapse;
+    background-color: #f5f5f5;
+    height: 40px;
+}
+.add-license-detail .detail-grid{
+    position:relative;
+    height: 200px;
+}

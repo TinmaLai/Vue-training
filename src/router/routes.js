@@ -1,5 +1,7 @@
 import TheMain from '../components/layout/TheMain';
 import TheLogin from '../components/layout/TheLogin';
+import TheLicense from '../components/layout/TheLicense';
+import TheManageTable from '../components/layout/TheManageTable';
 import { createRouter, createWebHistory } from "vue-router";
 import store from "../store/store";
 
@@ -8,7 +10,21 @@ const routes = [
         path: "/main",
         name: "Main",
         component: TheMain,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: "/license",
+                name: "License",
+                component: TheLicense,
+                meta: { requiresAuth: true }
+            },
+            {
+                path: "/fixedassets",
+                name: "Fixed Asset",
+                component: TheManageTable,
+                meta: { requiresAuth: true }
+            }
+        ]
     },
     {
         path: "/",
@@ -38,7 +54,7 @@ router.beforeEach(async (to, from, next) => {
 router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.guest)) {
         if (store.getters.isAuthentication) {
-            next("/main");
+            next("/fixedassets");
             return;
         }
         next();

@@ -6,6 +6,10 @@ import axios from 'axios';
 import { registerLicense } from "@syncfusion/ej2-base";
 import Paginate from "vuejs-paginate-next";
 import router from './router/routes';
+import MISACheckbox from './components/base/MISACheckbox.vue';
+import MISACombobox from './components/base/MISACombobox.vue'
+import MISAInput from './components/base/MISAInput.vue';
+import MISADatepicker from './components/base/MISADatepicker.vue';
 
 // Registering Syncfusion license key
 registerLicense(
@@ -31,5 +35,9 @@ app.use(require("vue3-shortkey"));
 app.use(router);
 app.use(store);
 app.use(VueCookies);
+app.component("MISACheckbox", MISACheckbox);
+app.component("MISACombobox", MISACombobox);
+app.component("MISAInput", MISAInput);
+app.component("MISADatepicker", MISADatepicker);
 
 app.mount("#app");
