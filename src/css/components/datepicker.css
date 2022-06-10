@@ -9,7 +9,7 @@
     padding-left: 10px;
 }
 .datepicker-container{
-    height: 38px;
+    height: 36px;
     width: 100%;
     position: relative;
 }
@@ -20,4 +20,7 @@
     position: absolute;
     right: 10px;
     top: 25%;
+}
+.dp__input{
+    height: 36px;
 }

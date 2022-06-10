@@ -78,12 +78,17 @@
     background-color: #fff;
 }
 /* Bảng master*/
-.container-master-table{
+.contain-master-table{
     width: 100%; 
-    height: 100%;
-    overflow-x: scroll;
+    height: calc(100% - 80px);
+    overflow:auto;
     background-color: #fff;
 }   
+.contain-master-table::-webkit-scrollbar {
+    height: 0px;
+    width: 4px;
+    scroll-padding: 20px;
+}
 .master-table{
     width: 100%;
 }
@@ -140,8 +145,8 @@
 }
 /* Chân trang bảng master*/
 .master-table-footer{
-    position: absolute;
-    bottom: 40px;
+    /* position: absolute;
+    bottom: 40px; */
     width: 100%;
     overflow-x: auto;
     /* border-top: 1px solid #afafaf; */
@@ -150,13 +155,20 @@
     height: 40px;
 }
 .master-pagination-footer{
-    position: absolute;
-    bottom: 0;
+    /* position: absolute;
+    bottom: 0; */
     width: 100%;
     overflow-x: auto;
     /* border-top: 1px solid #afafaf; */
     border-collapse: collapse;
     height: 40px;
+}
+.contain-master-table-footer{
+    overflow:auto;
+}
+.contain-master-table-footer::-webkit-scrollbar {
+    height: 4px;
+    width: 0px;
 }
 /* BẢNG CHI TIẾT*/
 .detail-license{
@@ -175,6 +187,9 @@
 }
 .detail-table{
     width: 100%;
+}
+.detail-table td:first-child{
+    padding: 0 !important;
 }
 .detail-table td:last-child{
     padding: 0 16px 0 16px;

@@ -1,5 +1,5 @@
 <template>
-    <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false" @click="delItemSelect(asset.FixedAssetId)" >
+    <tr  @mouseover="this.isHover = true" @mouseout="this.isHover = false" >
         <td class="text-center">
             <MISACheckbox />
         </td>

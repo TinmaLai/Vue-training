@@ -20,6 +20,7 @@
 @import "../../node_modules/@syncfusion/ej2-vue-dropdowns/styles/material.css";
 @import url('./components/licenses.css');
 @import url('./components/addlicenseform.css');
+@import url('./components/selectasset.css');
 
 body,html{
     height: 100%;
@@ -268,4 +269,7 @@ body::-webkit-scrollbar {
 }
 .content-minimize{
     width: calc(100% - 66px);
+}
+.d-opacity-none{
+    opacity: 0;
 }

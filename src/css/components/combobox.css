@@ -1,5 +1,5 @@
 .m-combobox {
-  height: 40px;
+  height: 36px;
   border-radius: 4px;
   width: 99%;
   border: 1px solid #afafaf !important;
@@ -10,7 +10,7 @@
 }
 
 .e-input-group {
-  height: 40px;
+  height: 36px;
   border-radius: 4px;
 }
 .e-input-group:focus{

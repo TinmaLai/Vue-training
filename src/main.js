@@ -13,7 +13,7 @@ import MISADatepicker from './components/base/MISADatepicker.vue';
 
 // Registering Syncfusion license key
 registerLicense(
-    "ORg4AjUWIQA/Gnt2VVhhQlFaclhJW3xLYVF2R2FJfl56dlNMYl9BJAtUQF1hS35WdkZhW31WcHNcRmNe"
+    "ORg4AjUWIQA/Gnt2VVhhQlFac1pJWnxAYVF2R2FJfFRxdV9GZUwgOX1dQl9hSXhTf0VgWHtbdnddQ2I="
 );
 axios.defaults.withCredentials = true;
 

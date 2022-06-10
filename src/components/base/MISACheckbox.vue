@@ -3,8 +3,8 @@
   <div
     class="m-checkbox"
     :class="{
-      'm-checkbox-selected': isCheckBox,
-    }"
+      'm-checkbox-selected': isCheckBox
+     }"
   ></div>
 </template>
 <script>

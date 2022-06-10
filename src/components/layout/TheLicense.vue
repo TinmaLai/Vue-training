@@ -32,7 +32,7 @@
 						</div>
 					</div>
 					<div class="master-grid">
-						<div class="contain-master-table">
+						<div class="contain-master-table" ref="MainMasterTable">
 							<table class="master-table m-table">
 								<thead>
 									<th class="text-center"><MISACheckbox/></th>
@@ -45,27 +45,49 @@
 									<th></th>
 								</thead>
 								<tbody>
-									<MasterLicenseItem
-										v-for="(license,index) in licenses"
-										:license="license"
-										:key="license.LicenseId"
-										:index="index"
-									/>
+									<tr 
+									v-for="(license,index) in licenses"
+									:key="license.LicenseId"
+									>
+										<td class="text-center">
+											<MISACheckbox />
+										</td>
+										<td class="text-center" ref="TableAction">{{index + 1}}</td>
+										<td class="text-left">{{license.LicenseCode}}</td>
+										<td class="text-left" >{{license.UseDate}}</td>
+										<td class="text-left">{{license.WriteUpDate}}</td>
+										<td class="text-right">{{formatMoney(license.TotalCost)}}</td>
+										<td class="text-left">{{license.Note}}</td>
+										<td class="master-table-item table-action">
+											<div class="edit" @click="showEditForm" title="Sửa chứng từ">
+												
+											</div>
+											<div class="delete" @click="showCloneForm" title="Xóa chứng từ">
+
+											</div>
+										</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
-						<table class="master-table-footer">
-							<thead>
-								<th width="40"></th>
-								<th width="55"></th>
-								<th width="200"></th>
-								<th width="150"></th>
-								<th width="160"></th>
-								<th width="150" class="text-right" style="padding-right: 20px;">123213</th>
-								<th width="400"></th>
-								<th></th>
-							</thead>
-						</table>
+						<div class="contain-master-table-footer" ref="FooterMasterTable"
+              @scroll="
+                this.$refs.MainMasterTable.scrollLeft =
+                  this.$refs.FooterMasterTable.scrollLeft
+              ">
+							<table class="master-table-footer">
+								<thead>
+									<th width="40" style="min-width:40px;"></th>
+									<th width="55" style="min-width:55px;"></th>
+									<th width="200" style="min-width:200px;"></th>
+									<th width="150" style="min-width:150px;"></th>
+									<th width="160" style="min-width:160px;"></th>
+									<th width="150" class="text-right" style="min-width:150px ;padding-right: 20px;">123213</th>
+									<th width="400" style="min-width:400px;"></th>
+									<th></th>
+								</thead>
+							</table>
+						</div>
 						<div class="master-pagination-footer">
 							<div class="page-navigation">
 								<p class="content-details">Tổng số <b>{{this.totalRecord}}</b> bản ghi</p>
@@ -104,7 +126,7 @@
 						<div class="contain-detail-table">
 							<table class="detail-table m-table">
 								<thead>
-									<th style="padding-left: 16px" class="text-center">STT</th>
+									<th class="text-center">STT</th>
 									<th class="text-left">Mã tài sản</th>
 									<th class="text-left">Tên tài sản</th>
 									<th class="text-left">Bộ phận sử dụng</th>
@@ -114,7 +136,7 @@
 								</thead>
 								<tbody>
 									<tr 
-										v-for="(asset,index) in fixedAssets"
+										v-for="(asset,index) in fixedAssetsLicense"
 										:key="asset.FixedAssetId">
 							
 										<td>{{index+1}}</td>
@@ -142,15 +164,16 @@
 </template>
 
 <script>
-import MasterLicenseItem from '../../views/MasterLicenseItem.vue';
 import AddLicenseDialog from '../../views/AddLicenseDialog.vue';
 
 export default {
 	components:{
-		MasterLicenseItem,
+		
 		AddLicenseDialog
 	},
+	
 	methods:{
+		
 		/**
 		* Mô tả: Format tiền thành ngăn cách dấu chấm
 		* @param
@@ -172,9 +195,49 @@ export default {
 					WriteUpDate: '08/06/2022',
 					TotalCost: 45000000,
 					Note: ''
-				}
+				},
+				{
+					LicenseId: 1,
+					LicenseCode: 'GT00001',
+					UseDate: '08/06/2022',
+					WriteUpDate: '08/06/2022',
+					TotalCost: 45000000,
+					Note: ''
+				},
+				{
+					LicenseId: 1,
+					LicenseCode: 'GT00001',
+					UseDate: '08/06/2022',
+					WriteUpDate: '08/06/2022',
+					TotalCost: 45000000,
+					Note: ''
+				},
+				{
+					LicenseId: 1,
+					LicenseCode: 'GT00001',
+					UseDate: '08/06/2022',
+					WriteUpDate: '08/06/2022',
+					TotalCost: 45000000,
+					Note: ''
+				},
+				{
+					LicenseId: 1,
+					LicenseCode: 'GT00001',
+					UseDate: '08/06/2022',
+					WriteUpDate: '08/06/2022',
+					TotalCost: 45000000,
+					Note: ''
+				},
+				{
+					LicenseId: 1,
+					LicenseCode: 'GT00001',
+					UseDate: '08/06/2022',
+					WriteUpDate: '08/06/2022',
+					TotalCost: 45000000,
+					Note: ''
+				},
 			],
-			fixedAssets:[
+			fixedAssetsLicense:[
 				{
 					FixedAssetId: 1,
 					FixedAssetCode: 'TS-1561',
@@ -183,9 +246,55 @@ export default {
 					Cost: 16000000,
 					DepreciationPerYear: 0,
 					PriceExtra: 16000000
-				}
+				},
+				{
+					FixedAssetId: 1,
+					FixedAssetCode: 'TS-1561',
+					FixedAssetName: 'Xe Subaru',
+					DepartmentName: 'Phòng hội trường lớn',
+					Cost: 16000000,
+					DepreciationPerYear: 0,
+					PriceExtra: 16000000
+				},
+				{
+					FixedAssetId: 1,
+					FixedAssetCode: 'TS-1561',
+					FixedAssetName: 'Xe Subaru',
+					DepartmentName: 'Phòng hội trường lớn',
+					Cost: 16000000,
+					DepreciationPerYear: 0,
+					PriceExtra: 16000000
+				},
+				{
+					FixedAssetId: 1,
+					FixedAssetCode: 'TS-1561',
+					FixedAssetName: 'Xe Subaru',
+					DepartmentName: 'Phòng hội trường lớn',
+					Cost: 16000000,
+					DepreciationPerYear: 0,
+					PriceExtra: 16000000
+				},
+				{
+					FixedAssetId: 1,
+					FixedAssetCode: 'TS-1561',
+					FixedAssetName: 'Xe Subaru',
+					DepartmentName: 'Phòng hội trường lớn',
+					Cost: 16000000,
+					DepreciationPerYear: 0,
+					PriceExtra: 16000000
+				},
+				{
+					FixedAssetId: 1,
+					FixedAssetCode: 'TS-1561',
+					FixedAssetName: 'Xe Subaru',
+					DepartmentName: 'Phòng hội trường lớn',
+					Cost: 16000000,
+					DepreciationPerYear: 0,
+					PriceExtra: 16000000
+				},
 			],
 			isShowDialog: false,
+			isHover: false,
 		}
 	},
 }

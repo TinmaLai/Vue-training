@@ -312,6 +312,10 @@ export default {
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
                 me.fixedAssets = res.data.fixedAssets;
+                me.fixedAssets.forEach(element => {
+                    element.checked = false;
+                });
+                console.log(me.fixedAssets);
                 // Gán lại số bản ghi tìm dược để chia lại số trang
                 me.currentTotalRecord = res.data.count;
                 // Loading khi search
