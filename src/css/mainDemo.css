@@ -21,6 +21,7 @@
 @import url('./components/licenses.css');
 @import url('./components/addlicenseform.css');
 @import url('./components/selectasset.css');
+@import url('./components/editassetlicense.css');
 
 body,html{
     height: 100%;

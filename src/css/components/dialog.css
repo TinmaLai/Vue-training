@@ -13,6 +13,12 @@
 .col-8{
     width: 66%;
 }
+.col-6{
+    width: 50%;
+}
+.col-2{
+    width: 15%;
+}
 .m-dialog{
     width: 980px;
     height: auto;

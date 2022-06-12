@@ -17,7 +17,7 @@ export default {
     mounted() {
         this.content = this.controlledContent;
     },
-    props:["controlledContent","title","placeholder","type","tag","fieldName"],
+    props:["controlledContent","title","placeholder","type","tag","fieldName","isRequired"],
     watch:{
         /**
         * Mô tả: Watch controlledContent để nhận vào dữ liệu được nhập từ phía component cha
@@ -56,10 +56,13 @@ export default {
         * Created date: 23:20 23/05/2022
         */
         checkNullValue(){
-            if(this.content === "" ){
-                this.isAlert = true;
-            } else {
-                this.isAlert = false;
+            console.log(this.isRequired);
+            if(this.isRequired != false){
+                if(this.content === "" || this.content == undefined){
+                    this.isAlert = true;
+                } else {
+                    this.isAlert = false;
+                }
             }
         },
     },

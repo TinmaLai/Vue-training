@@ -7,10 +7,12 @@
         selectText="Chọn"
         cancelText="Hủy"
         v-model="date"
+        autoApply
         @update:modelValue="selectDate"
         :inputClassName="this.date === null ? 'danger' : 'dp-custom-input'"
         />
         <div class="datepicker-icon"></div>
+        <span v-if="!this.date" class="toast-message-null"><small>Không được bỏ trống ô này.</small></span>
     </div>
 </template>
 

@@ -109,3 +109,22 @@
     height: 0px;
     width: 4px;
 }
+.toast-message-null{
+    color: red;
+    /* opacity: 0; */
+}
+.add-license-detail .table-action{
+    position:absolute;
+    /* right: 0; */
+    left: 20%;
+    top: 0;
+}
+.contain-action-icon{
+    height: 36px; 
+    width: 36px; 
+    border-radius: 50px; 
+    padding: 10px
+}
+.contain-action-icon:hover{
+    background-color: white;
+}

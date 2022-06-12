@@ -87,7 +87,7 @@
             id="form-save-button" 
             class="m-button" 
             @click="selectAssetChecked"
-            v-shortkey="['ctrl','f']" @shortkey="saveAsset()"
+            v-shortkey="['ctrl','f']" @shortkey="selectAssetChecked()"
         
             >Lưu</button>
         </div>
@@ -97,6 +97,7 @@
 <script>
 import axios from 'axios';
 export default {
+    props:["oldAssetsLicenseArray"],
     mounted() {
         this.isLoading = true;
         var me = this;
@@ -143,6 +144,7 @@ export default {
                     selectedArray.push(element);
                 }
             });
+            
             this.$emit("getSelectedAssetArray",selectedArray);
         },
         /**
@@ -215,6 +217,11 @@ export default {
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
                 me.fixedAssets = res.data.fixedAssets;
+                let idOfOldAssets = [];
+                me.oldAssetsLicenseArray.forEach(element => {
+                    idOfOldAssets.push(element.FixedAssetId);
+                });
+                me.fixedAssets = me.fixedAssets.filter(item => !idOfOldAssets.includes(item.FixedAssetId));
                 // Gán lại số bản ghi tìm dược để chia lại số trang
                 me.currentTotalRecord = res.data.count;
                 // Loading khi search

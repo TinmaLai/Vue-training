@@ -6,31 +6,31 @@
                 <span class="heading">MISA QLTS</span>
             </a>
         </div>
-        <div class="menu-left-item">
+        <!-- <div class="menu-left-item">
             <div class="item-btn">
                 <div class="general"></div>
             </div>
             <span class="item-text">Tổng quan</span>
-        </div>
-        <router-link to="/fixedassets">
-            <div class="menu-left-item collapse actived">
-                <div class="item-btn actived">
-                    <div class="asset"></div>
-                </div>
-                <span class="item-text">Tài sản</span>
-                <span class="collapse-icon"></span>
+        </div> -->
+        
+        <router-link to="/fixedassets" active-class="actived" class="menu-left-item collapse">
+            <div class="item-btn">
+                <div class="asset"></div>
             </div>
+            <span class="item-text">Tài sản</span>
+            <span class="collapse-icon"></span>
         </router-link>
-        <router-link to="/license">
-            <div class="menu-left-item collapse">
-                <div class="item-btn">
-                    
-                </div>
-                <span class="item-text">Ghi tăng</span>
-                <span class="collapse-icon"></span>
+    
+    
+        <router-link to="/license" active-class="actived" class="menu-left-item collapse">
+            <div class="item-btn">
+                <div class="assetHT"></div>
             </div>
+            <span class="item-text">Ghi tăng</span>
+            <span class="collapse-icon"></span>
         </router-link>
-        <div class="menu-left-item collapse">
+        
+        <!-- <div class="menu-left-item collapse">
             <div class="item-btn">
                 <div class="assetHT"></div>
             </div>
@@ -63,7 +63,7 @@
             </div>
             <span class="item-text">Báo cáo</span>
             <span class="collapse-icon"></span> 
-        </div>
+        </div> -->
         <div class="menu-footer">
             <div id="minimize-menu-btn" class="minimize" @click="toggleMenu(isMinimize)"></div>
         </div>
