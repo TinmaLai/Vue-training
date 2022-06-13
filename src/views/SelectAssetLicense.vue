@@ -198,30 +198,30 @@ export default {
             var me = this;
             // Gán lại các giá trị tham số để chuẩn bị call api
             var searchInputValue = this.$refs.searchContent.value;
-
-            var departmentContent = "", fixedAssetCategoryContent = "";
+            var oldAssetsLicenseIdArray = this.oldAssetsLicenseArray.map((item) => {
+                return item.FixedAssetId;
+            })
 
             // param call API
             var paramAxios = {
                 searchContent: searchInputValue,
-                departmentName: departmentContent,
-                fixedAssetCategoryName: fixedAssetCategoryContent,
                 pageSize: this.pageSize,
-                pageNumber: this.pageNumber
+                pageNumber: this.pageNumber,
+                ids: oldAssetsLicenseIdArray
             }
             this.isLoading = true;
             // Gọi API để thực hiện filter, phân trang
-            await axios.get('http://localhost:5062/api/v1/FixedAssets/filter',
+            await axios.get('http://localhost:5062/api/v1/FixedAssets/LicenseAssets',
             {
                 params: paramAxios
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
                 me.fixedAssets = res.data.fixedAssets;
-                let idOfOldAssets = [];
+                /*let idOfOldAssets = [];
                 me.oldAssetsLicenseArray.forEach(element => {
                     idOfOldAssets.push(element.FixedAssetId);
                 });
-                me.fixedAssets = me.fixedAssets.filter(item => !idOfOldAssets.includes(item.FixedAssetId));
+                me.fixedAssets = me.fixedAssets.filter(item => !idOfOldAssets.includes(item.FixedAssetId));*/
                 // Gán lại số bản ghi tìm dược để chia lại số trang
                 me.currentTotalRecord = res.data.count;
                 // Loading khi search

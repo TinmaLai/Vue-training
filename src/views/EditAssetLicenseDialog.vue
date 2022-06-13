@@ -26,11 +26,13 @@
                 <div class="row">
                     <div class="col-6">
                         <MISACombobox/>
+                        <span style="color: red"><small>Không được để trống ô này.</small></span>
                     </div>
                     <div class="col-2">
                         <MISAInput
                             style="margin-top: 0"
                         />
+                        <span style="color: red"><small>Không được để trống ô này.</small></span>
                     </div>
                     <div class="col-4">
                         <div class="action-budget-source">

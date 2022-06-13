@@ -56,7 +56,7 @@
 					<div class="detail-grid">
 						<div class="contain-detail-table">
 							<table class="detail-table m-table">
-								<thead>
+								<thead style="z-index: 1">
 									<th class="text-center">STT</th>
 									<th class="text-left">Mã tài sản</th>
 									<th class="text-left">Tên tài sản</th>
