@@ -24,11 +24,11 @@
                     <div class="col-4"></div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-5">
                         <MISACombobox/>
                         <span style="color: red"><small>Không được để trống ô này.</small></span>
                     </div>
-                    <div class="col-2">
+                    <div class="col-3">
                         <MISAInput
                             style="margin-top: 0"
                         />

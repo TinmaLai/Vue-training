@@ -11,7 +11,7 @@
                     <div class="btn-icon">
                         <div class="search-icon"></div>
                     </div>
-                    <input  ref="searchContent" @input="filterFixedAssets" placeholder="Tìm kiếm theo Mã, tên tài sản" type="text">
+                    <input  ref="searchContent" @change="filterFixedAssets" placeholder="Tìm kiếm theo Mã, tên tài sản" type="text">
                 </div>
             </div>
             
@@ -96,6 +96,7 @@
 
 <script>
 import axios from 'axios';
+import qs from 'qs';
 export default {
     props:["oldAssetsLicenseArray"],
     mounted() {
@@ -130,6 +131,16 @@ export default {
         },
     },
     methods:{
+        /**
+        * Mô tả: Hàm tìm kiếm theo tên, mã tài sản
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 16:53 13/06/2022
+        */
+        filterFixedAssets(){
+            this.searchAsset();
+        },
         /**
         * Mô tả: Emit lên danh sách tài sản đã chọn
         * @param
@@ -204,7 +215,7 @@ export default {
 
             // param call API
             var paramAxios = {
-                searchContent: searchInputValue,
+                filterContent: searchInputValue,
                 pageSize: this.pageSize,
                 pageNumber: this.pageNumber,
                 ids: oldAssetsLicenseIdArray
@@ -213,7 +224,10 @@ export default {
             // Gọi API để thực hiện filter, phân trang
             await axios.get('http://localhost:5062/api/v1/FixedAssets/LicenseAssets',
             {
-                params: paramAxios
+                params: paramAxios,
+                paramsSerializer: params => {
+                    return qs.stringify(params)
+                }
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
                 me.fixedAssets = res.data.fixedAssets;
@@ -227,7 +241,7 @@ export default {
                 // Loading khi search
                 me.isLoading = false;
             }).catch(function(err){
-                console.log(err);
+                console.log(err.response);
                 
             }).then(function(){
                 me.isLoading = false;

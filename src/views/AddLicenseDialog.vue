@@ -12,6 +12,13 @@
                     <div class="col-4">
                         <label>Mã chứng từ <span style="color: red">*</span></label>
                         <MISAInput
+							:controlledContent="licenseInsert.LicenseCode" 
+							:tag="'LicenseCode'" 
+							@bindingData="bindingData" 
+							:title="'Mã chứng từ không được để trống'" 
+							:placeholder="'Nhập mã chứng từ'" 
+							:fieldName="'Mã chứng từ'"
+							maxlength="255"
 							ref="txtLicenseCode"
 							@blur="this.nullToastStatusArray[0] = this.$refs.txtLicenseCode.isAlert"
 							@focus="this.nullToastStatusArray[0] = false"
@@ -21,21 +28,29 @@
                     <div class="col-4">
                         <label>Ngày bắt đầu sử dụng <span style="color: red">*</span></label>
                         <MISADatepicker
-							
+							@getDate="newValue => this.licenseInsert.UseDate = newValue"
+                            :control="this.licenseInsert.UseDate"
 						/>
                     
                     </div>
                     <div class="col-4">
                         <label>Ngày ghi tăng <span style="color: red">*</span></label>
                         <MISADatepicker
-							
-						/>
+							@getDate="newValue => this.licenseInsert.WriteUpdate = newValue"
+                            :control="this.licenseInsert.WriteUpdate"/>
                     </div>
                 </div>
                 <div class="row">
                      <div class="col-12">
                         <label>Ghi chú</label>
                         <MISAInput
+							ref="txtDescription" 
+							:controlledContent="licenseInsert.Description" 
+							:tag="'Description'" 
+							@bindingData="bindingData" 
+							:placeholder="'Nhập ghi chú'" 
+							:fieldName="'Tên tài sản'"
+							maxlength="255"
 							:isRequired="false"
 						/>
                     </div>
@@ -144,8 +159,8 @@
             <button 
             id="form-save-button" 
             class="m-button" 
-            @click="saveAsset"
-            v-shortkey="['ctrl','f']" @shortkey="saveAsset()"
+            @click="saveLicense"
+            v-shortkey="['ctrl','f']" @shortkey="saveLicense()"
             
             >Lưu</button>
         </div>
@@ -163,6 +178,7 @@
 <script>
 import SelectAssetLicense from './SelectAssetLicense.vue';
 import EditAssetLicenseDialog from './EditAssetLicenseDialog.vue'
+import axios from 'axios';
 
 export default {
 	components:{
@@ -205,6 +221,41 @@ export default {
 	},
     methods:{
 		/**
+        * Mô tả: Bind ngày từ datepicker
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 20:00 30/05/2022
+        */
+        getDate(value){
+            console.log(value);
+        },
+		/**
+        * Mô tả : Binding data từ ô input vào object
+        * Created by: nbtin
+        * Created date: 14:26 02/05/2022
+        */
+        bindingData(field,data){
+            // this.field = data;
+            this.licenseInsert[field] = data; 
+        },
+		/**
+		* Mô tả: Hàm lưu chứng từ
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 08:54 15/06/2022
+		*/
+		saveLicense(){
+			this.licenseInsert.licenseDetails = this.fixedAssetsLicense;
+			axios.post("http://localhost:5062/api/v1/LicenseDetail/multiData", this.licenseInsert)
+			.then(function(response){
+				console.log(response);
+			}).catch(function(err){
+				console.log(err);
+			})
+		},
+		/**
 		* Mô tả: Show dialog chọn tài sản, gửi mảng cũ để filter
 		* @param
 		* @return
@@ -226,7 +277,6 @@ export default {
 			this.pageSize = pageSize.itemData.pageSize;
             // Đưa về trang đầu tiên khi thay đổi pageSize
             this.pageNumber = 1;
-            this.pageNumCurrent = 1;
             this.searchAssetLicense();
 		},
 		/**
@@ -240,6 +290,8 @@ export default {
 			this.fixedAssetsLicense.push(...selectedArray);
 			this.filterArrayRes = this.fixedAssetsLicense;
 			this.isShowAddAssetDlg = false;
+
+			this.handleFilterPaginate();
 		},
 		/**
 		* Mô tả: Hàm xử lý khi có sự kiện cần ren lại bảng, như tìm kiếm, chuyển trang,..
@@ -250,12 +302,15 @@ export default {
 		*/
 		handleFilterPaginate(){
 			this.filterArrayRes = [];
+			
+			
 			for(let i = this.oldIndexOffset; i < this.newIndexOffset; i++){
 				if(this.searchAssetArray[i] != undefined){
 					this.filterArrayRes.push(this.searchAssetArray[i]);
 				}
 				
 			}
+			
 		},
 		/**
 		* Mô tả: Format tiền thành ngăn cách dấu chấm
@@ -279,7 +334,11 @@ export default {
 			this.searchAssetArray = this.fixedAssetsLicense.filter((item) => {
 				return item.FixedAssetName.toLowerCase().includes(searchContent.toLowerCase()) || item.FixedAssetCode.toLowerCase().includes(searchContent.toLowerCase());
 			})
+			this.pageNumCurrent = 1;
+			this.oldIndexOffset = 0
+			this.newIndexOffset = this.pageSize;
 			this.handleFilterPaginate();
+			
 		},
 
 		clickCallback(pageNumber){
@@ -292,6 +351,7 @@ export default {
         return {
             fixedAssetsLicense:[],
 			isShowAddAssetDlg: false,
+			pageNumber: 1,
 			searchAssetArray: [],
 			filterArrayRes: [],
 			newIndexOffset: 15,
@@ -300,7 +360,11 @@ export default {
 			pageNumCurrent: 1,
 			nullToastStatusArray: [false,false,false],
 			assetsLicenseArray: [],
-			isShowEditAssetDlg: false
+			isShowEditAssetDlg: false,
+			licenseInsert: {
+				UseDate: new Date(),
+				WriteUpdate: new Date()
+			}
         }
     },
 }

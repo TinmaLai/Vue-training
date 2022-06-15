@@ -8,6 +8,7 @@
         cancelText="Hủy"
         v-model="date"
         autoApply
+        utc
         @update:modelValue="selectDate"
         :inputClassName="this.date === null ? 'danger' : 'dp-custom-input'"
         />
