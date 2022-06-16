@@ -14,7 +14,7 @@ const messageResource = {
     VALIDATE_NULL: "Các trường sau không được để trống: ",
     CANCEL_QUESTION_ADD: "Bạn có muốn hủy bỏ khai báo tài sản này",
     CANCEL_QUESTION_UPDATE: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
-    DELETE_QUESTION: " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?"
-
+    DELETE_QUESTION: " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
+    NULL_ASSET_LICENSE: "Chọn ít nhất 1 tài sản",
 };
 export default messageResource;

@@ -100,7 +100,7 @@
 													</div>
 												</div>
 												<div class="contain-action-icon">
-													<div class="delete" @click="showCloneForm" title="Xóa tài sản">
+													<div class="delete" @click="removeLicenseAsset(asset)" title="Xóa tài sản">
 
 													</div>
 												</div>
@@ -117,9 +117,9 @@
 								<th width="100"></th>
 								<th width="130"></th>
 								<th width="220"></th>
-								<th width="140" class="text-right">{{formatMoney(12345678)}}</th>
-								<th width="165" class="text-right">{{formatMoney(12345678)}}</th>
-                                <th width="165" class="text-right">{{formatMoney(12345678)}}</th>
+								<th width="140" class="text-right">{{formatMoney(calTotalMoney('Cost'))}}</th>
+								<th width="165" class="text-right">{{formatMoney(calTotalMoney('DepreciationPerYear'))}}</th>
+                                <th width="165" class="text-right">{{formatMoney(calTotalMoney('PriceExtra'))}}</th>
 							</thead>
 						</table>
                         <div class="master-pagination-footer">
@@ -172,6 +172,12 @@
 		<EditAssetLicenseDialog
 			v-if="this.isShowEditAssetDlg"
 		/>
+		<ValidateAlert
+			:isShowAlert="showValidateAlert"
+			:message="this.errMessage"
+			@selectOption="this.showValidateAlert = false"
+			style="z-index: 2"
+        />
     </div>
 </template>
 
@@ -179,25 +185,39 @@
 import SelectAssetLicense from './SelectAssetLicense.vue';
 import EditAssetLicenseDialog from './EditAssetLicenseDialog.vue'
 import axios from 'axios';
+import messageResource from './../resources/resource';
 
 export default {
+	props:["licenseSelected","formMode"],
 	components:{
 		SelectAssetLicense,
 		EditAssetLicenseDialog
 	},
-	mounted() {
+	async mounted() {
+		// Focus vào ô đầu tiên
 		this.$refs.txtLicenseCode.setFocus();
-		/**
-		* Mô tả: Gán giá trị ban đầu cho bảng
-		* @param
-		* @return
-		* Created by: nbtin
-		* Created date: 17:38 09/06/2022
-		*/
-		this.searchAssetArray = this.fixedAssetsLicense;
-		this.handleFilterPaginate();
+		
+		// Nếu form là sửa, nhận gái trị từ hàng lên
+		if(this.formMode == 0){
+			this.licenseInsert = this.licenseSelected;
+			this.licenseInsert.detailAssets.forEach(element => {
+				element.PriceExtra = element.Cost - (element.DepreciationPerYear);
+			});
+			this.fixedAssetsLicense = this.licenseInsert.detailAssets;
+			this.searchAssetArray = this.licenseInsert.detailAssets;
+			this.handleFilterPaginate();
+		} else if(this.formMode == 1){
+			// Lấy mã mới 
+			await this.getNewCode();
+			// Gán giá trị ban đầu cho bảng detail
+			this.searchAssetArray = this.fixedAssetsLicense;
+			this.handleFilterPaginate();
+		}
+		
+		
 	},
 	computed:{
+		
 		/**
 		* Mô tả: computed array đổ ra bảng
 		* @param
@@ -217,9 +237,54 @@ export default {
 		*/
 		calPageCount(){
 			return this.searchAssetArray.length/this.pageSize;
-		}
+		},
+		
 	},
+
     methods:{
+		
+		calTotalMoney(field){
+			let init = 0;
+			var total = this.filterArray.reduce((item1, item2) => {
+				return item1 + item2[field];
+			},init)
+			return total;
+		},
+		removeLicenseAsset(asset){
+			var ids = [];
+			this.fixedAssetsLicense.forEach(element =>{
+				ids.push(element.FixedAssetId);
+			});
+			var indexRemove = ids.indexOf(asset.FixedAssetId);
+			if (indexRemove > -1) {
+				this.fixedAssetsLicense.splice(indexRemove, 1); 
+			}
+			this.searchAssetArray = this.fixedAssetsLicense;
+			this.handleFilterPaginate();
+		},
+		/**
+        * Mô tả : Lấy code mới từ API
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:33 22/05/2022
+        */
+        async getNewCode(){
+            var me = this;
+            /**
+            * Mô tả : Lấy code mới từ API khi chọn thêm tài sản
+            * Created by: nbtin
+            * Created date: 16:34 12/05/2022
+            */
+            await axios.get("http://localhost:5062/api/v1/License/NewAssetCode").then(function(res){
+                console.log(res);
+                // Gán lại mã mới 
+                me.licenseInsert.LicenseCode = res.data;
+				
+            }).catch(function(err){
+                console.log("Lỗi:" +  err);
+            })
+        },
 		/**
         * Mô tả: Bind ngày từ datepicker
         * @param
@@ -239,6 +304,21 @@ export default {
             // this.field = data;
             this.licenseInsert[field] = data; 
         },
+	
+		checkNullValue(){
+			// Check trống các trường license
+			if(this.$refs.txtLicenseCode.value == ""){
+				this.nullToastStatusArray[0] = true;
+				return false;
+			}
+			// Check số tài sản được chọn > 0
+			if(this.fixedAssetsLicense.length <= 0){
+				this.showValidateAlert = true;
+				this.errMessage = messageResource.NULL_ASSET_LICENSE;
+				return false;
+			}
+			return true;
+		},
 		/**
 		* Mô tả: Hàm lưu chứng từ
 		* @param
@@ -248,13 +328,98 @@ export default {
 		*/
 		saveLicense(){
 			this.licenseInsert.licenseDetails = this.fixedAssetsLicense;
-			axios.post("http://localhost:5062/api/v1/LicenseDetail/multiData", this.licenseInsert)
-			.then(function(response){
-				console.log(response);
-			}).catch(function(err){
-				console.log(err);
-			})
+			var me = this;
+			
+			if(this.checkNullValue() == true)
+				// form mode là thêm (formMode == 1)
+				if(this.formMode == 1){
+					let status = false;
+					let message = "";
+					axios.post("http://localhost:5062/api/v1/LicenseDetail/multiData", this.licenseInsert)
+					.then(function(res){
+						console.log(res)
+						// data = 1 là lưu dữ liệu thành công (Execute)
+						if(res.data.errorCode == "001"){
+							// Xử lý nếu call POST API thất bại
+							var errMsg = res.data.data.data[0];
+							me.errMessage = errMsg;
+							me.showValidateAlert = true;
+							// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+							if(errMsg.includes("trùng")){
+
+								me.isDuplicate = true;
+								
+							}else {
+								status = false;
+								message = messageResource.SAVE_FAILED;
+								me.setStatus(status, message);
+							}
+						} else {
+							status = true;
+							message = messageResource.SAVE_SUCCESS;
+							// Gán mã tự động tăng cho lần mở form tiếp theo
+							me.$emit("getAsset");
+							me.setStatus(status, message);
+						}
+					}).catch(function(err){
+						console.log(err);
+					})
+				} 
+				// Nếu formmode là sửa (formMode == 0)
+				else if(this.formMode == 0){
+					let status = false;
+					let message = "";
+					axios.put("http://localhost:5062/api/v1/LicenseDetail/"+me.licenseInsert.LicenseId, me.licenseInsert)
+					.then(function(res){
+						if(res.data.errorCode == "001"){
+							// Xử lý nếu call POST API thất bại
+							var errMsg = res.data.data.data[0];
+							me.errMessage = errMsg;
+							me.showValidateAlert = true;
+							// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+							if(errMsg.includes("trùng")){
+
+								me.isDuplicate = true;
+								
+							}else {
+								status = false;
+								message = messageResource.SAVE_FAILED;
+								me.setStatus(status, message);
+							}
+						} else {
+							status = true;
+							message = messageResource.SAVE_SUCCESS;
+							// Gán mã tự động tăng cho lần mở form tiếp theo
+							me.$emit("getAsset");
+							me.setStatus(status, message);
+						}
+					})
+				}
 		},
+		/**
+        * Mô tả : Reset form khi close form
+        * Created by: nbtin
+        * Created date: 11:45 08/05/2022
+        */
+        resetForm(control){
+            control.$emit("closeLicenseDialog");
+        },
+		/**
+        * Mô tả : Emit lên trạng thái của API khi bấm nút lưu, nhằm hiện toast message phù hợp
+        * @param status
+        * Created by: nbtin
+        * Created date: 11:46 08/05/2022
+        */
+        setStatus(status,message){
+            if(status == true){
+                this.resetForm(this);
+                this.$emit("getStatusSave",true,message);
+            } else {
+                this.resetForm(this);
+                this.$emit("getStatusSave",false,message);
+            }
+            
+        },
 		/**
 		* Mô tả: Show dialog chọn tài sản, gửi mảng cũ để filter
 		* @param
@@ -320,6 +485,7 @@ export default {
 		* Created date: 15:29 08/06/2022
 		*/
 		formatMoney(value){
+			if(value != undefined)
 			return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 		},
 		/**
@@ -364,7 +530,9 @@ export default {
 			licenseInsert: {
 				UseDate: new Date(),
 				WriteUpdate: new Date()
-			}
+			},
+			showValidateAlert: false,
+			errMessage: '',
         }
     },
 }

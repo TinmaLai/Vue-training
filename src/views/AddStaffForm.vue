@@ -452,8 +452,6 @@ export default {
             //  Tính giá trị hao mòn năm, hao mòn lũy kế, giá trị còn lại khi có sự thay đổi, cập nhật id thêm
             this.assetForm.ProductionYear = Number(this.assetForm.TrackedYear) - Number(new Date(this.assetForm.UseDate).getFullYear());
             this.assetForm.Accumulate = this.assetForm.ProductionYear * Number(this.assetForm.DepreciationPerYear);
-            // this.assetForm.accumulate = (this.assetForm.DepreciationPerYear.toString().replaceAll(".","") * this.assetForm.yearsUse).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            // this.assetForm.priceExtra = (this.assetForm.Cost.toString().replaceAll(".","") - this.assetForm.accumulate.toString().replaceAll(".","")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         },
         /**
         * Mô tả : Check lại tất cả các trường nào còn rỗng trên form
@@ -590,6 +588,7 @@ export default {
                         await axios.post("http://localhost:5062/api/v1/FixedAssets",me.assetForm)
                         .then(function(res){
                             console.log('post status', res);
+                            // data = 1 là lưu dữ liệu thành công (Execute)
                             if(res.data != 1){
                                 // Xử lý nếu call POST API thất bại
                                 var errMsg = res.data.data.data[0];
@@ -611,20 +610,7 @@ export default {
                             }
                             
                         })
-                        // .catch(function(err){
-                        //     // Xử lý nếu call POST API thất bại
-                        //     var errMsg = err.response.data.data.data[0];
-                        //     // Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-                        //     if(errMsg.includes("trùng")){
-                        //         me.isDuplicate = true;
-                        //         me.showValidateAlert = true;
-                        //     }else {
-                        //         status = false;
-                        //         message = messageResource.SAVE_FAILED;
-                        //         me.setStatus(status, message);
-                        //     }
-                        // })
-                    } else if(this.formMode == 0){ // Nếu formmode là 0 thì 
+                    } else if(this.formMode == 0){ // Nếu formmode là 0 (sửa) thì 
                         let message = "";
                         let status = "";
                         // Gọi API Put để updat
