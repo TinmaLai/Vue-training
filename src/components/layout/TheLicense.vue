@@ -56,7 +56,7 @@
 									<tr 
 									v-for="(license,index) in licenses"
 									:key="license.LicenseId"
-									@click.exact="selectRow(license)"
+									@click.exact="selectRow($event,license)"
 									v-on:click.ctrl="ctrlSelect(license)"
 									v-on:click.shift="shiftSelect(license)"
 									:class="{'activedCheckbox' : license.checked}"
@@ -73,10 +73,11 @@
 										<td class="text-right">{{formatMoney(license.Total)}}</td>
 										<td class="text-left">{{license.Description}}</td>
 										<td class="master-table-item table-action" :class="{'activedCheckbox' : license.checked}">
-											<div class="edit" @click="showEditLicenseForm(license)" title="Sửa chứng từ">
-												
+										
+											<div class="edit"  title="Sửa chứng từ">
+											
 											</div>
-											<div class="delete" @click="showCloneForm" title="Xóa chứng từ">
+											<div class="delete" title="Xóa chứng từ">
 
 											</div>
 										</td>
@@ -96,7 +97,7 @@
 									<th width="200" style="min-width:200px;"></th>
 									<th width="150" style="min-width:150px;"></th>
 									<th width="160" style="min-width:160px;"></th>
-									<th width="150" class="text-right" style="min-width:150px ;padding-right: 20px;">123213</th>
+									<th width="150" class="text-right" style="min-width:150px ;padding-right: 20px;">{{formatMoney(calTotalMoney('Total'))}}</th>
 									<th width="400" style="min-width:400px;"></th>
 									<th></th>
 								</thead>
@@ -177,11 +178,18 @@
 			:formMode="formMode"
 			:licenseSelected="licenseSelected"
 			@getStatusSave="handleStatusSave"
+			@getLoadingLicense="getLoadingLicense"
 		/>
 		<ToastMessage 
         :isShowToast="isShowToast" 
         :status="saveStatus" 
         :message="messageToToast"/>
+		<DeleteLicenseAlert
+			:isShowAlert="isShowDeleteAlert"
+			:message="deleteMessage"
+			:deleteInfor="deleteField"
+			@getDelOption="getDelOption"
+		/>
     </div>
 </template>
 
@@ -190,11 +198,14 @@ import AddLicenseDialog from '../../views/AddLicenseDialog.vue';
 import ToastMessage from '../base/MISAToastMessage.vue';
 import axios from 'axios';
 import moment from 'moment';
+import messageResource from '../../resources/resource';
+import DeleteLicenseAlert from '../../views/DeleteLicenseAlert.vue';
 
 export default {
 	components:{
 		ToastMessage,
-		AddLicenseDialog
+		AddLicenseDialog,
+		DeleteLicenseAlert
 	},
 	async mounted() {
 
@@ -203,11 +214,95 @@ export default {
 		
 	},
 	computed: {
+		/**
+		* Mô tả: Tính lại tổng số trang của pagination
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 16:31 16/06/2022
+		*/
 		calTotalPage(){
 			return Math.ceil(this.currentTotalRecord/this.pageSize);
 		}
 	},
 	methods:{
+		/**
+		* Mô tả: Lấy lại toàn bộ license mỗi khi cần loading
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 17:37 16/06/2022
+		*/
+		async getLoadingLicense(){
+            this.isLoading = true;
+            var me = this;
+            
+            me.searchLicense();
+            me.getAllLicense();
+            
+        },
+		/**
+		* Mô tả: Xử lí chọn xóa hoặc không xóa ở alert
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 17:04 16/06/2022
+		*/
+		async getDelOption(isDel,licenseId){
+			if(isDel == false){
+                this.isShowDeleteAlert = false; 
+            } else{
+                var me = this;
+                
+                // Gọi API để xóa theo danh sách id được tick checkbox
+                await axios.delete(`http://localhost:5062/api/v1/License/`+licenseId)
+				.then(function(res){
+                    console.log(res);
+                    // Hiện thông báo xóa thành công
+                    me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
+					me.getLoadingLicense();
+                    
+                }).catch(function(err){
+                    console.log(err);
+                    // Hiện thông báo xóa thất bại
+                    me.handleStatusSave(false,messageResource.DELETE_FAILED);
+                })
+				me.isShowDeleteAlert = false;
+            }     
+		},
+		/**
+		* Mô tả: Hàm xóa chứng từ
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 16:32 16/06/2022
+		*/
+		async deleteLicense(license){
+			var me = this;
+			await axios.get("http://localhost:5062/api/v1/License/"+license.LicenseId)
+			.then(function(res){
+				// console.log(res);
+				me.deleteMessage = messageResource.DELETE_LICENSE_ALERT;
+				me.deleteField = res.data;
+				me.isShowDeleteAlert = true;
+			}).catch(function(err){
+				console.log(err);
+			})
+		},
+		/**
+		* Mô tả: Tính tổng tiền
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 15:52 16/06/2022
+		*/
+		calTotalMoney(field){
+			let init = 0;
+			var total = this.licenses.reduce((item1, item2) => {
+				return item1 + item2[field];
+			},init);
+			return total;
+		},
 		/**
 		* Mô tả: Hiện dialog thêm chứng từ
 		* @param
@@ -321,7 +416,14 @@ export default {
 		* Created by: nbtin
 		* Created date: 19:28 15/06/2022
 		*/
-		async selectRow(thisLicense){
+		async selectRow($event,thisLicense){
+			if($event.target.classList.contains("edit")){
+				this.showEditLicenseForm(thisLicense);
+				return;
+			} else if($event.target.classList.contains("delete")){
+				this.deleteLicense(thisLicense);
+				return;
+			}
 			thisLicense.checked = !thisLicense.checked;
 			var me = this;
 			// Bỏ check hết tất cả các ô còn lại
@@ -486,6 +588,9 @@ export default {
 			pageSize: 15,
 			formMode: -1,
 			previousClickFocus: '',
+			isShowDeleteAlert: false,
+			deleteMessage: '',
+			deleteField: '',
 		}
 	},
 }

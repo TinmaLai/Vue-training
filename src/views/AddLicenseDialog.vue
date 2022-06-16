@@ -242,7 +242,13 @@ export default {
 	},
 
     methods:{
-		
+		/**
+		* Mô tả: Hàm tính tổng tiền ở chân trang
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 15:40 16/06/2022
+		*/
 		calTotalMoney(field){
 			let init = 0;
 			var total = this.filterArray.reduce((item1, item2) => {
@@ -358,7 +364,7 @@ export default {
 							status = true;
 							message = messageResource.SAVE_SUCCESS;
 							// Gán mã tự động tăng cho lần mở form tiếp theo
-							me.$emit("getAsset");
+							me.$emit("getLoadingLicense");
 							me.setStatus(status, message);
 						}
 					}).catch(function(err){
@@ -383,14 +389,15 @@ export default {
 								
 							}else {
 								status = false;
-								message = messageResource.SAVE_FAILED;
+								message = messageResource.EDIT_FAILED;
 								me.setStatus(status, message);
 							}
 						} else {
 							status = true;
-							message = messageResource.SAVE_SUCCESS;
+							message = messageResource.EDIT_SUCCESS;
 							// Gán mã tự động tăng cho lần mở form tiếp theo
 							me.$emit("getAsset");
+							me.$emit("getLoadingLicense");
 							me.setStatus(status, message);
 						}
 					})

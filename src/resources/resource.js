@@ -16,5 +16,6 @@ const messageResource = {
     CANCEL_QUESTION_UPDATE: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
     DELETE_QUESTION: " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
     NULL_ASSET_LICENSE: "Chọn ít nhất 1 tài sản",
+    DELETE_LICENSE_ALERT: "Bạn có muốn xóa chứng từ có mã",
 };
 export default messageResource;
