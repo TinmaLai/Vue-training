@@ -147,6 +147,8 @@ body{
 }
 
 .top-row{
+    
+    padding-top: 11px;
     display: flex;
     justify-content: space-between;
     align-items: center;

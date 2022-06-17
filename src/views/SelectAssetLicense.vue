@@ -3,7 +3,7 @@
     <div class="m-dialog license-dialog"  style="height: auto">
         <div class="top-form-row">
             <p class="heading">Chọn tài sản ghi tăng</p>
-            <button class=" close-form-btn" @click="closeSelectAssetDlg"></button>
+            <button class=" close-form-btn" @click="this.$emit('closeSelectAssetDlg')"></button>
         </div>
         <div class="top-row" >
             <div class="filter">
@@ -21,7 +21,10 @@
                 <table class=" detail-table m-table">
                     <thead>
                         <th>
-                            <MISACheckbox/>
+                            <MISACheckbox
+                            @click="checkboxAll"
+                            :isCheckBox="checkboxCheckAll"
+                            />
                         </th>
                         <th class="text-center">STT</th>
                         <th class="text-left">Mã tài sản</th>
@@ -55,7 +58,7 @@
             </div>
             <div class="master-pagination-footer">
                 <div class="page-navigation">
-                    <p class="content-details">Tổng số <b>{{this.totalRecord}}</b> bản ghi</p>
+                    <p class="content-details">Tổng số <b>{{this.currentTotalRecord}}</b> bản ghi</p>
                     
                     <MISACombobox
                     :tag="'DropdownPagination'"
@@ -80,8 +83,8 @@
         <div class="form-action">
             <button 
             class="m-second-button ignore-btn" 
-            @click="closeAddStaffForm"
-            v-shortkey="['esc']" @shortkey="closeAddStaffForm()"
+            @click="this.$emit('closeSelectAssetDlg')"
+            v-shortkey="['esc']" @shortkey="this.$emit('closeSelectAssetDlg')"
             >Hủy</button>
             <button 
             id="form-save-button" 
@@ -131,6 +134,19 @@ export default {
         },
     },
     methods:{
+        /**
+        * Mô tả: check tất cả checkbox trên các hàng, hoặc ngược lại
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 19:21 17/06/2022
+        */
+        checkboxAll(){
+            this.checkboxCheckAll = !this.checkboxCheckAll;
+            this.fixedAssets.forEach(element => {
+                element.checked = !element.checked;
+            })
+        },
         /**
         * Mô tả: Hàm tìm kiếm theo tên, mã tài sản
         * @param
@@ -191,6 +207,7 @@ export default {
                 console.log(res);
                 // Call get toàn bộ danh sách tài sản để lấy tổng số bản ghi (totalRecord)
                 me.totalRecord = res.data.length;
+                // me.currentTotalRecord = me.totalRecord;
                 // Tính giá trị hao mòn năm cho từng item trong mảng fixedAssets, phục vụ cho tính tổng ở footer
                 for(let i = 0; i < me.fixedAssets.length; i++){
                     if(me.fixedAssets[i].DepreciationPerYear == 0)
@@ -281,7 +298,8 @@ export default {
             currentTotalRecord: 15,
             pageNumber: 1,
             isLoading: false,
-            checkboxListSave: []
+            checkboxListSave: [],
+            checkboxCheckAll: false,
         }
     },
 }

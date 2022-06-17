@@ -29,6 +29,11 @@
     margin-top: 11px;
     margin-bottom: 11px;
 }
+.add-license-detail .m-table td{
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;       
+    white-space: nowrap !important;
+}
 .add-license-detail .m-second-button{
     background-color: white;
     box-shadow: 0 2px 6px rgb(0 0 0 /16%);
@@ -46,19 +51,26 @@
 .add-license-detail .detail-table td:nth-child(3){
     width: 130px;
     min-width: 130px;
+    max-width: 130px;
 }
 .add-license-detail .detail-table td:nth-child(4){
     width: 200px;
     min-width: 200px;
+    max-width: 200px;
+    padding-left: 20px;
 }
 .add-license-detail .detail-table td:nth-child(6){
     width: 150px;
     min-width: 150px;
+    max-width: 150px;
 }
 .add-license-detail .detail-table th:nth-child(2){
     padding-left: 20px;
 }
 
+.add-license-detail .detail-table th:nth-child(4){
+    padding-left: 20px;
+}
 .add-license-detail{
     height: 40%;
 }
@@ -102,7 +114,7 @@
     padding-right: 16px;
 }
 .contain-detail-table{
-    height: 150px;
+    height: 180px;
     overflow:auto;
 }
 .contain-detail-table::-webkit-scrollbar {
@@ -124,8 +136,11 @@
     width: 36px; 
     border-radius: 50px; 
     padding: 10px;
-    background-color: rgba(26, 164, 200, .2);
+    background-color: #d1edf4;
 }
 .contain-action-icon:hover{
     background-color: white;
+}
+.add-license-form .row{
+    margin-bottom: 0;
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="m-combobox" :class="{'danger':isAlert}">
         <ejs-combobox 
-        :text='content'
+        :text='control'
         v-model='content'
         ref="comboboxFocus"
         id='combobox' 
@@ -15,7 +15,8 @@
         :showClearButton="false"
         @blur="checkNullValue"
         @input="getChange"
-         ></ejs-combobox>
+        ></ejs-combobox>
+        <span v-if="this.tag == 'sourceInformation'" :class="{'d-opacity':isAlert}" style="color: red; opacity: 0"><small>Không được để trống ô này.</small></span>
     </div>
 </template>
 
@@ -24,7 +25,7 @@ import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 import axios from "axios";
 
 export default {
-    props:["tag","placeholder","control","fieldName","flag"],
+    props:["tag","placeholder","control","fieldName","flag","index"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
@@ -90,6 +91,9 @@ export default {
                 // Xử lý lỗi nếu có
                 console.log(err);
             })
+        } else if(this.tag == "sourceInformation"){
+            this.dataFields = {value: 'id',text:'budget'}; 
+            this.categoriesAsset = this.sourceInformation;
         }
         
         
@@ -110,8 +114,10 @@ export default {
         getChange(event){
             console.log(event.item);
             if(event.itemData == null){
+                this.itemSelected = null;
                 this.$emit("getComboSelected","");
             }
+
         },
         /**
         * Mô tả: Set focus cho ô combobox
@@ -132,7 +138,10 @@ export default {
         */
         setValueSelected(e){
             this.itemSelected = e;
-            this.$emit("getComboSelected",e);
+            if(this.index != undefined){
+                this.$emit("getComboSelected",e,this.index);
+            }
+            else this.$emit("getComboSelected",e);
         },
         /**
         * Mô tả: Check rỗng cho combobox khi được click ra ngoài
@@ -179,12 +188,29 @@ export default {
                 return this.categoriesPart;
             }else if(this.tag == "FixedAssetCategoryCode"){
                 return this.categoriesAsset;
+            }else if(this.tag == "sourceInformation"){
+                return this.categoriesAsset;
             }
+            
             return categories;
         }
     },
     data() {
         return {
+            sourceInformation: [
+                {
+                    id: 1,
+                    budget: "Ngân sách Tỉnh",
+                },
+                {
+                    id: 2,
+                    budget: "Ngân sách Huyện",
+                },
+                {
+                    id: 3,
+                    budget: "Ngân sách Trung ương",
+                },
+            ],
             value: null,
             isShowDrop: true,
             optionSelected: null,

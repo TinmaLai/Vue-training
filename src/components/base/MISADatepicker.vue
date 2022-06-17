@@ -8,12 +8,12 @@
         cancelText="Hủy"
         v-model="date"
         autoApply
-        utc
+       
         @update:modelValue="selectDate"
         :inputClassName="this.date === null ? 'danger' : 'dp-custom-input'"
         />
         <div class="datepicker-icon"></div>
-        <span v-if="!this.date" class="toast-message-null"><small>Không được bỏ trống ô này.</small></span>
+        <span v-if="this.area == 'license'" style="opacity: 0" :class="{'d-opacity':!this.date}" class="toast-message-null"><small>{{this.messageAlert}}</small></span>
     </div>
 </template>
 
@@ -25,7 +25,10 @@ export default {
     components:{
         Datepicker
     },
-    props: ['modelValue','control'],
+    mounted(){
+        this.messageAlert = this.fieldName + " không được để trống.";
+    },
+    props: ['modelValue','control',"fieldName","area"],
     emits: ['update:modelValue'],
     methods:{
         /**
@@ -55,6 +58,7 @@ export default {
         return {
             date: new Date(),
             isAlert: false,
+            messageAlert: '',
         }
     },
 }

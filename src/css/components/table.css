@@ -31,7 +31,7 @@
     padding: 0;
 }
 .m-table tbody tr:hover{
-    background-color:  rgba(26, 164, 200, .2);
+    background-color:  #d1edf4;
 }
 .m-table tbody tr > :first-child{
     padding: 0 0 0 16px;
@@ -42,9 +42,9 @@
 }
 .m-table td{
     padding: 0 5px 0px 5px;
-    text-overflow: ellipsis;
-    overflow: hidden;       
-    white-space: nowrap;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;       
+    white-space: nowrap !important;
 }
 .m-table td input {
 }

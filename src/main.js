@@ -11,6 +11,7 @@ import MISACombobox from './components/base/MISACombobox.vue'
 import MISAInput from './components/base/MISAInput.vue';
 import MISADatepicker from './components/base/MISADatepicker.vue';
 import ValidateAlert from './views/ValidateAlertDialog.vue';
+import MISAInputLicense from './components/base/MISAInputLicense.vue';
 
 // Registering Syncfusion license key
 registerLicense(
@@ -39,6 +40,7 @@ app.use(VueCookies);
 app.component("MISACheckbox", MISACheckbox);
 app.component("MISACombobox", MISACombobox);
 app.component("MISAInput", MISAInput);
+app.component("MISAInputLicense", MISAInputLicense);
 app.component("MISADatepicker", MISADatepicker);
 app.component("ValidateAlert", ValidateAlert);
 

@@ -12,8 +12,17 @@
     padding: 0 11px 0px 11px;
 }
 .content-budget-source{
-    height: 300px;
+    height: 250px;
+    overflow: auto;
+    margin-bottom: 20px;
 }
+
+.content-budget-source::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+    scroll-padding: 20px;
+}
+
 .edit-asset-license .m-combobox{
     width:100%;
 }

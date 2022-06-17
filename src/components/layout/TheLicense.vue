@@ -4,7 +4,13 @@
 			<div class="content-heading">
 				<div class="heading">Ghi tăng tài sản</div>
 				<div class="heading-action">
-					<button class="m-button" title="Thêm tài sản" @click="showAddLicenseDialog()">Thêm</button>
+					<button 
+					class="m-button" 
+					title="CTRL + ALT + F"  
+					@click="showAddLicenseDialog()"
+					v-shortkey="['ctrl','alt','f']"
+					@shortkey="showAddLicenseDialog()"
+					>Thêm</button>
 					<div class="heading-dropdown">
 						<div class="heading-icons">
 							<div class="layout-select"></div>
@@ -59,6 +65,7 @@
 									@click.exact="selectRow($event,license)"
 									v-on:click.ctrl="ctrlSelect(license)"
 									v-on:click.shift="shiftSelect(license)"
+									@dblclick="showEditLicenseForm(license)"
 									:class="{'activedCheckbox' : license.checked}"
 									>
 										<td class="text-center" >
@@ -67,7 +74,7 @@
 											/>
 										</td>
 										<td class="text-center" ref="TableAction">{{index + 1}}</td>
-										<td class="text-left">{{license.LicenseCode}}</td>
+										<td class="text-left" style="color: #1aa4c8">{{license.LicenseCode}}</td>
 										<td class="text-center" >{{formatDate(license.UseDate)}}</td>
 										<td class="text-center">{{formatDate(license.WriteUpdate)}}</td>
 										<td class="text-right">{{formatMoney(license.Total)}}</td>

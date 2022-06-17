@@ -5,8 +5,8 @@
             <div class="alert-content">{{this.message}}</div>
         </div>
         <div class="row popup-action .add" :class="{'d-flex' : this.add}">
-            <div class="m-second-button" @click="selectOption(false)">Không</div>
-            <button ref="cancelBtn" class="m-button" @click="selectOption(true)">Hủy bỏ</button>
+            <div class="m-second-button" @click="selectOption(false)" title="ESC">Không</div>
+            <button ref="cancelBtn" class="m-button" @click="selectOption(true)" title="ENTER">Hủy bỏ</button>
         </div>
         <div class="row popup-action .edit" :class="{'d-flex' : this.edit}">
             <div class="m-second-button" @click="selectOption(false)">Hủy bỏ</div>

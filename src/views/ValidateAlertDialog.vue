@@ -5,14 +5,24 @@
             <div class="alert-content">{{ this.message}}</div>
         </div>
         <div class="row popup-action" :class="{'d-flex': true}">
-            <div class="m-button" @click="selectOption()" v-shortkey="['esc']" @shortkey="selectOption()">Đóng</div>
+            <button ref="closeBtn" class="m-button" @click="selectOption()" @shortkey="selectOption()">Đóng</button>
         </div>
     </div>
 </template>
 
 <script>
+
 export default {
     props:["isShowAlert","message"],
+    watch:{
+        isShowAlert: function(newValue){
+            if(newValue == true){
+                 this.$nextTick(() => {
+                    this.$refs.closeBtn.focus();
+                })
+            }
+        }
+    },
     methods:{
         selectOption(){
             this.$emit("selectOption");

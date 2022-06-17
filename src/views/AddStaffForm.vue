@@ -101,6 +101,7 @@
                         <MISAInput :controlledContent="priceFormat"
                         @keypress="isNumber"
                         @bindingData="bindingData"
+                        
                         v-model="priceFormat"
                         :tag="'priceFormat'"
                         :title="'Nguyên giá phải nhiều hơn 0'"

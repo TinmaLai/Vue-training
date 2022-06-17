@@ -3,7 +3,7 @@
     <div class="m-dialog license-dialog" style="height: auto">
         <div class="top-form-row">
             <p class="heading">Thêm chứng từ ghi tăng</p>
-            <button class=" close-form-btn" @click="closeAddStaffForm"></button>
+            <button class=" close-form-btn" @click="closeAddLicenseDialog"></button>
         </div>
         <div class="add-license-content">
             <div class="license-form-heading">Thông tin chứng từ</div>
@@ -11,25 +11,25 @@
                 <div class="row">
                     <div class="col-4">
                         <label>Mã chứng từ <span style="color: red">*</span></label>
-                        <MISAInput
-							:controlledContent="licenseInsert.LicenseCode" 
-							:tag="'LicenseCode'" 
-							@bindingData="bindingData" 
+                        <MISAInputLicense 
 							:title="'Mã chứng từ không được để trống'" 
 							:placeholder="'Nhập mã chứng từ'" 
 							:fieldName="'Mã chứng từ'"
 							maxlength="255"
 							ref="txtLicenseCode"
+							v-model="this.licenseInsert.LicenseCode"
 							@blur="this.nullToastStatusArray[0] = this.$refs.txtLicenseCode.isAlert"
 							@focus="this.nullToastStatusArray[0] = false"
 						/>
-						<span :class="{'d-opacity' : this.nullToastStatusArray[0]}" style="opacity: 0" class="toast-message-null"><small>Không được bỏ trống ô này.</small></span>
+						
                     </div>
                     <div class="col-4">
                         <label>Ngày bắt đầu sử dụng <span style="color: red">*</span></label>
                         <MISADatepicker
 							@getDate="newValue => this.licenseInsert.UseDate = newValue"
                             :control="this.licenseInsert.UseDate"
+							:area="'license'"
+							:fieldName="'Ngày sử dụng'"
 						/>
                     
                     </div>
@@ -37,17 +37,19 @@
                         <label>Ngày ghi tăng <span style="color: red">*</span></label>
                         <MISADatepicker
 							@getDate="newValue => this.licenseInsert.WriteUpdate = newValue"
-                            :control="this.licenseInsert.WriteUpdate"/>
+                            :control="this.licenseInsert.WriteUpdate"
+							:area="'license'"
+							:fieldName="'Ngày ghi tăng'"
+							/>
                     </div>
                 </div>
-                <div class="row">
+
+                <div class="row" style="margin-top: 11px;">
                      <div class="col-12">
                         <label>Ghi chú</label>
                         <MISAInput
 							ref="txtDescription" 
-							:controlledContent="licenseInsert.Description" 
-							:tag="'Description'" 
-							@bindingData="bindingData" 
+							v-model="this.licenseInsert.Description"
 							:placeholder="'Nhập ghi chú'" 
 							:fieldName="'Tên tài sản'"
 							maxlength="255"
@@ -113,10 +115,7 @@
 						</div>
 						<table class="detail-table-footer" :class="{'d-opacity-none': this.filterArray.length == 0}">
 							<thead>
-								<th width="40"></th>
-								<th width="100"></th>
-								<th width="130"></th>
-								<th width="220"></th>
+								<th width="520"></th>
 								<th width="140" class="text-right">{{formatMoney(calTotalMoney('Cost'))}}</th>
 								<th width="165" class="text-right">{{formatMoney(calTotalMoney('DepreciationPerYear'))}}</th>
                                 <th width="165" class="text-right">{{formatMoney(calTotalMoney('PriceExtra'))}}</th>
@@ -153,13 +152,15 @@
         <div class="form-action">
             <button 
             class="m-second-button ignore-btn" 
-            @click="closeAddStaffForm"
-            v-shortkey="['esc']" @shortkey="closeAddStaffForm()"
+            @click="closeAddLicenseDialog"
+            
+			title="HỦY"
             >Hủy</button>
             <button 
             id="form-save-button" 
             class="m-button" 
             @click="saveLicense"
+			title="CTRL + F"
             v-shortkey="['ctrl','f']" @shortkey="saveLicense()"
             
             >Lưu</button>
@@ -168,6 +169,7 @@
 			v-if="this.isShowAddAssetDlg"
 			:oldAssetsLicenseArray="this.assetsLicenseArray"
 			@getSelectedAssetArray="getSelectedAssetArray"
+			@closeSelectAssetDlg="this.isShowAddAssetDlg = false"
 		/>
 		<EditAssetLicenseDialog
 			v-if="this.isShowEditAssetDlg"
@@ -178,6 +180,13 @@
 			@selectOption="this.showValidateAlert = false"
 			style="z-index: 2"
         />
+		<CancelAlert 
+        :isShowAlert="showCancelAlert"
+        :formMode="this.formMode"
+        @getCancelOption="handleCancelOption"
+		v-shortkey="['esc']" @shortkey="this.showCancelAlert = false"
+		style="z-index: 3"
+        />
     </div>
 </template>
 
@@ -186,12 +195,14 @@ import SelectAssetLicense from './SelectAssetLicense.vue';
 import EditAssetLicenseDialog from './EditAssetLicenseDialog.vue'
 import axios from 'axios';
 import messageResource from './../resources/resource';
+import CancelAlert from './CancelAlertDialog.vue';
 
 export default {
 	props:["licenseSelected","formMode"],
 	components:{
 		SelectAssetLicense,
-		EditAssetLicenseDialog
+		EditAssetLicenseDialog,
+		CancelAlert
 	},
 	async mounted() {
 		// Focus vào ô đầu tiên
@@ -236,12 +247,59 @@ export default {
 		* Created date: 09:17 10/06/2022
 		*/
 		calPageCount(){
-			return this.searchAssetArray.length/this.pageSize;
+			var countPage = this.searchAssetArray.length/this.pageSize;
+			// Gán là 1 khi không có bản ghi nào
+			if(countPage == 0) countPage = 1;
+			return countPage;
 		},
 		
 	},
 
     methods:{
+		/**
+		* Mô tả: Xử lý option chọn khi cancel
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 21:15 16/06/2022
+		*/
+		handleCancelOption(option){
+			switch(option){
+                case false: {
+                    // Đóng alert
+                    this.showCancelAlert = false;
+                    break;
+                }
+                case true:{
+                    // Đóng form
+                    this.resetForm(this);
+                    break;
+                }
+                case 'nosave':{
+                    // Không lưu và đóng form
+                    this.resetForm(this);
+                    break;
+                }
+                case 'save':{
+                    // Lưu và đóng form
+                    this.saveLicense();
+                    break;
+                }
+                
+                
+            }
+		},
+		/**
+		* Mô tả: Hiện thông báo đóng form
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 21:08 16/06/2022
+		*/
+		closeAddLicenseDialog(){
+			this.showCancelAlert = true;
+
+		},
 		/**
 		* Mô tả: Hàm tính tổng tiền ở chân trang
 		* @param
@@ -312,8 +370,9 @@ export default {
         },
 	
 		checkNullValue(){
+			// console.log(this.$refs.txtLicenseCode);
 			// Check trống các trường license
-			if(this.$refs.txtLicenseCode.value == ""){
+			if(this.$refs.txtLicenseCode.$refs.inputTxt.value == ""){
 				this.nullToastStatusArray[0] = true;
 				return false;
 			}
@@ -334,9 +393,14 @@ export default {
 		*/
 		saveLicense(){
 			this.licenseInsert.licenseDetails = this.fixedAssetsLicense;
+			let totalLicense = this.fixedAssetsLicense.reduce((item1,item2) =>{
+				return item1 + item2.Cost;
+			},0)
+			this.licenseInsert.Total = totalLicense;
 			var me = this;
-			
-			if(this.checkNullValue() == true)
+			// Cờ check xem có validate lỗi gì ko, ko lỗi mới được thêm
+			var checkAdd = this.checkNullValue();
+			if(checkAdd == true)
 				// form mode là thêm (formMode == 1)
 				if(this.formMode == 1){
 					let status = false;
@@ -522,6 +586,7 @@ export default {
 	},
     data() {
         return {
+			showCancelAlert: false,
             fixedAssetsLicense:[],
 			isShowAddAssetDlg: false,
 			pageNumber: 1,

@@ -24,6 +24,13 @@
 export default {
     props: ["license","index"],
     methods:{
+        /**
+        * Mô tả: Hàm format định dạng tiền
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 21:57 17/06/2022
+        */
 		formatMoney(value){
 			return value.toString().replaceAll('.','').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 		}

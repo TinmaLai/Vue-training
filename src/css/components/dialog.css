@@ -13,6 +13,9 @@
 .col-8{
     width: 66%;
 }
+.col-9{
+    width: 75%;
+}
 .col-5{
     width: 40%;
 }
@@ -23,7 +26,7 @@
     width: 15%;
 }
 .m-dialog{
-    width: 980px;
+    width: 940px;
     height: auto;
     border-radius: 4px;
     display: flex;
