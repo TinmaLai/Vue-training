@@ -114,7 +114,7 @@
     padding-right: 16px;
 }
 .contain-detail-table{
-    height: 180px;
+    height: 155px;
     overflow:auto;
 }
 .contain-detail-table::-webkit-scrollbar {

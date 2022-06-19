@@ -16,7 +16,7 @@
         @blur="checkNullValue"
         @input="getChange"
         ></ejs-combobox>
-        <span v-if="this.tag == 'sourceInformation'" :class="{'d-opacity':isAlert}" style="color: red; opacity: 0"><small>Không được để trống ô này.</small></span>
+        <span v-if="this.tag == 'sourceInformation'" :class="{'d-opacity':isAlert}" style="color: red; opacity: 0"><small>{{this.messageAlert}}</small></span>
     </div>
 </template>
 
@@ -25,11 +25,14 @@ import { ComboBoxComponent } from "@syncfusion/ej2-vue-dropdowns";
 import axios from "axios";
 
 export default {
-    props:["tag","placeholder","control","fieldName","flag","index"],
+    props:["tag","placeholder","control","fieldName","flag","index","area"],
     components:{
         'ejs-combobox' : ComboBoxComponent,
     },
+    
     async mounted(){
+        this.content = this.control;
+        this.itemSelected =  this.control;
         var me = this;
         /**
         * Mô tả: Kiểm tra xem combobox thuôc loại gì qua tag (dropdown cho phân trang, hay cho form hay filter)
@@ -101,6 +104,7 @@ export default {
     watch:{
         control: function(newValue){
             this.content = newValue;
+            this.itemSelected = newValue;
         },
     },
     methods:{
@@ -153,12 +157,14 @@ export default {
         checkNullValue(){
             // Nếu combobox là dùng cho filter thì không cần check rỗng
             if(this.flag != "filter" && this.tag != "DropdownPagination"){
-                if((this.itemSelected == null || this.itemSelected.item == null) && this.content == ""){
+                if(this.itemSelected == null || this.control == ""){
                     this.isAlert = true;
                 } else {
                     this.isAlert = false;
+                    
                 }
             } 
+            this.$emit("loopCheckCombobox");
             // else if(this.flag == "filter"){
             //     // Nếu item được chọn là null thì sẽ tính là rỗng
             //     if(this.itemSelected == null || this.itemSelected.item == null){
@@ -193,6 +199,20 @@ export default {
             }
             
             return categories;
+        },
+        /**
+        * Mô tả: Chọn ra câu alert cho span khi trùng hoặc trống
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 18:40 18/06/2022
+        */
+        messageAlert(){
+            if(this.itemSelected == null || this.control == ""){
+                return "Không được bỏ trống ô này.";
+            } else {
+                return "Nguồn chi phí đã tồn tại.";
+            }
         }
     },
     data() {
@@ -223,6 +243,7 @@ export default {
             categoriesAsset: [],
             categoriesPagination: [],
             totalPages: 0,
+            isDuplicate: false,
         }
     },
 

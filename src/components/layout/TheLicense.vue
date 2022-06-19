@@ -33,12 +33,16 @@
 							type="text">
 						</div>
 						<div class="toolbar-action">
+							<div class="delete" v-if="isSelectMulti" >
+
+							</div>
 							<div class="print-icon">
 
 							</div>
 							<div class="more-icon">
 
 							</div>
+							
 						</div>
 					</div>
 					<div class="master-grid">
@@ -117,6 +121,7 @@
 								<MISACombobox
 								:tag="'DropdownPagination'"
 								class="dropdown-pagination"
+								:control="15"
 								@getComboSelected="getPageSize"
 								/>
 								<MISAPagination
@@ -197,6 +202,7 @@
 			:deleteInfor="deleteField"
 			@getDelOption="getDelOption"
 		/>
+		
     </div>
 </template>
 
@@ -221,6 +227,13 @@ export default {
 		
 	},
 	computed: {
+		isSelectMulti(){
+			let count = 0 ;
+			this.licenses.forEach(element => {
+				if(element.checked) count++;
+			})
+			return count > 1;
+		},
 		/**
 		* Mô tả: Tính lại tổng số trang của pagination
 		* @param
@@ -335,7 +348,7 @@ export default {
 				licenseMasterId: thisLicense.LicenseId
 			}
 			var me = this;
-			await axios.get("http://localhost:5062/api/v1/LicenseDetail/getLicenseInsertById",{
+			await axios.get("http://localhost:5062/api/v1/LicenseInsert/getLicenseInsertById",{
 				params: paramAxios
 			})
 			.then(function(res){

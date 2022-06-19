@@ -1,9 +1,10 @@
 <template>
-    <div id="overlay" class="overlay"></div>
+    <div class="overlay"></div>
     <div class="edit-asset-license m-dialog" style="height: auto">
+        <MISALoading v-if="isLoadingSubmitBtn" />
         <div class="top-form-row">
             <p class="heading">Sửa tài sản</p>
-            <button class=" close-form-btn" @click="closeAddStaffForm"></button>
+            <button class=" close-form-btn" @click="this.$emit('closeEditLicenseAssetForm')"></button>
         </div>
         <div class="edit-asset-license-content">
             <div class="row">
@@ -11,6 +12,7 @@
                     <label>Bộ phận sử dụng</label>
                     <MISAInput
                     disabled="true"
+                    :controlledContent="this.departmentNameSelected"
                     />
                 </div>
             </div>
@@ -33,7 +35,7 @@
                             :index="index"
                             @getComboSelected="getValueBudget"
                             ref="budgetCombobox"
-                            
+                            @loopCheckCombobox="loopCheckCombobox"
                         />
                         
                     </div>
@@ -48,7 +50,7 @@
                     <div class="col-4">
                         <div class="action-budget-source">
                             <div class="add-budget" @click="addBudget" title="Thêm nguồn chi phí"></div>
-                            <div class="remove-budget" title="Xóa nguồn chi phí"></div>
+                            <div v-if="this.moneySources.length > 1" class="remove-budget" @click="removeBudget(index)" title="Xóa nguồn chi phí"></div>
                         </div>
 
                     </div>
@@ -66,7 +68,7 @@
                 </div>
                 <div class="col-3 contain-license-input">
                     <MISAInput
-                        :controlledContent="'100.000.000'"
+                        :controlledContent="formatMoney(calTotalCost())"
                         style="margin-top: 0"
                         :disabled="true"
                     />
@@ -77,7 +79,7 @@
         <div class="form-action">
             <button 
             class="m-second-button ignore-btn" 
-            @click="closeAddStaffForm"
+            @click="this.$emit('closeEditLicenseAssetForm')"
             v-shortkey="['esc']" @shortkey="closeAddStaffForm()"
             >Hủy</button>
             <button 
@@ -92,7 +94,18 @@
 </template>
 
 <script>
+import axios from 'axios';
+import messageResource from '../resources/resource';
+
 export default {
+    props:["formMode","jsonSelected","index","licenseAssetSelected","departmentNameSelected"],
+    mounted(){
+        console.log("json selected: ", this.jsonSelected);
+        console.log("department name:", this.departmentNameSelected);
+        if(this.jsonSelected != undefined){
+            this.moneySources = JSON.parse(this.jsonSelected);
+        }
+    },
     computed:{
         /**
         * Mô tả: computed format ngay trên ô input theo hàm format viết sẵn
@@ -116,6 +129,21 @@ export default {
         // },
     },
     methods:{
+        
+        /**
+        * Mô tả: 
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 15:46 18/06/2022
+        */
+        calTotalCost(){
+            // var total = 0;
+            var total = this.moneySources.reduce((item1,item2) => {
+                return item1 + Number(item2.cost);
+            },0);
+            return total;
+        },
         /**
         * Mô tả: Hàm format định dạng tiền
         * @param
@@ -143,16 +171,48 @@ export default {
         * Created date: 10:49 17/06/2022
         */
         checkNullValue(){
-            console.log(this.$refs['budgetCombobox']);
+            var check = true;
+            // Check trống các ô
             this.$refs['budgetCombobox'].forEach(element => {
-                if(element.itemSelected == null && element.control == ""){
+                if(element.itemSelected == null || element.control == ""){
                     element.isAlert = true;
+                    check = false;
                 }
             });
-            console.log(this.$refs['budgetInput']);
             this.$refs['budgetInput'].forEach(element => {
                 if(element.$refs.inputTxt.value === "" || element.$refs.inputTxt.value == undefined){
                     element.isAlert = true;
+                    check = false;
+                }
+            });
+            // Check trùng combobox
+            let budgetComboboxArray = this.$refs['budgetCombobox'];
+            this.$refs['budgetCombobox'].forEach(element => {
+                if(element.itemSelected != null && element.control != ""){
+                    element.isAlert = false;
+                }
+            });
+            for(let i = 0; i < budgetComboboxArray.length; i++){
+                for(let j = 0; j < budgetComboboxArray.length; j++){
+                    if(budgetComboboxArray[i].content == budgetComboboxArray[j].content && j != i){
+                        budgetComboboxArray[i].isAlert = true;
+                        check = false;
+                    } 
+                }
+            }
+            this.canSubmit = check;
+        },
+        /**
+        * Mô tả: Quét lại một lần mỗi khi blur khỏi combobox để bỏ alert 
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 22:50 18/06/2022
+        */
+        loopCheckCombobox(){
+            this.$refs['budgetCombobox'].forEach(element => {
+                if(element.itemSelected != null && element.control != ""){
+                    element.isAlert = false;
                 }
             });
         },
@@ -163,9 +223,35 @@ export default {
         * Created by: nbtin
         * Created date: 10:44 17/06/2022
         */
-        saveBudgetSource(){
-            this.checkNullValue();
+        async saveBudgetSource(){
+            
             console.log(JSON.stringify(this.moneySources));
+            this.checkNullValue();
+            if(this.formMode == 1){
+                if(this.canSubmit){
+                    this.isLoadingSubmitBtn = true;
+                    setTimeout(()=>{
+                        this.isLoadingSubmitBtn = false;
+                        this.$emit("getDetailJsonFE",JSON.stringify(this.moneySources),this.index);
+                        // Emit lên toast message, thành công là true, thất bại là false
+                        this.$emit("handleStatusSave",true, messageResource.SAVE_SUCCESS);
+                    },1000);
+                }
+            } else if (this.formMode == 0){
+                if(this.canSubmit){
+                    
+                    var me = this;
+                    var updateLicenseAsset = {}; 
+                    updateLicenseAsset.DetailJson = JSON.stringify(this.moneySources);
+                    await axios.put("http://localhost:5062/api/v1/LicenseDetail/"+this.licenseAssetSelected.LicenseDetailId,updateLicenseAsset)
+                    .then(function(res){
+                        console.log(res);
+                        me.$emit("closeEditLicenseAssetForm");
+                    }).catch(function(err){
+                        console.log(err);
+                    })
+                }
+            }
         },
         /**
         * Mô tả: Lấy giá trị từ combobox nguồn hình thành
@@ -176,9 +262,11 @@ export default {
         */
         getValueBudget(e,index){
             if(e.itemData != undefined){
-                this.moneySources[index].budget = e.itemData.budget;
+                this.moneySources[index].nameSource = e.itemData.budget;
                 this.moneyNameSources.push(e.itemData.budget);
+                 
             }
+
         },
         /**
         * Mô tả: Thêm nguồn khi ấn nút cộng
@@ -188,32 +276,41 @@ export default {
         * Created date: 00:48 18/06/2022
         */
         addBudget(){
-            this.moneySources.push({ nameSource: "Ngân sách tỉnh",
-                    cost: 1000000});
+            this.moneySources.push({ nameSource: "",
+                    cost: 0});
+        },
+        /**
+        * Mô tả: Xóa đi nguồn hình thành
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 08:40 18/06/2022
+        */
+        removeBudget(index){
+            // this.moneySources = this.moneySources.filter()
+            console.log(this.moneySources);
+            console.log(index);
+            if(index > -1){
+                this.moneySources.splice(index,1);
+            }
+            console.log(this.moneySources);
         }
     },
     data() {
         return {
+            canSubmit: false,
             // Mảng check trùng
             moneyNameSources:[],
             // Mảng to gồm cả tên cả số tiền
             moneySources:[
                 {
-                    nameSource: "Ngân sách tỉnh",
+                    nameSource: "Ngân sách Tỉnh",
                     cost: 1000000
                 },
-                {
-                    nameSource: "aasdad",
-                    cost: 1000000
-                },
-                {
-                    nameSource: "aasdad",
-                    cost: 1000000
-                },
-                
             ],
             costFormat: 0,
             test: '',
+            isLoadingSubmitBtn: false,
         }
     },
 }

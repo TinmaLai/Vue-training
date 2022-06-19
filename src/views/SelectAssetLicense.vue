@@ -63,6 +63,7 @@
                     <MISACombobox
                     :tag="'DropdownPagination'"
                     class="dropdown-pagination"
+                    :control="15"
                     @getComboSelected="getPageSize"
                     />
                     <MISAPagination

@@ -1,6 +1,9 @@
 <template>
     <div id="overlay" class="overlay"></div>
     <div class="m-dialog license-dialog" style="height: auto">
+		<MISALoading
+			v-if="isLoadingSubmitBtn" 
+		/>
         <div class="top-form-row">
             <p class="heading">Thêm chứng từ ghi tăng</p>
             <button class=" close-form-btn" @click="closeAddLicenseDialog"></button>
@@ -97,7 +100,7 @@
 											{{formatMoney(asset.PriceExtra)}}
 											<div class="master-table-item table-action">
 												<div class="contain-action-icon">
-													<div class="edit" @click="this.isShowEditAssetDlg = true" title="Sửa tài sản">
+													<div class="edit" @click="showEditAssetForm(asset,index)" title="Sửa tài sản">
 													
 													</div>
 												</div>
@@ -128,6 +131,7 @@
 								<MISACombobox
 								:tag="'DropdownPagination'"
 								class="dropdown-pagination"
+								:control="15"
 								@getComboSelected="getPageSize"
 								/>
 								<MISAPagination
@@ -173,6 +177,14 @@
 		/>
 		<EditAssetLicenseDialog
 			v-if="this.isShowEditAssetDlg"
+			@closeEditLicenseAssetForm="closeEditLicenseAssetForm"
+			:formMode="formMode"
+			:index="indexSelected"
+			@getDetailJsonFE="getDetailJsonFE"
+			:jsonSelected="jsonSelected"
+			:licenseAssetSelected="licenseAssetSelected"
+			:departmentNameSelected="departmentNameSelected"
+			@handleStatusSave="handleStatusSave"
 		/>
 		<ValidateAlert
 			:isShowAlert="showValidateAlert"
@@ -187,6 +199,12 @@
 		v-shortkey="['esc']" @shortkey="this.showCancelAlert = false"
 		style="z-index: 3"
         />
+		<MISAToastMessage
+			:isShowToast="isShowToast" 
+            :status="saveStatus" 
+            :message="messageToToast"
+		/>
+		
     </div>
 </template>
 
@@ -210,6 +228,7 @@ export default {
 		
 		// Nếu form là sửa, nhận gái trị từ hàng lên
 		if(this.formMode == 0){
+			console.log(this.licenseSelected);
 			this.licenseInsert = this.licenseSelected;
 			this.licenseInsert.detailAssets.forEach(element => {
 				element.PriceExtra = element.Cost - (element.DepreciationPerYear);
@@ -256,6 +275,89 @@ export default {
 	},
 
     methods:{
+		/**
+        * Mô tả: Xử lý giao diện của Toast message khi trạng thái là thành công hay thất bại
+        * @param status: trạng thái
+        * @param message: Thông báo tương úng với trạng thái
+        * @return
+        * Created by: nbtin
+        * Created date: 07:21 24/05/2022
+        */
+        handleStatusSave(status,message){
+            var me = this;
+            this.messageToToast = message;
+            if(status == true){
+                // các local data này dùng để truyền đi cho component con là ToastMessage
+                this.isShowToast = true;
+                this.saveStatus = true;
+                setTimeout(function(){
+                    me.isShowToast = false;
+                },1500);
+            } else if(status == false){
+                this.isShowToast = true;
+                this.saveStatus = false;
+                // các local data này dùng để truyền đi cho component con là ToastMessage
+                setTimeout(function(){
+                    me.isShowToast = false;
+                },1500);
+            }
+        },
+		/**
+		* Mô tả: Đóng form chỉnh sửa tài sản detail
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 00:14 19/06/2022
+		*/
+		closeEditLicenseAssetForm(){
+			this.isShowEditAssetDlg = false;
+		},
+		/**
+		* Mô tả: Xử lý khi form là thêm và lưu detail json, khi đó chỉ lưu FE thôi
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 09:41 18/06/2022
+		*/
+		getDetailJsonFE(detailJson, index){
+			console.log(index);
+			this.filterArrayRes[index].DetailJson = detailJson;
+			this.fixedAssetsLicense[index].DetailJson = detailJson;
+			this.isShowEditAssetDlg = false;
+		},
+		/**
+		* Mô tả: Mở form chỉnh sửa tài sản chứng từ (nguồn hình thành)
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 09:19 18/06/2022
+		*/
+		async showEditAssetForm(licenseAsset,index){
+			
+			console.log(licenseAsset);
+			if(licenseAsset.LicenseDetailId == undefined){
+				this.isShowEditAssetDlg = true;
+				//Gán asset đc chọn để truyền vào giá trị nguồn hình thành
+				this.jsonSelected = licenseAsset.DetailJson;
+				this.indexSelected = index;
+				this.departmentNameSelected = licenseAsset.DepartmentName;
+			}
+			else {
+				// call api
+				var me = this;
+				await axios.get("http://localhost:5062/api/v1/LicenseDetail/GetMoneySource/"+licenseAsset.LicenseDetailId)
+				.then(function(res){
+					me.jsonSelected = res.data.DetailJson;
+					me.departmentNameSelected = res.data.DepartmentName;
+					me.licenseAssetSelected = licenseAsset;
+					me.indexSelected = index;
+					me.isShowEditAssetDlg = true;
+				}).catch(function(err){
+					console.log(err);
+				})
+				//
+			}
+		},
 		/**
 		* Mô tả: Xử lý option chọn khi cancel
 		* @param
@@ -314,6 +416,13 @@ export default {
 			},init)
 			return total;
 		},
+		/**
+		* Mô tả: Xóa FE ở mảng thông tin chi tiết
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 09:18 18/06/2022
+		*/
 		removeLicenseAsset(asset){
 			var ids = [];
 			this.fixedAssetsLicense.forEach(element =>{
@@ -405,31 +514,43 @@ export default {
 				if(this.formMode == 1){
 					let status = false;
 					let message = "";
-					axios.post("http://localhost:5062/api/v1/LicenseDetail/multiData", this.licenseInsert)
+					console.log(this.licenseInsert);
+					me.isLoadingSubmitBtn = true;
+					axios.post("http://localhost:5062/api/v1/LicenseInsert/multiData", this.licenseInsert)
 					.then(function(res){
 						console.log(res)
 						// data = 1 là lưu dữ liệu thành công (Execute)
 						if(res.data.errorCode == "001"){
-							// Xử lý nếu call POST API thất bại
-							var errMsg = res.data.data.data[0];
-							me.errMessage = errMsg;
-							me.showValidateAlert = true;
-							// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-							if(errMsg.includes("trùng")){
+							
+							setTimeout(()=>{
+								var errMsg = res.data.data.data[0];
+								me.errMessage = errMsg;
+								me.showValidateAlert = true;
+								// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+								if(errMsg.includes("trùng")){
 
-								me.isDuplicate = true;
-								
-							}else {
-								status = false;
-								message = messageResource.SAVE_FAILED;
-								me.setStatus(status, message);
-							}
+									me.isDuplicate = true;
+									
+								}else {
+									status = false;
+									message = messageResource.SAVE_FAILED;
+									me.setStatus(status, message);
+								}
+								me.isLoadingSubmitBtn = false;
+							},500);
+							// Xử lý nếu call POST API thất bại
+							
 						} else {
-							status = true;
-							message = messageResource.SAVE_SUCCESS;
-							// Gán mã tự động tăng cho lần mở form tiếp theo
-							me.$emit("getLoadingLicense");
-							me.setStatus(status, message);
+							me.isLoadingSubmitBtn = true;
+							setTimeout(()=>{
+								status = true;
+								message = messageResource.SAVE_SUCCESS;
+								// Gán mã tự động tăng cho lần mở form tiếp theo
+								me.$emit("getLoadingLicense");
+								me.setStatus(status, message);
+								me.isLoadingSubmitBtn = false;
+							},1000);
+							
 						}
 					}).catch(function(err){
 						console.log(err);
@@ -439,30 +560,41 @@ export default {
 				else if(this.formMode == 0){
 					let status = false;
 					let message = "";
-					axios.put("http://localhost:5062/api/v1/LicenseDetail/"+me.licenseInsert.LicenseId, me.licenseInsert)
+					axios.put("http://localhost:5062/api/v1/LicenseInsert/"+me.licenseInsert.LicenseId, me.licenseInsert)
 					.then(function(res){
 						if(res.data.errorCode == "001"){
-							// Xử lý nếu call POST API thất bại
-							var errMsg = res.data.data.data[0];
-							me.errMessage = errMsg;
-							me.showValidateAlert = true;
-							// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-							if(errMsg.includes("trùng")){
+							setTimeout(()=>{
+								var errMsg = res.data.data.data[0];
+								me.errMessage = errMsg;
+								me.showValidateAlert = true;
+								// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
+								if(errMsg.includes("trùng")){
 
-								me.isDuplicate = true;
-								
-							}else {
-								status = false;
-								message = messageResource.EDIT_FAILED;
-								me.setStatus(status, message);
-							}
+									me.isDuplicate = true;
+									
+								}else {
+									status = false;
+									message = messageResource.SAVE_FAILED;
+									me.setStatus(status, message);
+								}
+								me.isLoadingSubmitBtn = false;
+							},500);
 						} else {
-							status = true;
-							message = messageResource.EDIT_SUCCESS;
-							// Gán mã tự động tăng cho lần mở form tiếp theo
-							me.$emit("getAsset");
-							me.$emit("getLoadingLicense");
-							me.setStatus(status, message);
+							// status = true;
+							// message = messageResource.EDIT_SUCCESS;
+							// // Gán mã tự động tăng cho lần mở form tiếp theo
+							// me.$emit("getAsset");
+							// me.$emit("getLoadingLicense");
+							// me.setStatus(status, message);
+							me.isLoadingSubmitBtn = true;
+							setTimeout(()=>{
+								status = true;
+								message = messageResource.EDIT_SUCCESS;
+								// Gán mã tự động tăng cho lần mở form tiếp theo
+								me.$emit("getLoadingLicense");
+								me.setStatus(status, message);
+								me.isLoadingSubmitBtn = false;
+							},1000);
 						}
 					})
 				}
@@ -586,6 +718,9 @@ export default {
 	},
     data() {
         return {
+			isLoadingSubmitBtn: false,
+			licenseAssetSelected:{},
+			indexSelected: 0,
 			showCancelAlert: false,
             fixedAssetsLicense:[],
 			isShowAddAssetDlg: false,
@@ -605,6 +740,11 @@ export default {
 			},
 			showValidateAlert: false,
 			errMessage: '',
+			jsonSelected: "",
+			departmentNameSelected: "",
+			isShowToast: false,
+			saveStatus: false,
+			messageToToast: "",
         }
     },
 }

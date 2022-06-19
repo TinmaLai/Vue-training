@@ -12,6 +12,8 @@ import MISAInput from './components/base/MISAInput.vue';
 import MISADatepicker from './components/base/MISADatepicker.vue';
 import ValidateAlert from './views/ValidateAlertDialog.vue';
 import MISAInputLicense from './components/base/MISAInputLicense.vue';
+import MISALoading from './components/base/MISALoading.vue'
+import MISAToastMessage from './components/base/MISAToastMessage.vue';
 
 // Registering Syncfusion license key
 registerLicense(
@@ -43,6 +45,7 @@ app.component("MISAInput", MISAInput);
 app.component("MISAInputLicense", MISAInputLicense);
 app.component("MISADatepicker", MISADatepicker);
 app.component("ValidateAlert", ValidateAlert);
-
+app.component("MISALoading", MISALoading);
+app.component("MISAToastMessage",MISAToastMessage);
 
 app.mount("#app");

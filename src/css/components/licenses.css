@@ -44,7 +44,7 @@
 }
 .master-license{
     background-color: #fff;
-    height: 50%;
+    height: 57%;
     
 }
 .master-toolbar{
@@ -60,6 +60,7 @@
 .toolbar-action{
     display: flex;
     gap: 15px;
+    align-items: center;
 }
 .print-icon{
     background: url('../../asset/icons/qlts-icon.png') no-repeat -331px -67px;
@@ -148,8 +149,14 @@
 	height: 18px;
     cursor: pointer;
 }
+.master-toolbar .delete{
+    background: url('../../asset/icons/qlts-icon.png') no-repeat -463px -111px;
+	width: 18px;
+	height: 18px;
+    cursor: pointer;
+}
 .master-license .master-grid{
-    height: 317px;
+    height: 383px;
 }
 /* Chân trang bảng master*/
 .master-table-footer{
@@ -181,7 +188,7 @@
 /* BẢNG CHI TIẾT*/
 .detail-license{
     background-color: white;
-    height: 40%;
+    height: 39%;
 }
 .detail-toolbar{
     display: flex;
