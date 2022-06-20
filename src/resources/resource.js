@@ -17,5 +17,9 @@ const messageResource = {
     DELETE_QUESTION: " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
     NULL_ASSET_LICENSE: "Chọn ít nhất 1 tài sản",
     DELETE_LICENSE_ALERT: "Bạn có muốn xóa chứng từ có mã",
+    MULTIPLY_DELETE_LICENSE_ALERT: " chứng từ đã được chọn. Bạn có muốn xóa các chứng từ này khỏi danh sách?",
+    VALIDATE_DUPLICATE_LICENSE_CODE: "Thông tin mã chứng từ không được phép trùng.",
+    VALIDATE_USE_DATE: "Ngày ghi tăng không được sớm hơn ngày sử dụng.",
+
 };
 export default messageResource;

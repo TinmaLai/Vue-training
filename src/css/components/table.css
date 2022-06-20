@@ -116,10 +116,12 @@
 .m-table td:nth-child(4){
     width: 150px;
     min-width: 150px;
+    max-width: 150px;
 }
 .m-table td:nth-child(5){
     width: 150px;
     min-width: 150px;
+    max-width: 150px;
 }
 .m-table td:nth-child(6){
     width: 150px;

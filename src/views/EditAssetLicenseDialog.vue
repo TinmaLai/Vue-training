@@ -4,7 +4,10 @@
         <MISALoading v-if="isLoadingSubmitBtn" />
         <div class="top-form-row">
             <p class="heading">Sửa tài sản</p>
-            <button class=" close-form-btn" @click="this.$emit('closeEditLicenseAssetForm')"></button>
+            <button class=" close-form-btn" 
+            v-shortkey="['esc']"
+            @shortkey="closeEditForm()"
+            @click="closeEditForm()"></button>
         </div>
         <div class="edit-asset-license-content">
             <div class="row">
@@ -80,7 +83,7 @@
             <button 
             class="m-second-button ignore-btn" 
             @click="this.$emit('closeEditLicenseAssetForm')"
-            v-shortkey="['esc']" @shortkey="closeAddStaffForm()"
+            v-shortkey="['esc']" @shortkey="closeEditForm()"
             >Hủy</button>
             <button 
             id="form-save-button" 
@@ -129,7 +132,16 @@ export default {
         // },
     },
     methods:{
-        
+        /**
+        * Mô tả: Tắt form
+        * @param
+        * @return
+        * Created by: nbtin
+        * Created date: 09:26 20/06/2022
+        */
+        closeEditForm(){
+            this.$emit('closeEditLicenseAssetForm');
+        },
         /**
         * Mô tả: 
         * @param
@@ -192,6 +204,7 @@ export default {
                     element.isAlert = false;
                 }
             });
+            // chạy vòng for dể check trùng
             for(let i = 0; i < budgetComboboxArray.length; i++){
                 for(let j = 0; j < budgetComboboxArray.length; j++){
                     if(budgetComboboxArray[i].content == budgetComboboxArray[j].content && j != i){

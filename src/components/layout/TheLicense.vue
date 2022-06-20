@@ -33,7 +33,7 @@
 							type="text">
 						</div>
 						<div class="toolbar-action">
-							<div class="delete" v-if="isSelectMulti" >
+							<div class="delete" v-if="isSelectMulti" @click="showAlertDeleteMulti">
 
 							</div>
 							<div class="print-icon">
@@ -68,7 +68,7 @@
 									:key="license.LicenseId"
 									@click.exact="selectRow($event,license)"
 									v-on:click.ctrl="ctrlSelect(license)"
-									v-on:click.shift="shiftSelect(license)"
+									v-on:click.shift="shiftSelect(license,index)"
 									@dblclick="showEditLicenseForm(license)"
 									:class="{'activedCheckbox' : license.checked}"
 									>
@@ -191,6 +191,7 @@
 			:licenseSelected="licenseSelected"
 			@getStatusSave="handleStatusSave"
 			@getLoadingLicense="getLoadingLicense"
+			v-shortkey="['esc']" @shortkey="toggleLicenseDialog"
 		/>
 		<ToastMessage 
         :isShowToast="isShowToast" 
@@ -201,7 +202,11 @@
 			:message="deleteMessage"
 			:deleteInfor="deleteField"
 			@getDelOption="getDelOption"
-		/>
+			:removeType="removeType"
+		>
+			<div v-if="!removeType">{{this.deleteMessage}} <span style="font-weight: 700">{{this.deleteField.LicenseCode}}</span>?</div>
+			<div v-if="removeType"><strong>{{this.countSelect}}</strong>{{this.deleteMessage}} </div>
+		</DeleteLicenseAlert>
 		
     </div>
 </template>
@@ -247,6 +252,26 @@ export default {
 	},
 	methods:{
 		/**
+		* Mô tả: Hiện thông báo xóa nhiều khi ấn vào nú xóa nhiều
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 09:58 20/06/2022
+		*/
+		showAlertDeleteMulti(){
+			this.isShowDeleteAlert = true;
+			var count = 0;
+			this.licenses.forEach(element => {
+				if(element.checked){
+					count++;
+				}
+			})
+			this.deleteMessage = messageResource.MULTIPLY_DELETE_LICENSE_ALERT;
+			this.removeType = true;
+			if(count < 10)
+			this.countSelect = "0" + count;
+		},
+		/**
 		* Mô tả: Lấy lại toàn bộ license mỗi khi cần loading
 		* @param
 		* @return
@@ -272,22 +297,50 @@ export default {
 			if(isDel == false){
                 this.isShowDeleteAlert = false; 
             } else{
-                var me = this;
-                
-                // Gọi API để xóa theo danh sách id được tick checkbox
-                await axios.delete(`http://localhost:5062/api/v1/License/`+licenseId)
-				.then(function(res){
-                    console.log(res);
-                    // Hiện thông báo xóa thành công
-                    me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
-					me.getLoadingLicense();
-                    
-                }).catch(function(err){
-                    console.log(err);
-                    // Hiện thông báo xóa thất bại
-                    me.handleStatusSave(false,messageResource.DELETE_FAILED);
-                })
-				me.isShowDeleteAlert = false;
+                if(this.removeType == false){
+					let me = this;
+					// Gọi API để xóa theo danh sách id được tick checkbox
+					await axios.delete(`http://localhost:5062/api/v1/License/`+licenseId)
+					.then(function(res){
+						console.log(res);
+						// Hiện thông báo xóa thành công
+						me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
+						me.getLoadingLicense();
+						
+					}).catch(function(err){
+						console.log(err);
+						// Hiện thông báo xóa thất bại
+						me.handleStatusSave(false,messageResource.DELETE_FAILED);
+					})
+					me.isShowDeleteAlert = false;
+				} else {
+					let me =this;
+					let deleteMultiId = [];
+					this.licenses.map((element)=>{
+						if(element.checked == true){
+							deleteMultiId.push(element.LicenseId);
+						}
+					})
+
+					console.log(deleteMultiId);
+					// Call api
+					await axios.delete(`http://localhost:5062/api/v1/License/multiDelete`,{
+						data: JSON.stringify(deleteMultiId),
+						headers: {
+							"content-type": "application/json",
+						},
+					}).then(function(res){
+						console.log(res);
+						// Hiện thông báo xóa thành công
+						me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
+						me.getLoadingLicense();
+						
+					}).catch(function(err){
+						console.log(err.response.data);
+						// Hiện thông báo xóa thất bại
+						me.handleStatusSave(false,messageResource.DELETE_FAILED);
+					})
+					}
             }     
 		},
 		/**
@@ -486,14 +539,21 @@ export default {
 			thisLicense.checked = !thisLicense.checked;
 			this.previousClickFocus = thisLicense.LicenseId;
 		},
-		shiftSelect(thisLicense){
+		shiftSelect(thisLicense,index){
 			// Shift + click
 			// Chạy từ hàng focus cuối cùng đến hàng focus hiện tại
 			for(let i = 0; i < this.licenses.length; i++){
 				if(this.licenses[i].LicenseId == this.previousClickFocus){
-					for(let j = i;;j++){
+					let loopIndex = 0;
+					if(i < index) loopIndex = i;
+					else loopIndex = index;
+					for(let j = loopIndex;;j++){
 						this.licenses[j].checked = true;
-						if(this.licenses[j].LicenseId == thisLicense.LicenseId) break;
+						if(i < index){
+							if(this.licenses[j].LicenseId == thisLicense.LicenseId) break;
+						} else{
+							if(j == i) break;
+						}
 					}
 					break;
 				}
@@ -611,6 +671,8 @@ export default {
 			isShowDeleteAlert: false,
 			deleteMessage: '',
 			deleteField: '',
+			removeType: false, // false là xóa 1, true là xóa nhiều
+			countSelect: "",
 		}
 	},
 }

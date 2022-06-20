@@ -193,6 +193,7 @@
 			style="z-index: 2"
         />
 		<CancelAlert 
+		
         :isShowAlert="showCancelAlert"
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
@@ -524,14 +525,17 @@ export default {
 							
 							setTimeout(()=>{
 								var errMsg = res.data.data.data[0];
-								me.errMessage = errMsg;
+								
 								me.showValidateAlert = true;
-								// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-								if(errMsg.includes("trùng")){
-
+								// Nếu lỗi trả về là 1 thì hiện thông báo mã tài sản đã trùng (check trùng), 2 thì là ghi tăng
+								if(errMsg.includes("1")){
+									me.errMessage = messageResource.VALIDATE_DUPLICATE_LICENSE_CODE;
 									me.isDuplicate = true;
 									
-								}else {
+								} else if( errMsg.includes("2")){
+									me.errMessage = messageResource.VALIDATE_USE_DATE;
+								}
+								else {
 									status = false;
 									message = messageResource.SAVE_FAILED;
 									me.setStatus(status, message);
@@ -560,19 +564,23 @@ export default {
 				else if(this.formMode == 0){
 					let status = false;
 					let message = "";
+					me.isLoadingSubmitBtn = true;
 					axios.put("http://localhost:5062/api/v1/LicenseInsert/"+me.licenseInsert.LicenseId, me.licenseInsert)
 					.then(function(res){
 						if(res.data.errorCode == "001"){
 							setTimeout(()=>{
 								var errMsg = res.data.data.data[0];
-								me.errMessage = errMsg;
+								
 								me.showValidateAlert = true;
 								// Nếu lỗi trả về có chữ "trùng" thì hiện thông báo mã tài sản đã trùng (check trùng)
-								if(errMsg.includes("trùng")){
-
+								if(errMsg.includes("1")){
+									me.errMessage = messageResource.VALIDATE_DUPLICATE_LICENSE_CODE;
 									me.isDuplicate = true;
 									
-								}else {
+								} else if( errMsg.includes("2")){
+									me.errMessage = messageResource.VALIDATE_USE_DATE;
+								}
+								else {
 									status = false;
 									message = messageResource.SAVE_FAILED;
 									me.setStatus(status, message);
