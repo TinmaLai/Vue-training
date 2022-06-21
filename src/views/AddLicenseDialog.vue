@@ -187,14 +187,14 @@
 			@handleStatusSave="handleStatusSave"
 		/>
 		<ValidateAlert
-			:isShowAlert="showValidateAlert"
+			v-if="showValidateAlert"
+			
 			:message="this.errMessage"
 			@selectOption="this.showValidateAlert = false"
 			style="z-index: 2"
         />
 		<CancelAlert 
-		
-        :isShowAlert="showCancelAlert"
+        v-if="showCancelAlert"
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
 		v-shortkey="['esc']" @shortkey="this.showCancelAlert = false"
@@ -478,7 +478,13 @@ export default {
             // this.field = data;
             this.licenseInsert[field] = data; 
         },
-	
+		/**
+		* Mô t: Check validate trước khi thêm license
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 23:02 20/06/2022
+		*/
 		checkNullValue(){
 			// console.log(this.$refs.txtLicenseCode);
 			// Check trống các trường license
@@ -492,6 +498,7 @@ export default {
 				this.errMessage = messageResource.NULL_ASSET_LICENSE;
 				return false;
 			}
+			
 			return true;
 		},
 		/**

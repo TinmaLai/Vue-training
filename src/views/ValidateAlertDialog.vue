@@ -1,5 +1,6 @@
 <template>
-   <div class="m-del-popup" :class="{'d-flex' : isShowAlert}">
+    <div class="overlay" style="background-color: transparent;"></div>
+   <div class="m-del-popup" style="display: flex;">
         <div class="row content">
             <div class="alert-icon"></div>
             <div class="alert-content">{{ this.message}}</div>
@@ -14,14 +15,12 @@
 
 export default {
     props:["isShowAlert","message"],
+    mounted(){
+        this.$refs.closeBtn.focus();
+    },
     watch:{
-        isShowAlert: function(newValue){
-            if(newValue == true){
-                 this.$nextTick(() => {
-                    this.$refs.closeBtn.focus();
-                })
-            }
-        }
+        
+        
     },
     methods:{
         selectOption(){

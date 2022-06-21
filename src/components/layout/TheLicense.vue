@@ -235,7 +235,10 @@ export default {
 		isSelectMulti(){
 			let count = 0 ;
 			this.licenses.forEach(element => {
-				if(element.checked) count++;
+				if(element.checked) {
+					count++;
+					if(count > 1 ) return true;
+				}
 			})
 			return count > 1;
 		},
@@ -297,6 +300,7 @@ export default {
 			if(isDel == false){
                 this.isShowDeleteAlert = false; 
             } else{
+				// nếu removetype = false thì là xóa 1, ngược lại true là xóa nhiều
                 if(this.removeType == false){
 					let me = this;
 					// Gọi API để xóa theo danh sách id được tick checkbox
@@ -340,7 +344,8 @@ export default {
 						// Hiện thông báo xóa thất bại
 						me.handleStatusSave(false,messageResource.DELETE_FAILED);
 					})
-					}
+					me.isShowDeleteAlert = false;
+				}
             }     
 		},
 		/**

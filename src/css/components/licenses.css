@@ -44,7 +44,7 @@
 }
 .master-license{
     background-color: #fff;
-    height: 57%;
+    height: 54%;
     
 }
 .master-toolbar{
@@ -156,7 +156,7 @@
     cursor: pointer;
 }
 .master-license .master-grid{
-    height: 383px;
+    height: 339px;
 }
 /* Chân trang bảng master*/
 .master-table-footer{

@@ -12,6 +12,7 @@
     align-items: flex-start;
     display: none;
     box-shadow: 0 3px 13px rgba(0, 0, 0, .16);
+    z-index:3
 }
 
 .m-import-popup{

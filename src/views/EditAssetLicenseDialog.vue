@@ -255,11 +255,18 @@ export default {
                     
                     var me = this;
                     var updateLicenseAsset = {}; 
+                    this.isLoadingSubmitBtn = true;
                     updateLicenseAsset.DetailJson = JSON.stringify(this.moneySources);
                     await axios.put("http://localhost:5062/api/v1/LicenseDetail/"+this.licenseAssetSelected.LicenseDetailId,updateLicenseAsset)
                     .then(function(res){
                         console.log(res);
-                        me.$emit("closeEditLicenseAssetForm");
+                        setTimeout(()=>{
+                            me.isLoadingSubmitBtn = false;
+                            me.$emit("closeEditLicenseAssetForm");
+                            // Emit lên toast message, thành công là true, thất bại là false
+                            me.$emit("handleStatusSave",true, messageResource.SAVE_SUCCESS);
+                        },1000);
+                        
                     }).catch(function(err){
                         console.log(err);
                     })

@@ -204,12 +204,12 @@
             >Lưu</button>
         </div>
         <CancelAlert 
-        :isShowAlert="showCancelAlert"
+        v-if="showCancelAlert"
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
         />
         <ValidateAlert
-        :isShowAlert="showValidateAlert"
+        v-if="showValidateAlert"
         :message="errMesage()"
         @selectOption="handleSelectValidate"
         />
