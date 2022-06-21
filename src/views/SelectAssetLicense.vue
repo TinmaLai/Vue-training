@@ -18,7 +18,7 @@
         </div>
         <div class="select-asset detail-grid">
             <div class="contain-detail-table">
-                <table class=" detail-table m-table">
+                <table class="detail-table m-table">
                     <thead>
                         <th>
                             <MISACheckbox
@@ -39,8 +39,8 @@
                         Hiện tại không có dữ liệu.
                     </div>
                     <tbody v-show="!isLoading">
-                        <tr 
-                           
+                        <tr
+                            :class="{'activedCheckbox' : asset.checked}"
                             v-for="(asset,index) in fixedAssets"
                             :key="asset.FixedAssetId"
                              @click="asset.checked = !asset.checked">
@@ -243,7 +243,7 @@ export default {
             await axios.get('http://localhost:5062/api/v1/FixedAssets/LicenseAssets',
             {
                 params: paramAxios,
-                paramsSerializer: params => {
+                paramsSerializer: params => { 
                     return qs.stringify(params)
                 }
             }).then(function(res){
@@ -256,6 +256,8 @@ export default {
                 me.fixedAssets = me.fixedAssets.filter(item => !idOfOldAssets.includes(item.FixedAssetId));*/
                 // Gán lại số bản ghi tìm dược để chia lại số trang
                 me.currentTotalRecord = res.data.count;
+                me.pageNumber = 1;
+                me.pageNumCurrent = 1;
                 // Loading khi search
                 me.isLoading = false;
             }).catch(function(err){

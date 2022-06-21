@@ -10,6 +10,7 @@
         :class="{'danger' : this.isAlert}"    
         @blur="checkNullValue"
         :disabled="disabled"
+         @keypress="isNumber"
         ref="inputTxt">
         <span :class="{'d-opacity': this.isAlert}" style="color: red; opacity: 0"><small>{{this.messageAlert}}</small></span>
     
@@ -44,6 +45,19 @@ export default {
        
     },
     methods:{
+        /**
+        * Mô tả : Chặn sự kiện nhập chữ ở các ô input số
+        * @param $event
+        * Created by: nbtin
+        * Created date: 11:44 08/05/2022
+        */
+        isNumber($event) {
+            let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+                // 46 is dot
+                $event.preventDefault();
+            }
+        },
         /**
         * Mô tả: Hàm set focus cho ô input, thường dùng để focus vào ô đầu tiên trong form
         * Created by: nbtin

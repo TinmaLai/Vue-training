@@ -68,7 +68,7 @@ export default {
         * Created date: 23:20 23/05/2022
         */
         checkNullValue(){
-            console.log(this.isRequired);
+            // console.log(this.isRequired);
             if(this.isRequired != false){
                 if(this.content === "" || this.content == undefined){
                     this.isAlert = true;

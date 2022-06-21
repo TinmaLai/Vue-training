@@ -3,7 +3,7 @@
     <div class="edit-asset-license m-dialog" style="height: auto">
         <MISALoading v-if="isLoadingSubmitBtn" />
         <div class="top-form-row">
-            <p class="heading">Sửa tài sản</p>
+            <p class="heading">Sửa tài sản {{this.licenseAssetSelected.FixedAssetName}}</p>
             <button class=" close-form-btn" 
             v-shortkey="['esc']"
             @shortkey="closeEditForm()"
@@ -15,7 +15,7 @@
                     <label>Bộ phận sử dụng</label>
                     <MISAInput
                     disabled="true"
-                    :controlledContent="this.departmentNameSelected"
+                    :controlledContent="this.licenseAssetSelected.DepartmentName"
                     />
                 </div>
             </div>
@@ -47,6 +47,7 @@
                             ref="budgetInput"
                             :modelValue="formatMoney(source.cost)"
                             @update:modelValue="newValue => source.cost = formatToInt(newValue)"
+                           
                         />
                         
                     </div>
@@ -101,7 +102,7 @@ import axios from 'axios';
 import messageResource from '../resources/resource';
 
 export default {
-    props:["formMode","jsonSelected","index","licenseAssetSelected","departmentNameSelected"],
+    props:["formMode","jsonSelected","index","licenseAssetSelected","departmentNameSelected","fixedAssetName"],
     mounted(){
         console.log("json selected: ", this.jsonSelected);
         console.log("department name:", this.departmentNameSelected);
@@ -132,6 +133,19 @@ export default {
         // },
     },
     methods:{
+        /**
+        * Mô tả : Chặn sự kiện nhập chữ ở các ô input số
+        * @param $event
+        * Created by: nbtin
+        * Created date: 11:44 08/05/2022
+        */
+        isNumber($event) {
+            let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+                // 46 is dot
+                $event.preventDefault();
+            }
+        },
         /**
         * Mô tả: Tắt form
         * @param

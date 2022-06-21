@@ -83,6 +83,12 @@
         :isShowToast="isShowToast" 
         :status="saveStatus" 
         :message="messageToToast"/>
+        <ValidateLicenseAlert
+            v-if="showValidateAlert"
+            :message="messageValidateAlert"
+            @selectOption="this.showValidateAlert = false">
+            <div>Tài sản có mã <strong>{{this.assetIsLicense.FixedAssetCode}}</strong> đã phát sinh chứng từ có mã <strong>{{this.assetIsLicense.LicenseCode}}</strong></div>
+        </ValidateLicenseAlert>
     </div>
 </template>
 
@@ -94,6 +100,7 @@ import ToastMessage from "../base/MISAToastMessage.vue";
 import MISACombobox from "../base/MISACombobox.vue";
 import ImportExcel from '../../views/ImportExcel.vue';
 import messageResource from '../../resources/resource';
+import ValidateLicenseAlert from '../../views/ValidateLicenseAlert.vue';
 
 import axios from "axios";
 
@@ -106,7 +113,8 @@ export default {
         DeleteAlert,
         ToastMessage,
         MISACombobox,
-        ImportExcel
+        ImportExcel,
+        ValidateLicenseAlert
 
     },
     async mounted(){
@@ -311,6 +319,7 @@ export default {
                 params: paramAxios
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
+                me.pageNumber = 1;
                 me.fixedAssets = res.data.fixedAssets;
                 me.fixedAssets.forEach(element => {
                     element.checked = false;
@@ -400,11 +409,19 @@ export default {
                     },
                 }).then(function(res){
                     console.log(res);
-                    // Hiện thông báo xóa thành công
-                    me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
-                    me.delList = [];
-                    me.delFlag = true;
-                    me.getAsset();
+                    // Nếu typeErr trả về từ backend là 3 thì lỗi phát sinh chứng từ
+                    if(res.data.typeErr == 3){
+                        me.showValidateAlert = true;
+                        me.assetIsLicense = res.data.resCheck;
+                        me.messageValidateAlert = "Tài sản có mã " + res.data.resCheck.FixedAssetCode + " đã phát sinh chứng từ ghi tăng có mã " + res.data.resCheck.LicenseCode;
+
+                    } else {
+                        // Hiện thông báo xóa thành công
+                        me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
+                        me.delList = [];
+                        me.delFlag = true;
+                        me.getAsset();
+                    }
                     
                 }).catch(function(err){
                     me.delList = [];
@@ -471,6 +488,9 @@ export default {
             totalRecord: 0,
             delFlag: false,
             currentTotalRecord: 0,
+            showValidateAlert: false,
+            messageValidateAlert: "",
+            assetIsLicense: {},
         }
     },
 }

@@ -5,7 +5,7 @@
 			v-if="isLoadingSubmitBtn" 
 		/>
         <div class="top-form-row">
-            <p class="heading">Thêm chứng từ ghi tăng</p>
+            <p class="heading">{{this.formMode == 1 ? 'Thêm' : 'Sửa'}} chứng từ ghi tăng</p>
             <button class=" close-form-btn" @click="closeAddLicenseDialog"></button>
         </div>
         <div class="add-license-content">
@@ -15,7 +15,7 @@
                     <div class="col-4">
                         <label>Mã chứng từ <span style="color: red">*</span></label>
                         <MISAInputLicense 
-							:title="'Mã chứng từ không được để trống'" 
+							:title="'Mã chứng từ'" 
 							:placeholder="'Nhập mã chứng từ'" 
 							:fieldName="'Mã chứng từ'"
 							maxlength="255"
@@ -50,11 +50,11 @@
                 <div class="row" style="margin-top: 11px;">
                      <div class="col-12">
                         <label>Ghi chú</label>
-                        <MISAInput
+                        <MISAInputLicense
 							ref="txtDescription" 
 							v-model="this.licenseInsert.Description"
 							:placeholder="'Nhập ghi chú'" 
-							:fieldName="'Tên tài sản'"
+							:fieldName="'Ghi chú'"
 							maxlength="255"
 							:isRequired="false"
 						/>
@@ -229,9 +229,10 @@ export default {
 		
 		// Nếu form là sửa, nhận gái trị từ hàng lên
 		if(this.formMode == 0){
-			console.log(this.licenseSelected);
 			this.licenseInsert = this.licenseSelected;
+			console.log(this.licenseInsert);
 			this.licenseInsert.detailAssets.forEach(element => {
+				
 				element.PriceExtra = element.Cost - (element.DepreciationPerYear);
 			});
 			this.fixedAssetsLicense = this.licenseInsert.detailAssets;
@@ -341,7 +342,7 @@ export default {
 				//Gán asset đc chọn để truyền vào giá trị nguồn hình thành
 				this.jsonSelected = licenseAsset.DetailJson;
 				this.indexSelected = index;
-				this.departmentNameSelected = licenseAsset.DepartmentName;
+				this.licenseAssetSelected = licenseAsset;
 			}
 			else {
 				// call api
@@ -486,10 +487,13 @@ export default {
 		* Created date: 23:02 20/06/2022
 		*/
 		checkNullValue(){
-			// console.log(this.$refs.txtLicenseCode);
 			// Check trống các trường license
 			if(this.$refs.txtLicenseCode.$refs.inputTxt.value == ""){
 				this.nullToastStatusArray[0] = true;
+				return false;
+			}
+			
+			if(this.licenseInsert["UseDate"] == null || this.licenseInsert["WriteUpdate"] == null ){
 				return false;
 			}
 			// Check số tài sản được chọn > 0

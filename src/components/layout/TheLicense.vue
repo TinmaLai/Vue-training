@@ -202,7 +202,7 @@
 			:message="deleteMessage"
 			:deleteInfor="deleteField"
 			@getDelOption="getDelOption"
-			:removeType="removeType"
+			:removeType="removeType" 
 		>
 			<div v-if="!removeType">{{this.deleteMessage}} <span style="font-weight: 700">{{this.deleteField.LicenseCode}}</span>?</div>
 			<div v-if="removeType"><strong>{{this.countSelect}}</strong>{{this.deleteMessage}} </div>
@@ -232,8 +232,15 @@ export default {
 		
 	},
 	computed: {
+		/**
+		* Mô tả: Check xem có chọn nhiều không để hiện button xóa nhiều
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 16:03 21/06/2022
+		*/
 		isSelectMulti(){
-			let count = 0 ;
+			let count = 0;
 			this.licenses.forEach(element => {
 				if(element.checked) {
 					count++;
@@ -242,6 +249,7 @@ export default {
 			})
 			return count > 1;
 		},
+
 		/**
 		* Mô tả: Tính lại tổng số trang của pagination
 		* @param
@@ -363,6 +371,7 @@ export default {
 				me.deleteMessage = messageResource.DELETE_LICENSE_ALERT;
 				me.deleteField = res.data;
 				me.isShowDeleteAlert = true;
+				me.removeType = false;
 			}).catch(function(err){
 				console.log(err);
 			})

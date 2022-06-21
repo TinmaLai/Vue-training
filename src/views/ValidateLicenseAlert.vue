@@ -3,7 +3,8 @@
    <div class="m-del-popup" style="display: flex;">
         <div class="row content">
             <div class="alert-icon"></div>
-            <div class="alert-content">{{ this.message}}</div>
+            <!-- <div class="alert-content">{{ this.message}}</div> -->
+            <div class="alert-content"><slot></slot></div>
             
         </div>
         <div class="row popup-action" :class="{'d-flex': true}">

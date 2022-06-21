@@ -246,6 +246,9 @@
     width: 200px;
     min-width: 200px;
 }
+.detail-table .activedCheckbox .td{
+    background-color:  #d1edf4;
+}
 .detail-license .contain-detail-table::-webkit-scrollbar{
     width: 4px;
     height: 4px;

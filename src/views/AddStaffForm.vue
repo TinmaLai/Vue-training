@@ -84,7 +84,7 @@
                         <MISAInput :controlledContent="assetForm.Quantity"
                         @bindingData="bindingData"
                         :tag="'Quantity'"
-                         @keypress="isNumber"
+                        @keypress="isNumber"
                         :title="'Số lượng phải nhiều hơn 0'"
                         ref="txtRequireQuantity"
                         :fieldName="'Số lượng'"
