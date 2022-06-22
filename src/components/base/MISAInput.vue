@@ -10,8 +10,9 @@
         :class="{'danger' : this.isAlert}"    
         @blur="checkNullValue"
         :disabled="disabled"
-        ref="inputTxt">
-        
+        ref="inputTxt"
+        @focus="this.$refs.inputTxt.select()">
+         
 </template>
 
 <script>

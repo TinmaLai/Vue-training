@@ -6,7 +6,7 @@
 		/>
         <div class="top-form-row">
             <p class="heading">{{this.formMode == 1 ? 'Thêm' : 'Sửa'}} chứng từ ghi tăng</p>
-            <button class=" close-form-btn" @click="closeAddLicenseDialog"></button>
+            <button class=" close-form-btn" title="HỦY" @click="closeAddLicenseDialog"></button>
         </div>
         <div class="add-license-content">
             <div class="license-form-heading">Thông tin chứng từ</div>
@@ -18,7 +18,7 @@
 							:title="'Mã chứng từ'" 
 							:placeholder="'Nhập mã chứng từ'" 
 							:fieldName="'Mã chứng từ'"
-							maxlength="255"
+							:maxlength="50"
 							ref="txtLicenseCode"
 							v-model="this.licenseInsert.LicenseCode"
 							@blur="this.nullToastStatusArray[0] = this.$refs.txtLicenseCode.isAlert"
@@ -56,7 +56,7 @@
 							:notNumber="false"
 							:placeholder="'Nhập ghi chú'" 
 							:fieldName="'Ghi chú'"
-							maxlength="255"
+							:maxlength="500"
 							:isRequired="false"
 						/>
                     </div>
@@ -70,7 +70,7 @@
 							<div class="btn-icon">
 								<div class="search-icon"></div>
 							</div>
-							<input ref="licenseSearchContent" @change="searchAssetLicense" placeholder="Tìm kiếm theo mã, tên tài sản" type="text">
+							<input ref="licenseSearchContent" @keydown.enter="searchAssetLicense" placeholder="Tìm kiếm theo mã, tên tài sản" type="text">
 						</div>
 						<button class="m-second-button" @click="showSelectAssetDlg">Chọn tài sản</button>
 					</div>
@@ -78,7 +78,7 @@
 						<div class="contain-detail-table">
 							<table class="detail-table m-table">
 								<thead style="z-index: 1">
-									<th class="text-center">STT</th>
+									<th class="text-center" style="padding-left: 5.5px;">STT</th>
 									<th class="text-left">Mã tài sản</th>
 									<th class="text-left">Tên tài sản</th>
 									<th class="text-left">Bộ phận sử dụng</th>
@@ -90,24 +90,25 @@
 									<tr 
 										v-for="(asset,index) in filterArray"
 										:key="asset.FixedAssetId"
-										@dblclick="showEditAssetForm(asset,index)">
+										@dblclick="showEditAssetForm($event,asset,index)"
+										>
 										
 										<td>{{index+1}}</td>
 										<td class="text-left">{{asset.FixedAssetCode}}</td>
 										<td class="text-left">{{asset.FixedAssetName}}</td>
 										<td class="text-left">{{asset.DepartmentName}}</td>
 										<td class="text-right">{{formatMoney(asset.Cost)}}</td>
-										<td class="text-right">{{formatMoney(asset.DepreciationPerYear)}}</td>
+										<td class="text-right">{{formatMoney(asset.DepreciationPerYear*asset.ProductionYear)}}</td>
 										<td class="text-right" style="position: relative">
 											{{formatMoney(asset.PriceExtra)}}
 											<div class="master-table-item table-action">
 												<div class="contain-action-icon">
-													<div class="edit" @click="showEditAssetForm(asset,index)" title="Sửa tài sản">
+													<div class="edit" @click="this.showEditAssetForm($event,asset,index)" title="Sửa tài sản">
 													
 													</div>
 												</div>
 												<div class="contain-action-icon">
-													<div class="delete" @click="removeLicenseAsset(asset)" title="Xóa tài sản">
+													<div class="delete" @click="this.removeLicenseAsset(asset)" title="Xóa tài sản">
 
 													</div>
 												</div>
@@ -120,10 +121,10 @@
 						</div>
 						<table class="detail-table-footer" :class="{'d-opacity-none': this.filterArray.length == 0}">
 							<thead>
-								<th width="520"></th>
-								<th width="140" class="text-right">{{formatMoney(calTotalMoney('Cost'))}}</th>
-								<th width="165" class="text-right">{{formatMoney(calTotalMoney('DepreciationPerYear'))}}</th>
-                                <th width="165" class="text-right">{{formatMoney(calTotalMoney('PriceExtra'))}}</th>
+								<th width="640"></th>
+								<th width="180" class="text-right">{{formatMoney(calTotalMoney('Cost'))}}</th>
+								<th width="185" class="text-right">{{formatMoney(calTotalMoney('Accumulated'))}}</th>
+                                <th width="170" class="text-right">{{formatMoney(calTotalMoney('PriceExtra'))}}</th>
 							</thead>
 						</table>
                         <div class="master-pagination-footer">
@@ -241,7 +242,7 @@ export default {
 			console.log(this.licenseInsert);
 			this.licenseInsert.detailAssets.forEach(element => {
 				
-				element.PriceExtra = element.Cost - (element.DepreciationPerYear);
+				element.PriceExtra = element.Cost - (element.DepreciationPerYear*element.ProductionYear);
 			});
 			this.fixedAssetsLicense = this.licenseInsert.detailAssets;
 			this.searchAssetArray = this.licenseInsert.detailAssets;
@@ -283,7 +284,14 @@ export default {
 		},
 		
 	},
-
+	watch:{
+		// focus mỗi khi ẩn đi alert
+		showValidateAlert: function(newValue){
+			if(newValue == false){
+				this.$refs.txtLicenseCode.setFocus();
+			}
+		}
+	},
     methods:{
 		/**
         * Mô tả: Xử lý giao diện của Toast message khi trạng thái là thành công hay thất bại
@@ -342,8 +350,12 @@ export default {
 		* Created by: nbtin
 		* Created date: 09:19 18/06/2022
 		*/
-		async showEditAssetForm(licenseAsset,index){
-			
+		async showEditAssetForm($event, licenseAsset,index){
+			if($event.target.classList.contains("delete")){
+				this.removeLicenseAsset(licenseAsset);
+				return;
+			}
+						
 			console.log(licenseAsset);
 			if(licenseAsset.LicenseDetailId == undefined){
 				this.isShowEditAssetDlg = true;
@@ -420,11 +432,20 @@ export default {
 		* Created date: 15:40 16/06/2022
 		*/
 		calTotalMoney(field){
-			let init = 0;
-			var total = this.filterArray.reduce((item1, item2) => {
-				return item1 + item2[field];
-			},init)
-			return total;
+			if(field == 'Accumulated'){
+				let init = 0;
+				var total1 = this.filterArray.reduce((item1, item2) => {
+					return item1 + item2['DepreciationPerYear']*item2['ProductionYear'];
+				},init)
+				return total1;
+			}
+			else {
+				let init = 0;
+				var total2 = this.filterArray.reduce((item1, item2) => {
+					return item1 + item2[field];
+				},init)
+				return total2;
+			}
 		},
 		/**
 		* Mô tả: Xóa FE ở mảng thông tin chi tiết
@@ -529,7 +550,7 @@ export default {
 			var me = this;
 			// Cờ check xem có validate lỗi gì ko, ko lỗi mới được thêm
 			var checkAdd = this.checkNullValue();
-			if(checkAdd == true)
+			if(checkAdd == true){
 				// form mode là thêm (formMode == 1)
 				if(this.formMode == 1){
 					let status = false;
@@ -625,6 +646,11 @@ export default {
 						}
 					})
 				}
+			}
+				
+			else {
+				this.$refs.txtLicenseCode.setFocus();
+			}
 		},
 		/**
         * Mô tả : Reset form khi close form

@@ -38,6 +38,10 @@
     background-color: white;
     box-shadow: 0 2px 6px rgb(0 0 0 /16%);
 }
+.add-license-detail .m-second-button:hover{
+    background-color: #1aa4c8;
+    white: color;
+}
 .add-license-detail .m-field-input-icon{
     width: 270px;
 }
@@ -46,6 +50,9 @@
     min-width: 150px;
 }
 .add-license-detail .detail-table td:nth-child(2){
+    padding-left: 20px;
+}
+.add-license-detail .detail-table th:nth-child(2){
     padding-left: 20px;
 }
 .add-license-detail .detail-table td:nth-child(3){
@@ -64,6 +71,32 @@
     min-width: 150px;
     max-width: 150px;
 }
+.add-license-detail .detail-table th:nth-child(2){
+    width:100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+.add-license-detail .detail-table th:nth-child(4){
+    width:200px;
+    min-width: 200px;
+    max-width: 200px;
+}
+.add-license-detail .detail-table th:nth-child(6) {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+}
+.add-license-detail .detail-table th:nth-child(5){
+    width:150px;
+    min-width: 150px;
+    max-width: 150px;
+}
+.add-license-detail .detail-table th:nth-child(3){
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+}
+
 .add-license-detail .detail-table th:nth-child(2){
     padding-left: 20px;
 }
@@ -103,7 +136,7 @@
     height: 250px;
 }
 .add-license-detail .contain-detail-table{
-    overflow-y: auto;
+    overflow-y: overlay;
 }
 .add-license-detail .contain-detail-table::-webkit-scrollbar {
     height: 0px;

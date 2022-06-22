@@ -11,7 +11,7 @@
                     <div class="btn-icon">
                         <div class="search-icon"></div>
                     </div>
-                    <input  ref="searchContent" @change="filterFixedAssets" placeholder="Tìm kiếm theo Mã, tên tài sản" type="text">
+                    <input  ref="searchContent" @keydown.enter="filterFixedAssets" placeholder="Tìm kiếm theo Mã, tên tài sản" type="text">
                 </div>
             </div>
             
@@ -50,7 +50,7 @@
                             <td class="text-left">{{asset.FixedAssetName}}</td>
                             <td class="text-left">{{asset.DepartmentName}}</td>
                             <td class="text-right">{{formatMoney(asset.Cost)}}</td>
-                            <td class="text-right">{{formatMoney(asset.DepreciationPerYear)}}</td>
+                            <td class="text-right">{{formatMoney(asset.DepreciationPerYear * asset.ProductionYear)}}</td>
                             <td class="text-right">{{formatMoney(priceExtra(asset))}}</td>
                         </tr>
                     </tbody>

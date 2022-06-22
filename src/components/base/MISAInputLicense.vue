@@ -7,10 +7,12 @@
         class="m-field-input mt-input"
         :type="type"
         :title="this.isAlert == true ? title : ''"
-        :class="{'danger' : this.isAlert}"    
+        :class="{'danger' : this.isAlert}"  
+        :maxlength="this.maxlength"  
         @blur="checkNullValue"
         :disabled="disabled"
         @keypress="isNumber"
+        @focus="this.$refs.inputTxt.select()"
         ref="inputTxt">
         <span :class="{'d-opacity': this.isAlert}" style="color: red; opacity: 0"><small>{{this.messageAlert}}</small></span>
     
@@ -30,7 +32,7 @@ export default {
        if(this.fieldName != undefined)
         this.messageAlert = this.fieldName + " không được để trống.";
     },
-    props:["controlledContent","title","placeholder","type","tag","fieldName","isRequired","disabled","area","modelValue","notNumber"],
+    props:["controlledContent","title","placeholder","type","tag","fieldName","isRequired","disabled","area","modelValue","notNumber","maxlength"],
     emits: ['update:modelValue'],
     watch:{
         /**

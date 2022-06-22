@@ -14,3 +14,7 @@
     justify-content: center;
     border-width: 1px;
 }
+.m-second-button:hover{
+    background-color: #1aa4c8;
+    color: white;
+}

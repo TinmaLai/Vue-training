@@ -29,7 +29,7 @@
 								<div class="search-icon"></div>
 							</div>
 							<input ref="licenseSearchContent" 
-							@change="searchEnterBtn()"
+							@keydown.enter="searchEnterBtn()"
 							@focus="this.$refs.licenseSearchContent.select()" 
 							placeholder="Tìm kiếm theo số chứng từ, nội dung" 
 							type="text">
@@ -51,7 +51,12 @@
 						<div class="contain-master-table" ref="MainMasterTable">
 							<table class="master-table m-table">
 								<thead>
-									<th class="text-center"><MISACheckbox/></th>
+									<th class="text-center">
+										<MISACheckbox
+											:isCheckBox="isCheckAll"
+											@click="checkAllCheckBox"
+										/>
+									</th>
 									<th class="text-center">STT</th>
 									<th class="text-left">Số chứng từ</th>
 									<th class="text-center">Ngày chứng từ</th>
@@ -84,7 +89,7 @@
 										<td class="text-center" >{{formatDate(license.UseDate)}}</td>
 										<td class="text-center">{{formatDate(license.WriteUpdate)}}</td>
 										<td class="text-right">{{formatMoney(license.Total)}}</td>
-										<td class="text-left">{{license.Description}}</td>
+										<td class="text-left limit-text" maxlength="10">{{license.Description}}</td>
 										<td class="master-table-item table-action" :class="{'activedCheckbox' : license.checked}">
 										
 											<div class="edit"  title="Sửa chứng từ">
@@ -152,7 +157,7 @@
 						</div>
 					</div>
 					<div class="detail-grid">
-						<div class="contain-detail-table">
+						<div class="the-license contain-detail-table">
 							<table class="detail-table m-table">
 								<thead>
 									<th class="text-center">STT</th>
@@ -170,8 +175,8 @@
 							
 										<td>{{index+1}}</td>
 										<td class="text-left">{{asset.FixedAssetCode}}</td>
-										<td class="text-left">{{asset.FixedAssetName}}</td>
-										<td class="text-left">{{asset.DepartmentName}}</td>
+										<td class="text-left" style="max-width: 200px">{{asset.FixedAssetName}}</td>
+										<td class="text-left" style="max-width: 100px">{{asset.DepartmentName}}</td>
 										<td class="text-right">{{formatMoney(asset.Cost)}}</td>
 										<td class="text-right">{{formatMoney(asset.DepreciationPerYear)}}</td>
 										<td class="text-right">{{formatMoney(asset.PriceExtra)}}</td>
@@ -234,6 +239,7 @@ export default {
 		
 	},
 	computed: {
+		
 		/**
 		* Mô tả: Check xem có chọn nhiều không để hiện button xóa nhiều
 		* @param
@@ -265,6 +271,20 @@ export default {
 	},
 	methods:{
 		/**
+		* Mô tả: Check tất cả checkbox các hàng
+		* @param
+		* @return
+		* Created by: nbtin
+		* Created date: 08:58 22/06/2022
+		*/
+		checkAllCheckBox(){
+			// var check = true;
+			this.isCheckAll = !this.isCheckAll;
+			this.licenses.forEach(element => {
+				element.checked = !element.checked;
+			})
+		},
+		/**
 		* Mô tả: Hiện thông báo xóa nhiều khi ấn vào nú xóa nhiều
 		* @param
 		* @return
@@ -283,6 +303,7 @@ export default {
 			this.removeType = true;
 			if(count < 10)
 			this.countSelect = "0" + count;
+			else this.countSelect = count;
 		},
 		/**
 		* Mô tả: Lấy lại toàn bộ license mỗi khi cần loading
@@ -690,6 +711,7 @@ export default {
 			deleteField: '',
 			removeType: false, // false là xóa 1, true là xóa nhiều
 			countSelect: "",
+			isCheckAll: false,
 		}
 	},
 }
