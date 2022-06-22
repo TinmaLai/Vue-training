@@ -7,8 +7,8 @@
             <div class="alert-content"><slot></slot></div>
             
         </div>
-        <div class="row popup-action" :class="{'d-flex': true}">
-            <button ref="closeBtn" class="m-button" @click="selectOption()" @shortkey="selectOption()">Đóng</button>
+        <div class="row popup-action" :class="{'d-flex': true}" style="background-color: #f5f5f5; margin-bottom: 0px; padding-right: 10px">
+            <button ref="closeBtn" class="m-button" style="margin: 5px 0 5px 0" @click="selectOption()" @shortkey="selectOption()">Đóng</button>
         </div>
     </div>
 </template>
@@ -33,5 +33,4 @@ export default {
 </script>
 
 <style>
-
 </style>

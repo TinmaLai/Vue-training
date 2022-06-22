@@ -5,7 +5,7 @@
             <!-- <div class="alert-content">{{this.message}} <span style="font-weight: 700">{{this.deleteInfor.LicenseCode}}</span>?</div> -->
             <div class="alert-content"><slot></slot></div>
         </div>
-        <div class="row popup-action" :class="{'d-flex': true} " >
+        <div class="row popup-action" :class="{'d-flex': true}" style="background-color: #f5f5f5; margin-bottom: 0; padding: 5px 10px 5px 0;" >
             <div class="m-second-button" @click="selectOption(false)">Không</div>
             <button ref="btnDel" class="m-button" @click="selectOption(true)">Xóa</button>
         </div>

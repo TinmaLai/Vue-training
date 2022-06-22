@@ -281,7 +281,7 @@ export default {
         filterFixedAssets(){
             // Gán debounce, bắt sự kiện người dùng thả keyup 1000mls thì mới chạy hàm searchAsset
             clearTimeout(this.timeOut);
-            
+            this.pageNumber = 1;
             this.timeOut = setTimeout(this.searchAsset, 1000);
         },
         /**
@@ -319,7 +319,7 @@ export default {
                 params: paramAxios
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
-                me.pageNumber = 1;
+                // me.pageNumber = 1;
                 me.fixedAssets = res.data.fixedAssets;
                 me.fixedAssets.forEach(element => {
                     element.checked = false;

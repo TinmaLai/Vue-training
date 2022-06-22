@@ -53,6 +53,7 @@
                         <MISAInputLicense
 							ref="txtDescription" 
 							v-model="this.licenseInsert.Description"
+							:notNumber="false"
 							:placeholder="'Nhập ghi chú'" 
 							:fieldName="'Ghi chú'"
 							maxlength="255"
@@ -88,8 +89,9 @@
 								<tbody>
 									<tr 
 										v-for="(asset,index) in filterArray"
-										:key="asset.FixedAssetId">
-							
+										:key="asset.FixedAssetId"
+										@dblclick="showEditAssetForm(asset,index)">
+										
 										<td>{{index+1}}</td>
 										<td class="text-left">{{asset.FixedAssetCode}}</td>
 										<td class="text-left">{{asset.FixedAssetName}}</td>
@@ -186,19 +188,23 @@
 			:departmentNameSelected="departmentNameSelected"
 			@handleStatusSave="handleStatusSave"
 		/>
-		<ValidateAlert
+		<ValidateLicenseAlert
 			v-if="showValidateAlert"
 			
-			:message="this.errMessage"
+			
 			@selectOption="this.showValidateAlert = false"
-			style="z-index: 2"
-        />
+			style="z-index: 2">
+			<div>{{this.errMessage}}</div>
+		</ValidateLicenseAlert>
+        
+			
 		<CancelAlert 
         v-if="showCancelAlert"
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
 		v-shortkey="['esc']" @shortkey="this.showCancelAlert = false"
 		style="z-index: 3"
+		:isCloseLicense="isCloseLicense"
         />
 		<MISAToastMessage
 			:isShowToast="isShowToast" 
@@ -215,13 +221,15 @@ import EditAssetLicenseDialog from './EditAssetLicenseDialog.vue'
 import axios from 'axios';
 import messageResource from './../resources/resource';
 import CancelAlert from './CancelAlertDialog.vue';
+import ValidateLicenseAlert from './ValidateLicenseAlert.vue';
 
 export default {
 	props:["licenseSelected","formMode"],
 	components:{
 		SelectAssetLicense,
 		EditAssetLicenseDialog,
-		CancelAlert
+		CancelAlert,
+		ValidateLicenseAlert
 	},
 	async mounted() {
 		// Focus vào ô đầu tiên

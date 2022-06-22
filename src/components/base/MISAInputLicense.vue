@@ -10,7 +10,7 @@
         :class="{'danger' : this.isAlert}"    
         @blur="checkNullValue"
         :disabled="disabled"
-         @keypress="isNumber"
+        @keypress="isNumber"
         ref="inputTxt">
         <span :class="{'d-opacity': this.isAlert}" style="color: red; opacity: 0"><small>{{this.messageAlert}}</small></span>
     
@@ -30,7 +30,7 @@ export default {
        if(this.fieldName != undefined)
         this.messageAlert = this.fieldName + " không được để trống.";
     },
-    props:["controlledContent","title","placeholder","type","tag","fieldName","isRequired","disabled","area","modelValue"],
+    props:["controlledContent","title","placeholder","type","tag","fieldName","isRequired","disabled","area","modelValue","notNumber"],
     emits: ['update:modelValue'],
     watch:{
         /**
@@ -52,10 +52,12 @@ export default {
         * Created date: 11:44 08/05/2022
         */
         isNumber($event) {
-            let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
-                // 46 is dot
-                $event.preventDefault();
+            if(this.notNumber == true){
+                let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+                if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+                    // 46 is dot
+                    $event.preventDefault();
+                }
             }
         },
         /**

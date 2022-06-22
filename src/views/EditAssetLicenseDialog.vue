@@ -47,7 +47,7 @@
                             ref="budgetInput"
                             :modelValue="formatMoney(source.cost)"
                             @update:modelValue="newValue => source.cost = formatToInt(newValue)"
-                           
+                            :notNumber="true"
                         />
                         
                     </div>
@@ -74,6 +74,7 @@
                     <MISAInput
                         :controlledContent="formatMoney(calTotalCost())"
                         style="margin-top: 0"
+                        
                         :disabled="true"
                     />
                 </div>

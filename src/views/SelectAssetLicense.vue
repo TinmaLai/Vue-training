@@ -156,6 +156,7 @@ export default {
         * Created date: 16:53 13/06/2022
         */
         filterFixedAssets(){
+            this.pageNumCurrent = 1;
             this.searchAsset();
         },
         /**
@@ -183,7 +184,7 @@ export default {
         * Created date: 14:32 09/06/2022
         */
         clickCallback(pageNumber){
-            this.pageNumber = pageNumber;
+            this.pageNumCurrent = pageNumber;
             this.searchAsset();
             // this.fixedAssets.forEach(element => {
             //     element.checked = false;
@@ -235,7 +236,7 @@ export default {
             var paramAxios = {
                 filterContent: searchInputValue,
                 pageSize: this.pageSize,
-                pageNumber: this.pageNumber,
+                pageNumber: this.pageNumCurrent,
                 ids: oldAssetsLicenseIdArray
             }
             this.isLoading = true;
@@ -249,15 +250,10 @@ export default {
             }).then(function(res){
                 console.log('res search:', res.data.fixedAssets);
                 me.fixedAssets = res.data.fixedAssets;
-                /*let idOfOldAssets = [];
-                me.oldAssetsLicenseArray.forEach(element => {
-                    idOfOldAssets.push(element.FixedAssetId);
-                });
-                me.fixedAssets = me.fixedAssets.filter(item => !idOfOldAssets.includes(item.FixedAssetId));*/
                 // Gán lại số bản ghi tìm dược để chia lại số trang
                 me.currentTotalRecord = res.data.count;
-                me.pageNumber = 1;
-                me.pageNumCurrent = 1;
+                // me.pageNumber = 1;
+                // me.pageNumCurrent = 1;
                 // Loading khi search
                 me.isLoading = false;
             }).catch(function(err){

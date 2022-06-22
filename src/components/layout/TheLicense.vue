@@ -1,6 +1,8 @@
 <template>
     <div>
+		
         <div class="license-content">
+			
 			<div class="content-heading">
 				<div class="heading">Ghi tăng tài sản</div>
 				<div class="heading-action">
@@ -109,7 +111,7 @@
 									<th width="150" style="min-width:150px;"></th>
 									<th width="160" style="min-width:160px;"></th>
 									<th width="150" class="text-right" style="min-width:150px ;padding-right: 20px;">{{formatMoney(calTotalMoney('Total'))}}</th>
-									<th width="400" style="min-width:400px;"></th>
+									<th width="400" style="min-width:500px;"></th>
 									<th></th>
 								</thead>
 							</table>
@@ -318,6 +320,7 @@ export default {
 						// Hiện thông báo xóa thành công
 						me.handleStatusSave(true, res.data + messageResource.DELETE_SUCCESS);
 						me.getLoadingLicense();
+					
 						
 					}).catch(function(err){
 						console.log(err);
