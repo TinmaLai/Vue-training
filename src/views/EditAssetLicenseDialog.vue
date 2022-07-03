@@ -212,7 +212,7 @@ export default {
                     check = false;
                 }
             });
-            // Check trùng combobox
+            // bỏ bôi đỏ những ô không trống
             let budgetComboboxArray = this.$refs['budgetCombobox'];
             this.$refs['budgetCombobox'].forEach(element => {
                 if(element.itemSelected != null && element.control != ""){

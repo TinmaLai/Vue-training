@@ -204,7 +204,7 @@
         :formMode="this.formMode"
         @getCancelOption="handleCancelOption"
 		v-shortkey="['esc']" @shortkey="this.showCancelAlert = false"
-		style="z-index: 3"
+		style="z-index: 3; margin-bottom: 0 !important;"
 		:isCloseLicense="isCloseLicense"
         />
 		<MISAToastMessage

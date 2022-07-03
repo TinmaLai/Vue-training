@@ -1,6 +1,6 @@
 <template>
     <div class="overlay" style="background-color: transparent;"></div>
-    <div class="m-del-popup" style="display: flex;">
+    <div class="m-del-popup" style="display: flex; ">
        
         <div class="row content">
             <div class="alert-icon"></div>
@@ -79,5 +79,7 @@ export default {
 </script>
 
 <style>
-
+    .m-del-popup .row{
+        margin-bottom: 0 !important;
+    }
 </style>
